@@ -1,0 +1,84 @@
+﻿(command "_.Netload" "C:\\Test\\Temp\\AutoCADTest-x64-2\\AutoCADTest\\bin\\Debug\\AutoCADTest.dll")
+(command "Count")
+(command "TestImport")
+quit
+trim
+crossing
+0,0
+10000,10000
+
+quit
+
+
+
+(setq CurrDwgName (getvar "dwgname"))
+(setq Fname (substr CurrDwgName 1 (- (strlen CurrDwgName) 4)))
+(setq name (strcat (getvar "DWGPREFIX") Fname ".pdf"))
+;Command:
+FILEDIA
+;Enter new value for FILEDIA <1>:
+0
+;Command:
+-PLOT
+;Detailed plot configuration? [Yes/No] <No>:
+Yes
+;Enter a layout name or [?] <Model>:
+Model
+;Enter an output device name or [?] <None>:
+DWG To PDF.pc3
+;Enter paper size or [?] <ANSI A (11.00 x 8.50 Inches)>:
+ANSI A (11.00 x 8.50 Inches)
+;Enter paper units [Inches/Millimeters] <Inches>:
+Inches
+;Enter drawing orientation [Portrait/Landscape] <Portrait>:
+Landscape
+;Plot upside down? [Yes/No] <No>:
+No
+;Enter plot area [Display/Extents/Limits/View/Window] <Display>:
+Extents
+;Enter plot scale (Plotted Inches=Drawing Units) or [Fit] <Fit>:
+Fit
+;Enter plot offset (x,y) or [Center] <0.00,0.00>:
+Center
+;Plot with plot styles? [Yes/No] <Yes>:
+Yes
+;Enter plot style table name or [?] (enter . for none) <>:
+.
+;Plot with lineweights? [Yes/No] <Yes>:
+No
+;Enter shade plot setting [As displayed/legacy Wireframe/legacy Hidden/Visualstyles/Rendered] <As displayed>:
+
+;Enter file name <C:\Work\solids-Model.pdf>:   ;!name
+
+;Save changes to page setup? Or set shade plot quality? [Yes/No/Quality] <N>:
+No
+;Proceed with plot [Yes/No] <Y>:
+Yes
+;Command:
+FILEDIA
+;;;Enter new value for FILEDIA <1>:
+1
+;---------------------------------------------------------------------------------
+(command "-plot"
+  "Yes"                      ;Detailed plot configuration? [Yes/No] <No>: Y
+  ""                         ;Enter a layout name or [?] <0_01a>:
+  "DWG To PDF.pc3"           ;Enter an output device name or [?] <DWG To PDF.pc3>:
+  (substr PLOT_framesize 17) ;Enter paper size or [?] <ISO full bleed A3>:
+  "Millimeters"              ;Enter paper units [Inches/Millimeters] <Millimeters>:
+  PLOT_rotation              ;Enter drawing orientation [Por.../Lan...] <Lan...>:
+  "No"                       ;Plot upside down? [Yes/No] <No>:
+  "Window"                   ;Enter plot area [D.../E.../L.../V.../W...] <Window>:
+  PLOT_BL                    ;Enter lower left corner of window <0,0>:
+  PLOT_TR                    ;Enter upper right corner of window <420,297>:
+  "1=1"                      ;Enter plot scale or [Fit] <1=1>:
+  "Center"                   ;Enter plot offset (x,y) or [Center] <Center>:
+  "Yes"                      ;Plot with plot styles? [Yes/No] <Yes>:
+  ""                         ;Enter plot style table name or [?] <>:
+  "Yes"                      ;Plot with lineweights? [Yes/No] <Yes>:
+  "No"                       ;Scale lineweights with plot scale? [Yes/No] <No>:
+  "No"                       ;Plot paper space first? [Yes/No] <No>:
+  "No"                       ;Hide paperspace objects? [Yes/No] <No>:
+  PLOT_filename
+  "Yes"                      ;Save changes to page setup [Yes/No]? <N> y
+  "Yes"                      ;Proceed with plot [Yes/No] <Y>:
+  )	

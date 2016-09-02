@@ -1,0 +1,374 @@
+2016-08-27 19:18:00,646 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eKeyNotFound
+   at Autodesk.AutoCAD.DatabaseServices.DBDictionary.GetAt(String entryName)
+   at BatchPlot.Perf.AddPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 197
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 55
+2016-08-27 19:20:09,919 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eKeyNotFound
+   at Autodesk.AutoCAD.DatabaseServices.DBDictionary.GetAt(String entryName)
+   at BatchPlot.Perf.AddPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 197
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 55
+2016-08-27 19:22:35,357 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eKeyNotFound
+   at Autodesk.AutoCAD.DatabaseServices.DBDictionary.GetAt(String entryName)
+   at BatchPlot.Perf.AddPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 202
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 55
+2016-08-27 19:32:03,327 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNonePlotDevice
+   at Autodesk.AutoCAD.PlottingServices.PlotInfoValidator.Validate(PlotInfo info)
+   at BatchPlot.Extensions.Plot(Layout lay, String outputFilePath) in C:\Test\Plot\Plot01\Class1.cs:line 73
+   at BatchPlot.Perf.CreateAndPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 51
+2016-08-27 19:38:32,514 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNonePlotDevice
+   at Autodesk.AutoCAD.PlottingServices.PlotInfoValidator.Validate(PlotInfo info)
+   at BatchPlot.Extensions.Plot(Layout lay, String outputFilePath) in C:\Test\Plot\Plot01\Class1.cs:line 73
+   at BatchPlot.Perf.CreateAndPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 50
+2016-08-27 19:39:05,578 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNonePlotDevice
+   at Autodesk.AutoCAD.PlottingServices.PlotInfoValidator.Validate(PlotInfo info)
+   at BatchPlot.Extensions.Plot(Layout lay, String outputFilePath) in C:\Test\Plot\Plot01\Class1.cs:line 73
+   at BatchPlot.Perf.CreateAndPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 50
+2016-08-27 19:42:27,860 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNonePlotDevice
+   at Autodesk.AutoCAD.PlottingServices.PlotInfoValidator.Validate(PlotInfo info)
+   at BatchPlot.Extensions.Plot(Layout lay, String outputFilePath) in C:\Test\Plot\Plot01\Class1.cs:line 73
+   at BatchPlot.Perf.CreateAndPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 50
+2016-08-27 19:43:24,086 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNonePlotDevice
+   at Autodesk.AutoCAD.PlottingServices.PlotInfoValidator.Validate(PlotInfo info)
+   at BatchPlot.Extensions.Plot(Layout lay, String outputFilePath) in C:\Test\Plot\Plot01\Class1.cs:line 73
+   at BatchPlot.Perf.CreateAndPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 50
+2016-08-27 19:44:59,732 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNonePlotDevice
+   at Autodesk.AutoCAD.PlottingServices.PlotInfoValidator.Validate(PlotInfo info)
+   at BatchPlot.Extensions.Plot(Layout lay, String outputFilePath) in C:\Test\Plot\Plot01\Class1.cs:line 73
+   at BatchPlot.Perf.CreateAndPlotLayout() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 50
+2016-08-27 21:56:31,017 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 262
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 237
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 184
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 22:07:02,723 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 262
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 237
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 185
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 22:07:34,561 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 262
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 237
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 185
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 22:08:36,355 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 262
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 237
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 185
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 22:09:56,333 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 262
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 237
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 185
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 22:10:38,952 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 261
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 236
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 184
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 22:14:10,435 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 262
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 237
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 185
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 22:20:19,979 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 260
+   at BatchPlot.Perf.GetOrCreateViewport(Layout layout, Transaction tr, Int32 vpNum) in C:\Test\Plot\Plot01\Perf.cs:line 235
+   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\Plot\Plot01\Perf.cs:line 182
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 53
+2016-08-27 23:27:05,080 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eGraphicsNotGenerated
+   at Autodesk.AutoCAD.PlottingServices.PlotEngine.BeginGenerateGraphics(Object parameters)
+   at BatchPlot.Perf.PlotExtents() in C:\Test\Plot\Plot01\Perf.cs:line 413
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 60
+2016-08-28 12:16:18,345 [1] DEBUG AutoCADTest.Service.Helper - System.NullReferenceException: Object reference not set to an instance of an object.
+   at BatchPlot.Perf.GetMapCartridgeAttribute() in C:\Test\Plot\Plot01\Perf.cs:line 224
+   at BatchPlot.Perf.AddPlotCartridge(String templateFilePath, Point3d position) in C:\Test\Plot\Plot01\Perf.cs:line 177
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 56
+2016-08-28 14:02:29,724 [1] DEBUG AutoCADTest.Service.Helper - System.InvalidCastException: Specified cast is not valid.
+   at BatchPlot.Perf.GetMapCartridgeAttribute() in C:\Test\Plot\Plot01\Perf.cs:line 244
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 62
+2016-08-28 16:39:03,188 [1] DEBUG AutoCADTest.Service.Helper - System.NullReferenceException: Object reference not set to an instance of an object.
+   at BatchPlot.Perf.SelectEntitiesWithProperties() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 54
+2016-08-28 16:39:41,765 [1] DEBUG AutoCADTest.Service.Helper - System.NullReferenceException: Object reference not set to an instance of an object.
+   at BatchPlot.Perf.SelectEntitiesWithProperties() in C:\Test\Plot\Plot01\Perf.cs:line 100
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 54
+2016-08-28 20:56:13,235 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 219
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 57
+2016-08-28 21:14:18,109 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 227
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 57
+2016-08-28 21:15:56,697 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 227
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 57
+2016-08-28 21:16:50,009 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 227
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 57
+2016-08-28 21:25:39,634 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 227
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 57
+2016-08-28 22:05:36,836 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 221
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-28 22:06:37,278 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 221
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-28 22:08:14,779 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 221
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-28 22:09:33,601 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.BlockIterator_Method() in C:\Test\Plot\Plot01\Perf.cs:line 221
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-28 22:57:05,393 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eGraphicsNotGenerated
+   at Autodesk.AutoCAD.PlottingServices.PlotEngine.BeginGenerateGraphics(Object parameters)
+   at BatchPlot.Perf.PlotExtents() in C:\Test\Plot\Plot01\Perf.cs:line 597
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 70
+2016-08-28 22:59:28,942 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eGraphicsNotGenerated
+   at Autodesk.AutoCAD.PlottingServices.PlotEngine.BeginGenerateGraphics(Object parameters)
+   at BatchPlot.Perf.PlotExtents() in C:\Test\Plot\Plot01\Perf.cs:line 596
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 70
+2016-08-28 23:41:15,226 [1] DEBUG AutoCADTest.Service.Helper - Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert type 'Autodesk.AutoCAD.DatabaseServices.ObjectId' to 'Autodesk.AutoCAD.DatabaseServices.DBText'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at BatchPlot.Perf.FindText(String str) in C:\Test\Plot\Plot01\Perf.cs:line 204
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 56
+2016-08-29 11:51:44,724 [1] DEBUG AutoCADTest.Service.Helper - System.InvalidCastException: Unable to cast object of type 'Autodesk.AutoCAD.DatabaseServices.ObjectId' to type 'System.Collections.Generic.IEnumerable`1[System.Object]'.
+   at System.Linq.Enumerable.<CastIterator>d__94`1.MoveNext()
+   at System.Linq.Enumerable.<SelectManyIterator>d__16`2.MoveNext()
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 60
+2016-08-29 12:16:04,711 [1] DEBUG AutoCADTest.Service.Helper - System.InvalidCastException: Unable to cast object of type 'Autodesk.AutoCAD.DatabaseServices.ObjectId' to type 'System.Collections.Generic.IEnumerable`1[System.Object]'.
+   at System.Linq.Enumerable.<CastIterator>d__94`1.MoveNext()
+   at System.Linq.Enumerable.<SelectManyIterator>d__16`2.MoveNext()
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   at BatchPlot.Perf.XXXXXXXXXXXXX[T](IEnumerable`1 layers) in C:\Test\Plot\Plot01\Perf.cs:line 199
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-29 13:07:51,311 [1] DEBUG AutoCADTest.Service.Helper - System.InvalidCastException: Unable to cast object of type 'Autodesk.AutoCAD.DatabaseServices.ObjectId' to type 'System.Collections.Generic.IEnumerable`1[System.Object]'.
+   at System.Linq.Enumerable.<CastIterator>d__94`1.MoveNext()
+   at System.Linq.Enumerable.<SelectManyIterator>d__16`2.MoveNext()
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   at BatchPlot.Perf.XXXXXXXXXXXXX[T](IEnumerable`1 layers) in C:\Test\Plot\Plot01\Perf.cs:line 199
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-29 13:15:50,290 [1] DEBUG AutoCADTest.Service.Helper - System.InvalidCastException: Unable to cast object of type 'Autodesk.AutoCAD.DatabaseServices.ObjectId' to type 'System.Collections.Generic.IEnumerable`1[System.Object]'.
+   at System.Linq.Enumerable.<CastIterator>d__94`1.MoveNext()
+   at System.Linq.Enumerable.<SelectManyIterator>d__16`2.MoveNext()
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   at BatchPlot.Perf.XXXXXXXXXXXXX[T](IEnumerable`1 layers) in C:\Test\Plot\Plot01\Perf.cs:line 199
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-29 13:19:47,478 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.<XXXXXXXXXXXXX>b__16[T](T x) in C:\Test\Plot\Plot01\Perf.cs:line 213
+   at System.Linq.Enumerable.WhereArrayIterator`1.MoveNext()
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   at BatchPlot.Perf.XXXXXXXXXXXXX[T](IEnumerable`1 layers) in C:\Test\Plot\Plot01\Perf.cs:line 213
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-29 13:25:18,006 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullExtents
+   at Autodesk.AutoCAD.DatabaseServices.Entity.get_GeometricExtents()
+   at BatchPlot.Perf.<XXXXXXXXXXXXX>b__16[T](T x) in C:\Test\Plot\Plot01\Perf.cs:line 219
+   at System.Linq.Enumerable.WhereArrayIterator`1.MoveNext()
+   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)
+   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)
+   at BatchPlot.Perf.XXXXXXXXXXXXX[T](IEnumerable`1 layers) in C:\Test\Plot\Plot01\Perf.cs:line 219
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 58
+2016-08-29 14:33:49,360 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eGraphicsNotGenerated
+   at Autodesk.AutoCAD.PlottingServices.PlotEngine.BeginGenerateGraphics(Object parameters)
+   at BatchPlot.Perf.PlotExtents() in C:\Test\Plot\Plot01\Perf.cs:line 692
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 95
+2016-08-29 14:43:25,260 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eGraphicsNotGenerated
+   at Autodesk.AutoCAD.PlottingServices.PlotEngine.BeginGenerateGraphics(Object parameters)
+   at BatchPlot.Perf.PlotExtents() in C:\Test\Plot\Plot01\Perf.cs:line 692
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 95
+2016-08-29 21:12:20,159 [1] DEBUG AutoCADTest.Service.Helper - Oracle.DataAccess.Client.OracleException ORA-12545: Connect failed because target host or object does not exist    at Oracle.DataAccess.Client.OracleException.HandleErrorHelper(Int32 errCode, OracleConnection conn, IntPtr opsErrCtx, OpoSqlValCtx* pOpoSqlValCtx, Object src, String procedure, Boolean bCheck)
+   at Oracle.DataAccess.Client.OracleException.HandleError(Int32 errCode, OracleConnection conn, IntPtr opsErrCtx, Object src)
+   at Oracle.DataAccess.Client.OracleConnection.Open()
+   at AutoCADTest.Service.DataAccessService.IterateOverReader[T](String query, Func`2 mapReader) in C:\Test\Plot\Plot01\Services\DataAccessService.cs:line 46
+   at BatchPlot.Perf.GetServerFilePaths() in C:\Test\Plot\Plot01\Perf.cs:line 122
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 57
+2016-08-29 21:12:26,087 [1] DEBUG AutoCADTest.Service.Helper - Oracle.DataAccess.Client.OracleException ORA-12545: Connect failed because target host or object does not exist    at Oracle.DataAccess.Client.OracleException.HandleErrorHelper(Int32 errCode, OracleConnection conn, IntPtr opsErrCtx, OpoSqlValCtx* pOpoSqlValCtx, Object src, String procedure, Boolean bCheck)
+   at Oracle.DataAccess.Client.OracleException.HandleError(Int32 errCode, OracleConnection conn, IntPtr opsErrCtx, Object src)
+   at Oracle.DataAccess.Client.OracleConnection.Open()
+   at AutoCADTest.Service.DataAccessService.IterateOverReader[T](String query, Func`2 mapReader) in C:\Test\Plot\Plot01\Services\DataAccessService.cs:line 46
+   at BatchPlot.Perf.GetServerFilePaths() in C:\Test\Plot\Plot01\Perf.cs:line 122
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 57
+2016-08-29 23:36:11,351 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eGraphicsNotGenerated
+   at Autodesk.AutoCAD.PlottingServices.PlotEngine.BeginGenerateGraphics(Object parameters)
+   at BatchPlot.Perf.PlotExtents() in C:\Test\Plot\Plot01\Perf.cs:line 557
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 75
+2016-08-30 09:46:10,600 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 548
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 87
+2016-08-30 09:48:35,721 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 548
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 87
+2016-08-30 10:00:08,651 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 556
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 95
+2016-08-30 10:07:12,278 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 556
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 95
+2016-08-30 10:10:28,560 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 563
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 86
+2016-08-30 10:12:59,352 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 563
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 86
+2016-08-30 10:18:52,843 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCanonicalMediaName(PlotSettings plotSet, String mediaName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 475
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 376
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 79
+2016-08-30 10:26:14,238 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCanonicalMediaName(PlotSettings plotSet, String mediaName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 475
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 376
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 79
+2016-08-30 10:48:17,244 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCurrentStyleSheet(PlotSettings plotSet, String styleSheetName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 481
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 377
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 10:49:41,063 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCurrentStyleSheet(PlotSettings plotSet, String styleSheetName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 481
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 377
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 10:50:22,936 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCurrentStyleSheet(PlotSettings plotSet, String styleSheetName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 481
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 377
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 10:50:50,589 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCurrentStyleSheet(PlotSettings plotSet, String styleSheetName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 481
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 377
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 10:51:18,294 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCurrentStyleSheet(PlotSettings plotSet, String styleSheetName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 481
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 377
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 11:23:05,952 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 566
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 105
+2016-08-30 11:40:44,596 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInDatabase
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.SetViewportSettings(Viewport viewport) in C:\Test\Plot\Plot01\Perf.cs:line 412
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 397
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 11:42:10,725 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eCannotChangeActiveViewport
+   at Autodesk.AutoCAD.EditorInput.Editor.SwitchToModelSpace()
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 400
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 11:42:49,499 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInDatabase
+   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value)
+   at BatchPlot.Perf.SetViewportSettings(Viewport viewport) in C:\Test\Plot\Plot01\Perf.cs:line 419
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 397
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 11:45:11,696 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eCannotChangeActiveViewport
+   at Autodesk.AutoCAD.EditorInput.Editor.SwitchToModelSpace()
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 400
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 11:45:40,097 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eCannotChangeActiveViewport
+   at Autodesk.AutoCAD.EditorInput.Editor.SwitchToModelSpace()
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 400
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 80
+2016-08-30 11:47:00,577 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eNullObjectId
+   at Autodesk.AutoCAD.DatabaseServices.TransactionManager.GetObjectInternal(AcDbTransactionManager* pTM, ObjectId id, OpenMode mode, Boolean openErased, Boolean forceOpenOnLockedLayer)
+   at Autodesk.AutoCAD.DatabaseServices.Transaction.GetObject(ObjectId id, OpenMode mode)
+   at BatchPlot.Perf.GetPlotLayout(Transaction tr) in C:\Test\Plot\Plot01\Perf.cs:line 425
+   at BatchPlot.Perf.AddPlotCartridge(String templateFilePath, Point3d position) in C:\Test\Plot\Plot01\Perf.cs:line 223
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 83
+2016-08-30 11:55:59,056 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 586
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 105
+2016-08-30 11:56:30,592 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetPlotConfigurationName(PlotSettings plotSet, String plotDeviceName, String mediaName)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 586
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 105
+2016-08-30 11:58:39,324 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCanonicalMediaName(PlotSettings plotSet, String mediaName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 498
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 380
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 81
+2016-08-30 12:03:28,541 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCanonicalMediaName(PlotSettings plotSet, String mediaName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 501
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 381
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 82
+2016-08-30 12:10:44,256 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCanonicalMediaName(PlotSettings plotSet, String mediaName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 493
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 373
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 74
+2016-08-30 12:16:55,224 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCanonicalMediaName(PlotSettings plotSet, String mediaName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 493
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 373
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 74
+2016-08-30 13:36:12,918 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eInvalidInput
+   at Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.SetCanonicalMediaName(PlotSettings plotSet, String mediaName)
+   at BatchPlot.Perf.SetPlotSettings(Layout layout, PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 503
+   at BatchPlot.Perf.CreateAndConfigureLayout(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 383
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 84
+2016-09-02 10:25:07,792 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:42:34,744 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:44:15,321 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:46:18,570 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:51:06,307 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:51:06,359 [1] DEBUG AutoCADTest.Service.Helper - System.OverflowException: Value was either too large or too small for an Int16.
+   at System.Convert.ToInt16(Int32 value)
+   at BatchPlot.Perf.ParsePlanchetteId(String planchetteId) in C:\Test\Plot\Plot01\Perf.cs:line 548
+   at BatchPlot.Perf.ParseParameters() in C:\Test\Plot\Plot01\Perf.cs:line 124
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 60
+2016-09-02 10:51:18,955 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:51:56,576 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:53:25,148 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 1000; /isolate
+2016-09-02 10:55:26,512 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185127C; /r; 500; /isolate
+2016-09-02 10:57:10,739 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185128C; /r; 1000; /isolate
+2016-09-02 10:59:25,091 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185128C; /r; 1000; /isolate
+2016-09-02 11:00:37,611 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185128C; /r; 1000; /isolate
+2016-09-02 11:00:54,658 [1] DEBUG AutoCADTest.Service.Helper - Autodesk.AutoCAD.Runtime.Exception: eGraphicsNotGenerated
+   at Autodesk.AutoCAD.PlottingServices.PlotEngine.BeginGenerateGraphics(Object parameters)
+   at BatchPlot.Perf.PlotExtents(PageSettings pageSettings) in C:\Test\Plot\Plot01\Perf.cs:line 663
+   at BatchPlot.Perf.TestImport() in C:\Test\Plot\Plot01\Perf.cs:line 102
+2016-09-02 11:04:58,417 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185128C; /r; 1000; /isolate
+2016-09-02 11:06:15,288 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185128C; /r; 1000; /isolate
+2016-09-02 11:08:36,505 [1] DEBUG AutoCADTest.Service.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe; /i; C:\Test\Plot\Plot01\Scripts\Empty.dwg; /s; C:\Test\Plot\Plot01\Scripts\test.scr; /id; 185128C; /r; 1000; /isolate
