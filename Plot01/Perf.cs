@@ -38,9 +38,10 @@ namespace BatchPlot
         private PageSettings _pageSettings;
         private Point3d _plotCartridgePosition;
         private string _planchetteId;
+        private string _planchetteLetter;
         private double _planchetteScale;
-        private int _externalBorderWidth = 10;
-        private int _internalBorderWidth = 10;
+        private int _externalBorderWidth = 5;
+        private int _internalBorderWidth = 15;
 
         public void Initialize()
         {
@@ -133,7 +134,7 @@ namespace BatchPlot
             _plotCartridgePosition = new Point3d(position, 0, 0);
 
             _planchetteId = GetCommandLineParameterValue("id");
-            _mapCoordinate = ParsePlanchetteId(_planchetteId);
+            _mapCoordinate = ParsePlanchetteId(_planchetteId, out _planchetteLetter);
 
             _drawingExtend = new Extents2d(_mapCoordinate.X, _mapCoordinate.Y,
                 _mapCoordinate.X + _drawingSize.Width, 
@@ -252,24 +253,16 @@ namespace BatchPlot
                         {
                             btr.AppendEntity(br);
                             tr.AddNewlyCreatedDBObject(br, true);
-                            blockDefinition.CopyAttributeDefinition(br, values);
                             //br.UpdateAttributes("COM", "XXXX RES XXXX");
-                      
+
                             //br.UpdateAttributes("RES", "XXXX RES XXXX");
-                            
-                            //br.UpdateAttributes("OBJ1", "XXXX OBJ XXXX");
-                            //br.UpdateAttributes("PL1", "XXXX PL1 XXXX");
-                            //br.UpdateAttributes("PL2", "XXXX PL2 XXXX");
-                            //br.UpdateAttributes("PL3", "XXXX PL3 XXXX");
-                            //br.UpdateAttributes("PL4", "XXXX PL4 XXXX");
-                            //br.UpdateAttributes("PL5", "XXXX PL5 XXXX");
-                            //br.UpdateAttributes("PL6", "XXXX PL6 XXXX");
-                            //br.UpdateAttributes("PL7", "XXXX PL7 XXXX");
-                            //br.UpdateAttributes("PL8", "XXXX PL8 XXXX");
-                            //br.UpdateAttributes("PL9", "XXXX PL9 XXXX");
-                            //br.UpdateAttributes("ECH", "XXXX ECH XXXX");
-                            //br.UpdateAttributes("DAT", "XXXX DAT XXXX");
-                            //br.UpdateAttributes("DES", "XXXX DES XXXX");
+                            values.Add("OBJ1", "XXXX OBJ XXXX");
+                            values.Add("OBJ2", "XXXX OBJ XXXX");
+                            values.Add("OBJ3", "XXXX OBJ XXXX");
+                            values.Add("ECH", "XXXX ECH XXXX");
+                            values.Add("DAT", "XXXX DAT XXXX");
+                            values.Add("DES", "XXXX DES XXXX");
+                            blockDefinition.CopyAttributeDefinition(br, values);
                         }
 
 
@@ -410,7 +403,38 @@ namespace BatchPlot
                 .ToList()
                 .ForEach(x => values.Add("MD" + ++i, string.Format("{0} {1} {2}", x.date, x.user, x.desc)));
 
+            i = 0;
+            GetSurroundedPlanchetteIds(_mapCoordinate, _planchetteLetter)
+                .ToList()
+                .ForEach(x => values.Add("PL" + ++i, x));
+
             return values;
+        }
+
+        private IEnumerable<string> GetSurroundedPlanchetteIds(Point2d planchettePosition, string planchetteLetter)
+        {
+            var letters = "ABCDEFGH";
+            var l1 = letters.IndexOf(planchetteLetter);
+            var dx = new int[3];
+            if("ACEG".Contains(planchetteLetter)) 
+                dx[0] = -1;
+            else 
+                dx[2] = 1;
+            var dy = new int[3];
+            if ("AB".Contains(planchetteLetter)) dy[2] = -1;
+            if ("GH".Contains(planchetteLetter)) dy[0] = 1;
+            //var lettersOffset = new int[3, 3] { { 3, 2, 3 }, { 1, 0, 1 }, { 7, 6, 7 } };
+            var lettersOffset = new int[3, 3] { { 3, 1, 7 }, { 2, 0, 6 }, { 3, 1, 7 } };
+            for (var y = 2; y >= 0; y--)
+            {
+                for (var x = 0; x < 3; x++)
+                {
+                    var l2 = letters[(l1 + lettersOffset[x, y]) % 8];
+                    var px = planchettePosition.X / 1000 + dx[x];
+                    var py = Math.Truncate(planchettePosition.Y / 1000) + dy[y];
+                    yield return string.Format("{0}{1}{2}", px, py, l2);
+                }
+            }
         }
 
         private DateTime? ParseDate(string text)
@@ -592,7 +616,7 @@ namespace BatchPlot
             return scale;
         }
 
-        private Point2d ParsePlanchetteId(string planchetteId)
+        private Point2d ParsePlanchetteId(string planchetteId, out string planchetteLetter)
         {
             var regex = new Regex(@"^(?<x>[0-9]{3})(?<y>[0-9]{3})(?<letter>[A-H])$");
             var match = regex.Match(planchetteId);
@@ -602,18 +626,18 @@ namespace BatchPlot
             }
             var x = int.Parse(match.Groups["x"].Value) * 1000;
             var y = int.Parse(match.Groups["y"].Value) * 1000;
-            var letter = match.Groups["letter"].Value;
+            planchetteLetter = match.Groups["letter"].Value;
             var dx = 0;
             var dy = 0;
-            if ("ACEG".Contains(letter))
+            if ("ACEG".Contains(planchetteLetter))
             {
                 dx = 0;
-                dy = "ACEG".IndexOf(letter);
+                dy = "ACEG".IndexOf(planchetteLetter);
             }
             else
             {
                 dx = 1;
-                dy = "BDFH".IndexOf(letter);
+                dy = "BDFH".IndexOf(planchetteLetter);
             }
             y = Convert.ToInt32(y + dy * _drawingSize.Height);
             x = Convert.ToInt32(x + dx * _drawingSize.Height);
@@ -960,6 +984,7 @@ namespace BatchPlot
                             {
                                 attrRef.SetAttributeFromBlock(attrDef, reference.BlockTransform);
                                 attrRef.Position = attrDef.Position.TransformBy(reference.BlockTransform);
+                                Helper.Trace("################   {0}", attrRef.Tag);
                                 if (values.ContainsKey(attrDef.Tag))
                                 {
                                     attrRef.TextString = values[attrDef.Tag]; // "XXXXXX"; //attrDef.TextString;
