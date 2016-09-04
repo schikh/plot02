@@ -39,6 +39,8 @@ namespace BatchPlot
         private Point3d _plotCartridgePosition;
         private string _planchetteId;
         private double _planchetteScale;
+        private int _externalBorderWidth = 10;
+        private int _internalBorderWidth = 10;
 
         public void Initialize()
         {
@@ -61,13 +63,13 @@ namespace BatchPlot
 
                 _pageSettings = new PageSettings()
                 {
-                    PageSize = "UserDefinedMetric (1000.00 x 2000.00MM)",   // "Max (1000.00 x 2000.00MM)",
-                    StyleSheet = "Default.ctb",
+                    PageSize = "Max (1000.00 x 2000.00 MM)",
+                    StyleSheet = "acad.ctb",
                     Device = "PDF.pc3",
                     OutputFilePath = @"C:\Test\Plot\Plot01\Scripts\dump2.pdf"
                 };
 
-                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files");
+                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files").Take(2);
                 //var serverFilePaths = GetServerFilePaths();
                 //var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
@@ -79,9 +81,11 @@ namespace BatchPlot
 
                 AddPlotCartridge(_templateFilePath, _plotCartridgePosition);
 
+
                 _document.Editor.Regen();
 
-                //PlotExtents(_pageSettings);
+                AddRectangle();
+
 
                 //// OK
                 //var dwfPageSettings = new PageSettings()
@@ -107,7 +111,9 @@ namespace BatchPlot
             }
             catch (System.Exception ex)
             {
-                Helper.Log(ex.ToString());
+                Helper.Log("*** ERROR ************************************************************");
+                Helper.Log(ex.ToString().Replace("\r\n", ";"));
+                Helper.Log("**********************************************************************");
             }
         }
 
@@ -120,7 +126,11 @@ namespace BatchPlot
 
             _planchetteScale = GetPlanchetteScale();
 
-            _plotCartridgePosition = new Point3d(_drawingSize.Width * _planchetteScale + 70, 50, 0);
+            var position = _drawingSize.Width * _planchetteScale 
+                + 2 * _internalBorderWidth 
+                + 2 * _externalBorderWidth 
+                + 10;
+            _plotCartridgePosition = new Point3d(position, 0, 0);
 
             _planchetteId = GetCommandLineParameterValue("id");
             _mapCoordinate = ParsePlanchetteId(_planchetteId);
@@ -235,7 +245,7 @@ namespace BatchPlot
                             blockId = _document.Database.Insert(blockName, db, true);
                         }
 
-                        var values = GetCartridgeInfo();
+                        var values = GetCartridgeInfo(tr);
 
                         using (var blockDefinition = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForRead))
                         using (var br = new BlockReference(position, blockId))
@@ -283,6 +293,55 @@ namespace BatchPlot
             }
         }
 
+        private void AddRectangle()
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            {
+                using (var layout = GetPlotLayout(tr))
+                {
+                    using (var btr = (BlockTableRecord)tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+                    {
+                        var x = 0;
+                        var y = 0;
+                        var width = _drawingSize.Width * _planchetteScale + 2 * _internalBorderWidth + 2 * _externalBorderWidth;
+                        var height = _drawingSize.Height * _planchetteScale + 2 * _internalBorderWidth + 2 * _externalBorderWidth;
+                        var rectangle = CreateRectangle(x, y, height, width);
+                        btr.AppendEntity(rectangle);
+                        tr.AddNewlyCreatedDBObject(rectangle, true);
+
+                        x = _externalBorderWidth;
+                        y = _externalBorderWidth;
+                        width = _drawingSize.Width * _planchetteScale + 2 * _internalBorderWidth;
+                        height = _drawingSize.Height * _planchetteScale + 2 * _internalBorderWidth;
+                        rectangle = CreateRectangle(x, y, height, width);
+                        btr.AppendEntity(rectangle);
+                        tr.AddNewlyCreatedDBObject(rectangle, true);
+
+                        x = _externalBorderWidth + _internalBorderWidth;
+                        y = _externalBorderWidth + _internalBorderWidth;
+                        width = _drawingSize.Width * _planchetteScale;
+                        height = _drawingSize.Height * _planchetteScale;
+                        rectangle = CreateRectangle(x, y, height, width);
+                        btr.AppendEntity(rectangle);
+                        tr.AddNewlyCreatedDBObject(rectangle, true);
+                    }
+                }
+                tr.Commit();
+            }
+        }
+
+        private static Polyline CreateRectangle(int x, int y, double height, double width)
+        {
+            Polyline line;
+            line = new Polyline();
+            line.AddVertexAt(0, new Point2d(x, y), 0, 0, 0);
+            line.AddVertexAt(1, new Point2d(x, y + height), 0, 0, 0);
+            line.AddVertexAt(2, new Point2d(x + width, y + height), 0, 0, 0);
+            line.AddVertexAt(3, new Point2d(x + width, y), 0, 0, 0);
+            line.AddVertexAt(4, new Point2d(x, y), 0, 0, 0);
+            return line;
+        }
+
         private IEnumerable<T> QueryEntities<T>(Transaction tr, IEnumerable<string> layers, Extents2d extend) where T : Entity
         {
             var bt = (IEnumerable<dynamic>)(dynamic)_document.Database.BlockTableId;
@@ -302,50 +361,48 @@ namespace BatchPlot
             return list;
         }
 
-        private Dictionary<string, string> GetCartridgeInfo()
+        private Dictionary<string, string> GetCartridgeInfo(Transaction tr)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
-            {
-                var values = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            var values = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
                 
-                //new string[] { "RUE" }, 
-                //5, 15, "", "Rues diverses", 
-                //boundaryPoints, 
-                //"EntityType=TEXT;LayerName=BR11,BT02,BW03,RUE,W0989"));
-                var i = 0;
-                var layers = new[] { "BR11", "BT02", "BW03", "RUE", "W0989" };
-                var list = QueryEntities<DBText>(tr, layers, _drawingExtend);
-                list.Select(x => x.TextString)
-                    .GroupBy(x => x)
-                    .OrderByDescending(x => x.Count())
-                    .Select(x => x.Key)
-                    .Take(5) // 15
-                    .ToList()
-                    .ForEach(x => values.Add("RUE" + ++i, x));
+            //new string[] { "RUE" }, 
+            //5, 15, "", "Rues diverses", 
+            //boundaryPoints, 
+            //"EntityType=TEXT;LayerName=BR11,BT02,BW03,RUE,W0989"));
+            var i = 0;
+            var layers = new[] { "BR11", "BT02", "BW03", "RUE", "W0989" };
+            var list = QueryEntities<DBText>(tr, layers, _drawingExtend);
+            list.Select(x => x.TextString)
+                .GroupBy(x => x)
+                .OrderByDescending(x => x.Count())
+                .Select(x => x.Key)
+                .Take(5) // 15
+                .ToList()
+                .ForEach(x => values.Add("RUE" + ++i, x));
 
-                //cartridge.UpdateAttributes(GetMapCartridgeAttribute(
-                //new string[] { "COM", "COM2" }, 
-                //2, 5, "", "Communes diverses", 
-                //boundaryPoints, 
-                //"EntityType=TEXT;LayerName=BL02,COMMUNES,COMMUNE,W0980"));
-                i = 1;
-                layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
-                list = QueryEntities<DBText>(tr, layers, _drawingExtend);
-                list.Select(x => x.TextString)
-                    .GroupBy(x => x)
-                    .OrderByDescending(x => x.Count())
-                    .Select(x => x.Key)
-                    .Take(2) // 5
-                    .ToList()
-                    .ForEach(x => values.Add("COM" + ++i, x));
+            //cartridge.UpdateAttributes(GetMapCartridgeAttribute(
+            //new string[] { "COM", "COM2" }, 
+            //2, 5, "", "Communes diverses", 
+            //boundaryPoints, 
+            //"EntityType=TEXT;LayerName=BL02,COMMUNES,COMMUNE,W0980"));
+            i = 1;
+            layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
+            list = QueryEntities<DBText>(tr, layers, _drawingExtend);
+            list.Select(x => x.TextString)
+                .GroupBy(x => x)
+                .OrderByDescending(x => x.Count())
+                .Select(x => x.Key)
+                .Take(2) // 5
+                .ToList()
+                .ForEach(x => values.Add("COM" + ++i, x));
 
-                i = 0;
-                var list2 = QueryEntities<BlockReference>(tr, null, _drawingExtend)
-                    .Where(x => string.Equals(x.Name, "GIS_MODF")).ToArray();
-                list2.Select(x => new {
-                        date = ParseDate(x.GetAttribute("DATE", string.Empty)),
-                        user = x.GetAttribute("USER", string.Empty),
-                        desc = x.GetAttribute("DESC", string.Empty),
+            i = 0;
+            var list2 = QueryEntities<BlockReference>(tr, null, _drawingExtend)
+                .Where(x => string.Equals(x.Name, "GIS_MODF")).ToArray();
+            list2.Select(x => new {
+                    date = ParseDate(x.GetAttribute("DATE", string.Empty)),
+                    user = x.GetAttribute("USER", string.Empty),
+                    desc = x.GetAttribute("DESC", string.Empty),
                 })
                 .Distinct()
                 .OrderByDescending(x => x.date)
@@ -353,8 +410,7 @@ namespace BatchPlot
                 .ToList()
                 .ForEach(x => values.Add("MD" + ++i, string.Format("{0} {1} {2}", x.date, x.user, x.desc)));
 
-                return values;
-            }
+            return values;
         }
 
         private DateTime? ParseDate(string text)
@@ -409,9 +465,10 @@ namespace BatchPlot
 
         private void SetViewportSettings(Viewport viewport)
         {
-            viewport.Width = _drawingSize.Width * _planchetteScale;
-            viewport.Height = _drawingSize.Height * _planchetteScale;
-            viewport.CenterPoint = new Point3d(viewport.Width / 2 + 50, viewport.Height / 2 + 50, 0);
+            viewport.Width = _drawingSize.Width * _planchetteScale + _internalBorderWidth * 2;
+            viewport.Height = _drawingSize.Height * _planchetteScale + _internalBorderWidth * 2;
+            viewport.CenterPoint = new Point3d(viewport.Width / 2 + _externalBorderWidth,
+                viewport.Height / 2 + _externalBorderWidth, 0);
 
             viewport.ViewDirection = new Vector3d(0, 0, 1);
             viewport.ViewCenter = new Point2d((_drawingExtend.MinPoint.X + _drawingExtend.MaxPoint.X) / 2,
@@ -494,20 +551,33 @@ namespace BatchPlot
                     psv.SetPlotConfigurationName(ps, pageSettings.Device, null);
                     psv.RefreshLists(ps);
                 }
-
-                //Thread.Sleep(180000);
-                var mns = psv.GetCanonicalMediaNameList(ps);
-                //if (mns.Contains(pageSettings.PageSize))
+                pageSettings.CanonicalMediaName = GetCanonicalMediaName(psv, ps, pageSettings.PageSize);
+                if (pageSettings.CanonicalMediaName == null)
                 {
-                    psv.SetCanonicalMediaName(ps, pageSettings.PageSize);
+                    
                 }
+                psv.SetCanonicalMediaName(ps, pageSettings.CanonicalMediaName);
                 var ssl = psv.GetPlotStyleSheetList();
                 //if (ssl.Contains(pageSettings.StyleSheet))
                 {
-                    psv.SetCurrentStyleSheet(ps, pageSettings.StyleSheet);
+                    //psv.SetCurrentStyleSheet(ps, pageSettings.StyleSheet);
                 }
                 layout.CopyFrom(ps);
             }
+        }
+
+        private string GetCanonicalMediaName(PlotSettingsValidator psv, PlotSettings ps, string pageSize)
+        {
+            var medlist = psv.GetCanonicalMediaNameList(ps);
+            for (var j = 0; j < medlist.Count; j++)
+            {
+                var name = psv.GetLocaleMediaName(ps, j);
+                if (string.Equals(name, pageSize, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return medlist[j];
+                }
+            }
+            return null;
         }
 
         private double GetPlanchetteScale()
@@ -631,7 +701,7 @@ namespace BatchPlot
                 //psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Window);
                 psv.SetUseStandardScale(ps, true);
                 //psv.SetPlotCentered(ps, true);
-                psv.SetPlotOrigin(ps, new Point2d(10, 10));
+                psv.SetPlotOrigin(ps, new Point2d(100, 10));
                 psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
                 var extent2d = ps.PlotPaperMargins;
                 //if (extent2d.MaxPoint.Y > extent2d.MaxPoint.X)
@@ -643,7 +713,7 @@ namespace BatchPlot
                 //    psv.SetPlotRotation(ps, PlotRotation.Degrees090);
                 //}
                 //psv.SetPlotConfigurationName(ps, printer, null);
-                psv.SetPlotConfigurationName(ps, pageSettings.Device, pageSettings.PageSize);
+                psv.SetPlotConfigurationName(ps, pageSettings.Device, pageSettings.CanonicalMediaName);
                 psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
 
                 var pi = new PlotInfo();
@@ -670,6 +740,171 @@ namespace BatchPlot
                 tr.Commit();
             }
         }
+
+        [CommandMethod("ListPaperSizes")]
+        private void ListPaperSizes()
+        {
+            Transaction tr = _document.Database.TransactionManager.StartTransaction();
+            using (tr)
+            {
+                string devname = "", medname = "";
+                PlotSettingsValidator psv = PlotSettingsValidator.Current;
+                var devlist = psv.GetPlotDeviceList();
+                for (int i = 0; i < devlist.Count; i++)
+                {
+                    devname = devlist[i];
+                    Helper.Log("\nSelected: {0}\n", devname);
+
+                    PlotSettings ps = new PlotSettings(true);
+                    using (ps)
+                    {
+                        psv.SetPlotConfigurationName(ps, devname, null);
+                        psv.RefreshLists(ps);
+                        var medlist = psv.GetCanonicalMediaNameList(ps);
+                        for (int j = 0; j < medlist.Count; j++)
+                        {
+                            Helper.Log("    {0}   {1}   {2}    {3}", devname, j + 1, medlist[j], psv.GetLocaleMediaName(ps, j));
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+        ////Tests the following scenario:
+        //// theLayout is configured: Plot To PDF, sized custom media 7A4 (== w=7X210, h=297)
+        //// when changing to another device, the media 7A4 must be added to that device(pc3), 
+        ////      as the "previous media size"
+        //// it appeares to work only when the new device is a PC3 device AND
+        ////    it already contains a media sized larger than the "previous media size", like 2500x841
+        //// We can make a PC3 file for a printer, change \\printserver\printername into printername.pc3, 
+        ////    however you cannot attach a PMP file to the PC3 file.
+        //// The PMP file contains the non standard media size (among other settings) and thus this will work only for
+        //// already defined PC3 devices with PMP files and one custom media size larger than the required media size.   
+        //[CommandMethod("Plt")]
+        //public void PlotWithPlotStyle()
+        //{
+        //    Document doc = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
+        //    Database db = doc.Database;
+        //    Editor ed = doc.Editor;
+
+        //    //string psetupPathname = @"C:\Apldata\AutoCAD\AcadConfig_INFRA\Menu\psetup-PDF.dwg";
+        //    //string plotStyleName = "4Z-PDF";
+        //    string printerName = "TDS600_Beta.pc3";
+
+        //    using (Transaction tr = doc.TransactionManager.StartTransaction())
+        //    {
+
+        //        db.TileMode = false;
+        //        ed.SwitchToPaperSpace();
+
+        //        LayoutManager layMgr = LayoutManager.Current;
+        //        Layout theLayout = (Layout)layMgr.GetLayoutId(layMgr.CurrentLayout).GetObject(OpenMode.ForWrite);
+        //        PlotSettingsValidator psVal = Autodesk.AutoCAD.DatabaseServices.PlotSettingsValidator.Current;
+        //        PlotSettings plotSet = new PlotSettings(theLayout.ModelType);
+        //        plotSet.CopyFrom(theLayout);
+        //        //psVal.SetPlotConfigurationName(plotSet, printerName, null);
+
+        //        PlotConfigManager.SetCurrentConfig(printerName);
+        //        PlotConfigManager.RefreshList(RefreshCode.All);
+        //        PlotConfig tds = PlotConfigManager.CurrentConfig;
+        //        string plotFile = null;
+        //        if (tds.PlotToFileCapability == PlotToFileCapability.PlotToFileAllowed)
+        //        {
+        //            tds.IsPlotToFile = true;
+        //            plotFile = Path.Combine(Path.GetDirectoryName(Application.DocumentManager.MdiActiveDocument.Database.Filename), Path.GetFileNameWithoutExtension(Application.DocumentManager.MdiActiveDocument.Database.Filename));
+        //            plotFile = plotFile + tds.DefaultFileExtension;
+        //            if (File.Exists(plotFile))
+        //                File.Delete(plotFile);
+
+        //        }
+
+        //        //the next lines will fail because the required PMP file will get referenced by the PC3 
+        //        //string pc3Dir = @"C:\Documents and Settings\avb\Application Data\Autodesk\AutoCAD 2012 - English\R18.2\enu\Plotters";
+        //        //printerName = printerName + ".pc3";
+        //        //tds.SaveToPC3(Path.Combine(pc3Dir, printerName ));
+        //        //PlotConfigManager.SetCurrentConfig(printerName);
+        //        //PlotConfigManager.RefreshList(RefreshCode.All);
+        //        //tds = PlotConfigManager.CurrentConfig;
+
+        //        //psVal.RefreshLists(plotSet);
+        //        //try
+        //        //{
+        //        //    psVal.SetClosestMediaName(plotSet, plotSet.PlotPaperSize[0], plotSet.PlotPaperSize[1], PlotPaperUnit.Millimeters, true);
+        //        //}
+        //        //catch ( Autodesk.AutoCAD.Runtime.Exception exx ) 
+        //        //{
+        //        //    ed.WriteMessage("\n" + exx.ToString());
+        //        //}
+
+        //        psVal.SetPlotPaperUnits(plotSet, PlotPaperUnit.Millimeters);
+
+        //        //theLayout.CopyFrom(plotSet);
+        //        ed.Regen();
+
+
+        //        PlotInfo plotInfo = new PlotInfo();
+        //        plotInfo.Layout = theLayout.ObjectId;
+        //        plotInfo.OverrideSettings = plotSet;
+        //        plotInfo.DeviceOverride = tds;
+
+        //        PlotInfoValidator validator = new PlotInfoValidator();
+        //        //int itIs = validator.IsCustomPossible(plotInfo);
+        //        validator.MediaMatchingPolicy = Autodesk.AutoCAD.PlottingServices.MatchingPolicy.MatchEnabledCustom;
+        //        int itIs = validator.IsCustomPossible(plotInfo);
+        //        validator.Validate(plotInfo);
+
+
+        //        //for now see the results
+        //        if (plotInfo.IsValidated && itIs == 0)
+        //        {
+        //            PlotSettings newNamedPlotStyle = new PlotSettings(theLayout.ModelType);
+        //            newNamedPlotStyle.CopyFrom(plotInfo.ValidatedSettings);
+        //            theLayout.CopyFrom(newNamedPlotStyle);
+
+        //            newNamedPlotStyle.PlotSettingsName = "7A4-TDS600";
+        //            psVal.RefreshLists(newNamedPlotStyle);
+        //            newNamedPlotStyle.AddToPlotSettingsDictionary(db);
+        //            tr.AddNewlyCreatedDBObject(newNamedPlotStyle, true);
+        //            psVal.RefreshLists(newNamedPlotStyle);
+
+        //            ed.Regen();
+        //            tr.Commit();
+        //            return;
+        //        }
+        //        PlotEngine plotEngine = PlotFactory.CreatePublishEngine();
+        //        //None (initial) -> plot -> document -> page -> graphics
+        //        try
+        //        {
+        //            plotEngine.BeginPlot(null, null);
+        //            if (tds.IsPlotToFile)
+        //                plotEngine.BeginDocument(plotInfo, Application.DocumentManager.MdiActiveDocument.Database.Filename, null, 1, true, plotFile);
+        //            else
+        //                plotEngine.BeginDocument(plotInfo, Application.DocumentManager.MdiActiveDocument.Database.Filename, null, 1, false, null);
+
+        //            PlotPageInfo pageInfo = new PlotPageInfo();
+        //            ed.WriteMessage("\nPlotting {0} Entities, {1} ", pageInfo.EntityCount, pageInfo.RasterCount);
+        //            plotEngine.BeginPage(pageInfo, plotInfo, true, null);
+        //            plotEngine.BeginGenerateGraphics(null);
+        //            plotEngine.EndGenerateGraphics(null);
+        //            plotEngine.EndPage(null);
+        //            plotEngine.EndDocument(null);
+        //            plotEngine.EndPlot(null);
+        //        }
+        //        catch (System.Exception ex)
+        //        {
+        //            ed.WriteMessage(ex.Message);
+        //        }
+        //        plotEngine.Destroy();
+
+        //        tr.Commit();
+        //    }
+        //}
+
+
+
     }
 
     public class PageSettings
@@ -678,6 +913,7 @@ namespace BatchPlot
         public string StyleSheet { get; set; }
         public string Device { get; set; }
         public string OutputFilePath { get; set; }
+        public string CanonicalMediaName { get; set; }
     }
 
 
