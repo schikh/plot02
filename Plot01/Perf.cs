@@ -11,6 +11,7 @@ using System.Windows;
 using AutoCADTest.Service;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
+using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
@@ -18,30 +19,37 @@ using Autodesk.AutoCAD.PlottingServices;
 using Autodesk.AutoCAD.Runtime;
 using BatchPlot;
 
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 185127C /r 500 /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 184128H /r 500 /isolate
 
 [assembly: CommandClass(typeof(Perf))]
 namespace BatchPlot
 {
     public class Perf : IExtensionApplication
     {
-        private string _plotLayoutName = "Energis_plot_layout_name";
-        private string _templateFilePath = @"C:\\Test\\Plot\\Plot01\\Scripts\\Gis_cstd_Ouest.dwg";
         private string _fileServerName;
-        private Point2d _mapCoordinate;
         private string _connectionString;
         private string _tempFolder;
         private Document _document = Application.DocumentManager.MdiActiveDocument;
-        private Extents2d _drawingExtend;
-        private Size _drawingSize;
-        //private double _drawingScale;
+
         private PageSettings _pageSettings;
-        private Point3d _plotCartridgePosition;
+
         private string _planchetteId;
         private string _planchetteLetter;
         private double _planchetteScale;
-        private int _externalBorderWidth = 5;
-        private int _internalBorderWidth = 15;
+        private int _planchetteResolution;
+        private Point2d _mapCoordinate;
+        private Extents2d _drawingExtend;
+        private Point3d _plotCartridgePosition;
+
+        //private string _plotLayoutName = "Energis_plot_layout_name";
+        //private string _templateFilePath = @"C:\\Test\\Plot\\Plot01\\Scripts\\Gis_cstd_Ouest.dwg";
+        //private Size _drawingSize = new Size(500, 250);
+        //private int _externalBorderWidth = 5;
+        //private int _internalBorderWidth = 15;
+        //private double _cartridgeExternalBorderWidth = 10;
+        //private int _plotCartridgeWidth = 190;
+        //private Point2d _plotOrigin = new Point2d(10, 10);
+        //private string _defaultStyleSheet = "Default.ctb";
 
         public void Initialize()
         {
@@ -64,9 +72,9 @@ namespace BatchPlot
 
                 _pageSettings = new PageSettings()
                 {
-                    PageSize = "Max (1000.00 x 2000.00 MM)",
-                    StyleSheet = "acad.ctb",
-                    Device = "PDF.pc3",
+                    // PageSize = "Max (1000.00 x 2000.00 MM)",
+                    //StyleSheet = "Default.ctb",
+                    Device = "Impetrant.pc3",
                     OutputFilePath = @"C:\Test\Plot\Plot01\Scripts\dump2.pdf"
                 };
 
@@ -80,7 +88,7 @@ namespace BatchPlot
 
                 CreateAndConfigureLayout(_pageSettings);
 
-                AddPlotCartridge(_templateFilePath, _plotCartridgePosition);
+                AddPlotCartridge(Configuration._templateFilePath, _plotCartridgePosition);
 
 
                 _document.Editor.Regen();
@@ -100,7 +108,7 @@ namespace BatchPlot
                 var dwfPageSettings = new PageSettings()
                 {
                     PageSize = "UserDefinedMetric (1000.00 x 2000.00MM)", // "Max (1000.00 x 2000.00 MM)",
-                    StyleSheet = "Default.ctb",
+                    //StyleSheet = "Default.ctb",
                     Device = "DWF6.pc3",
                     OutputFilePath = @"C:\Test\Plot\Plot01\Scripts\dump2.dwf"
                 };
@@ -123,22 +131,20 @@ namespace BatchPlot
             var args = Environment.GetCommandLineArgs();
             Helper.Log("ARGUMENTS: " + string.Join("; ", args));
 
-            _drawingSize = new Size(500, 250);
+            _planchetteScale = GetPlanchetteScale(out _planchetteResolution);
 
-            _planchetteScale = GetPlanchetteScale();
-
-            var position = _drawingSize.Width * _planchetteScale 
-                + 2 * _internalBorderWidth 
-                + 2 * _externalBorderWidth 
-                + 10;
+            var position = Configuration._drawingSize.Width * _planchetteScale
+                + 2 * Configuration._internalBorderWidth
+                + 2 * Configuration._externalBorderWidth
+                + Configuration._cartridgeExternalBorderWidth;
             _plotCartridgePosition = new Point3d(position, 0, 0);
 
             _planchetteId = GetCommandLineParameterValue("id");
             _mapCoordinate = ParsePlanchetteId(_planchetteId, out _planchetteLetter);
 
             _drawingExtend = new Extents2d(_mapCoordinate.X, _mapCoordinate.Y,
-                _mapCoordinate.X + _drawingSize.Width, 
-                _mapCoordinate.Y + _drawingSize.Height);
+                _mapCoordinate.X + Configuration._drawingSize.Width,
+                _mapCoordinate.Y + Configuration._drawingSize.Height);
 
             _connectionString = "DATA SOURCE=WALLP1_UNWALL.WORLD;USER ID=GENERGIS;PASSWORD=GENERGIS87;PERSIST SECURITY INFO=True;Pooling=false;";
             //_connectionString = "DATA SOURCE=WALLA1.WORLD;USER ID=GENERGIS;PASSWORD=GENERGIS87;PERSIST SECURITY INFO=True;Pooling=false;";
@@ -241,7 +247,7 @@ namespace BatchPlot
                         ObjectId blockId;
                         using (var db = new Database(false, true))
                         {
-                            db.ReadDwgFile(_templateFilePath, FileShare.Read, true, "");
+                            db.ReadDwgFile(Configuration._templateFilePath, FileShare.Read, true, "");
                             var blockName = Path.GetFileNameWithoutExtension(templateFilePath);
                             blockId = _document.Database.Insert(blockName, db, true);
                         }
@@ -253,33 +259,8 @@ namespace BatchPlot
                         {
                             btr.AppendEntity(br);
                             tr.AddNewlyCreatedDBObject(br, true);
-                            //br.UpdateAttributes("COM", "XXXX RES XXXX");
-
-                            //br.UpdateAttributes("RES", "XXXX RES XXXX");
-                            values.Add("OBJ1", "XXXX OBJ XXXX");
-                            values.Add("OBJ2", "XXXX OBJ XXXX");
-                            values.Add("OBJ3", "XXXX OBJ XXXX");
-                            values.Add("ECH", "XXXX ECH XXXX");
-                            values.Add("DAT", "XXXX DAT XXXX");
-                            values.Add("DES", "XXXX DES XXXX");
                             blockDefinition.CopyAttributeDefinition(br, values);
                         }
-
-
-                        //_document.Database.TransactionManager.QueueForGraphicsFlush();
-
-                        //cartridge = (BlockReference)_document.Database.TransactionManager.TopTransaction.GetObject(result.CartridgeObjectId, OpenMode.ForWrite);
-                        //cartridge.UpdateAttributes(new BlockAttributeValue[] { new BlockAttributeValue("RES", BuildLegend(bbRotate.MinSize)) });
-                        //cartridge.UpdateAttributes(GetMapCartridgeAttribute(new string[] { "COM", "COM2" }, 2, 5, "", "Communes diverses", boundaryPoints, "EntityType=TEXT;LayerName=BL02,COMMUNES,COMMUNE,W0980"));
-                        //cartridge.UpdateAttributes(GetMapCartridgeAttribute(
-                        //new string[] { "RUE" }, 
-                        //5, 15, "", "Rues diverses", 
-                        //boundaryPoints, 
-                        //"EntityType=TEXT;LayerName=BR11,BT02,BW03,RUE,W0989"));
-                        //cartridge.UpdateAttributes(GetInsertCartridgeAttribute(new string[] { "MD" }, 5, "", boundaryPoints, "EntityType=INSERT;BlockName=GIS_MODF"));
-
-                        //// Generation des Numero de planchettes se trouvant autour de la planchette active.
-                        //cartridge.UpdateAttributes(GetPlanchette(new string[] { "PL" }, 9, "-", blockReference.GetAttribute("NUM", string.Empty)));
                     }
                 }
                 tr.Commit();
@@ -296,25 +277,32 @@ namespace BatchPlot
                     {
                         var x = 0;
                         var y = 0;
-                        var width = _drawingSize.Width * _planchetteScale + 2 * _internalBorderWidth + 2 * _externalBorderWidth;
-                        var height = _drawingSize.Height * _planchetteScale + 2 * _internalBorderWidth + 2 * _externalBorderWidth;
+                        var width = Configuration._drawingSize.Width * _planchetteScale
+                            + 2 * Configuration._internalBorderWidth
+                            + 2 * Configuration._externalBorderWidth;
+                        var height = Configuration._drawingSize.Height * _planchetteScale
+                            + 2 * Configuration._internalBorderWidth
+                            + 2 * Configuration._externalBorderWidth;
                         var rectangle = CreateRectangle(x, y, height, width);
                         btr.AppendEntity(rectangle);
                         tr.AddNewlyCreatedDBObject(rectangle, true);
 
-                        x = _externalBorderWidth;
-                        y = _externalBorderWidth;
-                        width = _drawingSize.Width * _planchetteScale + 2 * _internalBorderWidth;
-                        height = _drawingSize.Height * _planchetteScale + 2 * _internalBorderWidth;
+                        x = Configuration._externalBorderWidth;
+                        y = Configuration._externalBorderWidth;
+                        width = Configuration._drawingSize.Width * _planchetteScale
+                            + 2 * Configuration._internalBorderWidth;
+                        height = Configuration._drawingSize.Height * _planchetteScale
+                            + 2 * Configuration._internalBorderWidth;
                         rectangle = CreateRectangle(x, y, height, width);
                         btr.AppendEntity(rectangle);
                         tr.AddNewlyCreatedDBObject(rectangle, true);
 
-                        x = _externalBorderWidth + _internalBorderWidth;
-                        y = _externalBorderWidth + _internalBorderWidth;
-                        width = _drawingSize.Width * _planchetteScale;
-                        height = _drawingSize.Height * _planchetteScale;
+                        x = Configuration._externalBorderWidth + Configuration._internalBorderWidth;
+                        y = Configuration._externalBorderWidth + Configuration._internalBorderWidth;
+                        width = Configuration._drawingSize.Width * _planchetteScale;
+                        height = Configuration._drawingSize.Height * _planchetteScale;
                         rectangle = CreateRectangle(x, y, height, width);
+                        rectangle.ColorIndex = 9;
                         btr.AppendEntity(rectangle);
                         tr.AddNewlyCreatedDBObject(rectangle, true);
                     }
@@ -325,8 +313,7 @@ namespace BatchPlot
 
         private static Polyline CreateRectangle(int x, int y, double height, double width)
         {
-            Polyline line;
-            line = new Polyline();
+            var line = new Polyline();
             line.AddVertexAt(0, new Point2d(x, y), 0, 0, 0);
             line.AddVertexAt(1, new Point2d(x, y + height), 0, 0, 0);
             line.AddVertexAt(2, new Point2d(x + width, y + height), 0, 0, 0);
@@ -378,7 +365,7 @@ namespace BatchPlot
             //2, 5, "", "Communes diverses", 
             //boundaryPoints, 
             //"EntityType=TEXT;LayerName=BL02,COMMUNES,COMMUNE,W0980"));
-            i = 1;
+            i = 0;
             layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
             list = QueryEntities<DBText>(tr, layers, _drawingExtend);
             list.Select(x => x.TextString)
@@ -387,7 +374,7 @@ namespace BatchPlot
                 .Select(x => x.Key)
                 .Take(2) // 5
                 .ToList()
-                .ForEach(x => values.Add("COM" + ++i, x));
+                .ForEach(x => values.Add(i == 0 ? "COM" : "COM" + ++i, x));
 
             i = 0;
             var list2 = QueryEntities<BlockReference>(tr, null, _drawingExtend)
@@ -401,12 +388,18 @@ namespace BatchPlot
                 .OrderByDescending(x => x.date)
                 .Take(5)
                 .ToList()
-                .ForEach(x => values.Add("MD" + ++i, string.Format("{0} {1} {2}", x.date, x.user, x.desc)));
+                .ForEach(x => values.Add("MD" + ++i, string.Format("{0:dd/MM/yyyy}-{1}-{2}", x.date, x.user, x.desc)));
 
             i = 0;
             GetSurroundedPlanchetteIds(_mapCoordinate, _planchetteLetter)
                 .ToList()
                 .ForEach(x => values.Add("PL" + ++i, x));
+
+            values.Add("OBJ1", "XXXX Situation des installations XXXX");
+            values.Add("ECH", string.Format("1/{0}", _planchetteResolution));
+            values.Add("DAT", DateTime.Now.ToString("dd.MM.yy (HH:mm)"));
+            values.Add("DES", "XXXX DES XXXX");
+            values.Add("NUM", values["PL5"]);
 
             return values;
         }
@@ -414,7 +407,7 @@ namespace BatchPlot
         private IEnumerable<string> GetSurroundedPlanchetteIds(Point2d planchettePosition, string planchetteLetter)
         {
             var letters = "ABCDEFGH";
-            var l1 = letters.IndexOf(planchetteLetter);
+            var l1 = letters.IndexOf(planchetteLetter, StringComparison.InvariantCultureIgnoreCase);
             var dx = new int[3];
             if("ACEG".Contains(planchetteLetter)) 
                 dx[0] = -1;
@@ -423,14 +416,13 @@ namespace BatchPlot
             var dy = new int[3];
             if ("AB".Contains(planchetteLetter)) dy[2] = -1;
             if ("GH".Contains(planchetteLetter)) dy[0] = 1;
-            //var lettersOffset = new int[3, 3] { { 3, 2, 3 }, { 1, 0, 1 }, { 7, 6, 7 } };
             var lettersOffset = new int[3, 3] { { 3, 1, 7 }, { 2, 0, 6 }, { 3, 1, 7 } };
             for (var y = 2; y >= 0; y--)
             {
                 for (var x = 0; x < 3; x++)
                 {
                     var l2 = letters[(l1 + lettersOffset[x, y]) % 8];
-                    var px = planchettePosition.X / 1000 + dx[x];
+                    var px = Math.Truncate(planchettePosition.X / 1000) + dx[x];
                     var py = Math.Truncate(planchettePosition.Y / 1000) + dy[y];
                     yield return string.Format("{0}{1}{2}", px, py, l2);
                 }
@@ -489,10 +481,12 @@ namespace BatchPlot
 
         private void SetViewportSettings(Viewport viewport)
         {
-            viewport.Width = _drawingSize.Width * _planchetteScale + _internalBorderWidth * 2;
-            viewport.Height = _drawingSize.Height * _planchetteScale + _internalBorderWidth * 2;
-            viewport.CenterPoint = new Point3d(viewport.Width / 2 + _externalBorderWidth,
-                viewport.Height / 2 + _externalBorderWidth, 0);
+            viewport.Width = Configuration._drawingSize.Width * _planchetteScale 
+                + 2 * Configuration._internalBorderWidth;
+            viewport.Height = Configuration._drawingSize.Height * _planchetteScale 
+                + 2 * Configuration._internalBorderWidth;
+            viewport.CenterPoint = new Point3d(viewport.Width / 2 + Configuration._externalBorderWidth,
+                viewport.Height / 2 + Configuration._externalBorderWidth, 0);
 
             viewport.ViewDirection = new Vector3d(0, 0, 1);
             viewport.ViewCenter = new Point2d((_drawingExtend.MinPoint.X + _drawingExtend.MaxPoint.X) / 2,
@@ -505,14 +499,14 @@ namespace BatchPlot
 
         private Layout GetPlotLayout(Transaction tr)
         {
-            var id = LayoutManager.Current.GetLayoutId(_plotLayoutName);
+            var id = LayoutManager.Current.GetLayoutId(Configuration._plotLayoutName);
             var layout = (Layout) tr.GetObject(id, OpenMode.ForRead);
             return layout;
         }
 
         private Layout CreatePlotLayout(Transaction tr)
         {
-            var id = CreateAndMakeLayoutCurrent(_plotLayoutName);
+            var id = CreateAndMakeLayoutCurrent(Configuration._plotLayoutName);
             var layout = (Layout) tr.GetObject(id, OpenMode.ForWrite);
             return layout;
         }
@@ -570,29 +564,82 @@ namespace BatchPlot
                 ps.CopyFrom(layout);
                 var psv = PlotSettingsValidator.Current;
                 var devs = psv.GetPlotDeviceList();
-                //if (devs.Contains(pageSettings.Device))
+                if (!devs.Contains(pageSettings.Device))
                 {
-                    psv.SetPlotConfigurationName(ps, pageSettings.Device, null);
-                    psv.RefreshLists(ps);
+                    throw new ArgumentException("Planchette Id not valid " + pageSettings.Device);
                 }
+
+                psv.SetPlotConfigurationName(ps, pageSettings.Device, null);
+                psv.RefreshLists(ps);
+                
                 pageSettings.CanonicalMediaName = GetCanonicalMediaName(psv, ps, pageSettings.PageSize);
-                if (pageSettings.CanonicalMediaName == null)
-                {
-                    
-                }
+
+                var height = Configuration._drawingSize.Height * _planchetteScale 
+                    + 2 * Configuration._internalBorderWidth
+                    + 2 * Configuration._externalBorderWidth;
+                var width = Configuration._drawingSize.Width * _planchetteScale 
+                    + 2 * Configuration._internalBorderWidth
+                    + 2 * Configuration._externalBorderWidth
+                    + Configuration._plotCartridgeWidth 
+                    + 2 * Configuration._cartridgeExternalBorderWidth;
+                var pageFormat = GetPageFormatList(psv, ps)
+                    .Where(x => x.PlotPaperSize.X >= width && x.PlotPaperSize.Y >= height)
+                    .OrderBy(x => x.PlotPaperSize.X)
+                    .ThenBy(x => x.PlotPaperSize.Y)
+                    .FirstOrDefault();
+                Helper.Trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Selected CanonicalMediaName: {0}", pageFormat.CanonicalMediaName);
+                pageSettings.CanonicalMediaName = pageFormat.CanonicalMediaName;
+
                 psv.SetCanonicalMediaName(ps, pageSettings.CanonicalMediaName);
+
                 var ssl = psv.GetPlotStyleSheetList();
-                //if (ssl.Contains(pageSettings.StyleSheet))
-                {
-                    //psv.SetCurrentStyleSheet(ps, pageSettings.StyleSheet);
-                }
+                var styleSheet = ssl.Contains(pageSettings.StyleSheet) ? pageSettings.StyleSheet : Configuration._defaultStyleSheet;
+                //TODO: why is the stylesheets collection empty ?
+                //psv.SetCurrentStyleSheet(ps, styleSheet);
+
                 layout.CopyFrom(ps);
+            }
+        }
+
+        private IEnumerable<PageFormat> GetPageFormatList(PlotSettingsValidator psv, PlotSettings ps)
+        {
+            var medlist = psv.GetCanonicalMediaNameList(ps);
+            for (int i = 0; i < medlist.Count; i++)
+            {
+                psv.SetCanonicalMediaName(ps, medlist[i]);
+                psv.RefreshLists(ps);
+                var sizex = ps.PlotPaperSize.X - ps.PlotPaperMargins.MinPoint.X - ps.PlotPaperMargins.MaxPoint.X;
+                var sizey = ps.PlotPaperSize.Y - ps.PlotPaperMargins.MinPoint.Y - ps.PlotPaperMargins.MaxPoint.Y;
+                yield return new PageFormat()
+                {
+                    CanonicalMediaName = ps.CanonicalMediaName,
+                    PlotPaperSize = ps.PlotRotation == PlotRotation.Degrees090 ? new Point2d(sizey, sizex) : new Point2d(sizex, sizey),
+                };
             }
         }
 
         private string GetCanonicalMediaName(PlotSettingsValidator psv, PlotSettings ps, string pageSize)
         {
             var medlist = psv.GetCanonicalMediaNameList(ps);
+            //var xxx = Helper.GetExecutionTime(
+            //    () =>
+            //    {
+            //        for (int i = 0; i < medlist.Count; i++)
+            //        {
+            //            psv.SetCanonicalMediaName(ps, medlist[i]);
+            //            psv.RefreshLists(ps);
+            //            string medName = psv.GetLocaleMediaName(ps, i);
+            //            Helper.Trace("=== {0}: Can. MediaName={1}/{2}", i, ps.CanonicalMediaName, medName);
+            //            Point2d pSize = ps.PlotPaperSize;
+            //            Helper.Trace("=== \tPaperSize={0}", pSize.ToString());
+            //            PlotRotation pRot = ps.PlotRotation;
+            //            Helper.Trace("=== \tPlot Rotation={0}", pRot.ToString());
+            //            Extents2d pM = ps.PlotPaperMargins;
+            //            Helper.Trace("=== \tPaper Margins={0}, {1}", pM.MinPoint.ToString(), pM.MaxPoint.ToString());
+            //        }
+            //    });
+            //Helper.Trace("=== \t>>>>>>>{0}", xxx);
+
             for (var j = 0; j < medlist.Count; j++)
             {
                 var name = psv.GetLocaleMediaName(ps, j);
@@ -604,15 +651,14 @@ namespace BatchPlot
             return null;
         }
 
-        private double GetPlanchetteScale()
+        private double GetPlanchetteScale(out int resolution)
         {
-            var resolution = GetCommandLineParameterValue("r");
-            int value;
-            if (!int.TryParse(resolution, out value))
+            var res = GetCommandLineParameterValue("r");
+            if (!int.TryParse(res, out resolution))
             {
-                throw new ArgumentException("Resolution (r) not valid " + resolution);
+                throw new ArgumentException("Resolution (r) not valid " + res);
             }
-            var scale = 1000.0 / value;
+            var scale = 1000.0 / resolution;
             return scale;
         }
 
@@ -639,8 +685,8 @@ namespace BatchPlot
                 dx = 1;
                 dy = "BDFH".IndexOf(planchetteLetter);
             }
-            y = Convert.ToInt32(y + dy * _drawingSize.Height);
-            x = Convert.ToInt32(x + dx * _drawingSize.Height);
+            y = Convert.ToInt32(y + dy * Configuration._drawingSize.Height);
+            x = Convert.ToInt32(x + dx * Configuration._drawingSize.Height);
             return new Point2d(x, y);
         }
 
@@ -711,7 +757,7 @@ namespace BatchPlot
             using (var tr = _document.Database.TransactionManager.StartTransaction())
             {
                 var db = (DBDictionary)tr.GetObject(_document.Database.LayoutDictionaryId, OpenMode.ForRead);
-                var layoutId = db.GetAt(_plotLayoutName);
+                var layoutId = db.GetAt(Configuration._plotLayoutName);
                 var layout = (Layout)tr.GetObject(layoutId, OpenMode.ForRead);
 
                 var ps = new PlotSettings(layout.ModelType);
@@ -725,7 +771,7 @@ namespace BatchPlot
                 //psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Window);
                 psv.SetUseStandardScale(ps, true);
                 //psv.SetPlotCentered(ps, true);
-                psv.SetPlotOrigin(ps, new Point2d(100, 10));
+                psv.SetPlotOrigin(ps, Configuration._plotOrigin);
                 psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
                 var extent2d = ps.PlotPaperMargins;
                 //if (extent2d.MaxPoint.Y > extent2d.MaxPoint.X)
@@ -908,9 +954,9 @@ namespace BatchPlot
         //            else
         //                plotEngine.BeginDocument(plotInfo, Application.DocumentManager.MdiActiveDocument.Database.Filename, null, 1, false, null);
 
-        //            PlotPageInfo pageInfo = new PlotPageInfo();
-        //            ed.WriteMessage("\nPlotting {0} Entities, {1} ", pageInfo.EntityCount, pageInfo.RasterCount);
-        //            plotEngine.BeginPage(pageInfo, plotInfo, true, null);
+        //            PlotPageFormat PageFormat = new PlotPageFormat();
+        //            ed.WriteMessage("\nPlotting {0} Entities, {1} ", PageFormat.EntityCount, PageFormat.RasterCount);
+        //            plotEngine.BeginPage(PageFormat, plotInfo, true, null);
         //            plotEngine.BeginGenerateGraphics(null);
         //            plotEngine.EndGenerateGraphics(null);
         //            plotEngine.EndPage(null);
@@ -931,16 +977,52 @@ namespace BatchPlot
 
     }
 
+    internal class PageFormat {
+        public string CanonicalMediaName { get; set; }
+        public Point2d PlotPaperSize { get; set; }
+    }
+
     public class PageSettings
     {
         public string PageSize { get; set; }
-        public string StyleSheet { get; set; }
         public string Device { get; set; }
         public string OutputFilePath { get; set; }
         public string CanonicalMediaName { get; set; }
+        public string StyleSheet { get { return Path.GetFileNameWithoutExtension(Device) + ".ctb"; } }
     }
 
+    public class XXXXX
+    {
+        public string JobType = "Structured";
+        public string s_plot_ticket = "952926";
+        public string s_plot_request = "129415";
+        public string l_id_stamp = "1629628-29519681";
+        public string c_type_plan = "T";
+        public string l_div	= "La Louvière";
+        public string n_tot_plan = "7";
+        public string n_ord_plan = "1";
+        public string userid = "BZT";
 
+        public string l_id_planchette = "150118D";
+        public string c_type_map = "MAP";
+        public string l_path_plan = "";
+        public string list_energy = "EP";
+        public string l_path_result_pdf = @"\\NL1ORE1.ORES.NET\HUB001A_PRD\BIZT_HUB_0347_04\West\201605\1_2_1629628_29519681\1_1_150118D_EP.pdf";
+        public string n_scale = "1000";
+    }
+
+    public static class Configuration
+    {
+        public static string _plotLayoutName = "Energis_plot_layout_name";
+        public static string _templateFilePath = @"C:\\Test\\Plot\\Plot01\\Scripts\\Gis_cstd_Ouest.dwg";
+        public static Size _drawingSize = new Size(500, 250);
+        public static int _externalBorderWidth = 5;
+        public static int _internalBorderWidth = 15;
+        public static double _cartridgeExternalBorderWidth = 10;
+        public static int _plotCartridgeWidth = 190;
+        public static Point2d _plotOrigin = new Point2d(10, 10);
+        public static string _defaultStyleSheet = "Default.ctb";
+    }
 
     public static class BlockReferenceExtension
     {
