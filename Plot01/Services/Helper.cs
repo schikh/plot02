@@ -2,10 +2,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-//using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
 
-namespace AutoCADTest.Service
+namespace BatchPlot.Services
 {
     public static class Helper
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Oracle.DataAccess.Client;
 
-namespace AutoCADTest.Service
+namespace BatchPlot.Services
 {
     public class DataAccessService
     {

@@ -5,19 +5,19 @@ using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
 
-namespace AutoCADTest.Service
+namespace BatchPlot.Services
 {
     public class Logger
     {
         public static void Setup()
         {
-            Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository();
+            var hierarchy = (Hierarchy)LogManager.GetRepository();
 
-            PatternLayout patternLayout = new PatternLayout();
+            var patternLayout = new PatternLayout();
             patternLayout.ConversionPattern = "%date [%thread] %-5level %logger - %message%newline";
             patternLayout.ActivateOptions();
 
-            FileAppender roller = new FileAppender();
+            var roller = new FileAppender();
             roller.AppendToFile = true;
             var assemblyFolder = Helper.GetAssemblyFolder();
             roller.File = Path.Combine(assemblyFolder, "#Test.log");
