@@ -61,10 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lib\Autodesk.AutoCAD.Interop.Common.dll" />
-    <Content Include="Lib\Autodesk.AutoCAD.Interop.dll" />
     <Content Include="Lib\log4net.dll" />
-    <Content Include="Lib\Net.Ores.EnerGIS.Interop.CAO16.dll" />
     <Content Include="Lib\Oracle.DataAccess.dll" />
     <Content Include="Lib\Oracle.Web.dll" />
     <Content Include="Scripts\Scripts.sql" />

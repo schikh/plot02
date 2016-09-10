@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -48,17 +49,18 @@ namespace BatchPlot
                 _pageSettings = new PageSettings(args);
 
                 var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files").Take(2);
-                //var serverFilePaths = GetServerFilePaths(_pageSettings.Categories,
-                //    _pageSettings.Energies);
+                //var energies = ExtendEnergiesSelection(_pageSettings.Energies);
+                //var serverFilePaths = GetServerFilePaths(_pageSettings.Categories, energies);
                 //var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
                 OpenFiles(filePaths);
 
                 CreateAndConfigureLayout(_pageSettings);
 
-                AddPlotCartridge(Configuration.PemplateFilePath, _pageSettings.PlotCartridgePosition);
+                AddPlotCartridge(Configuration.CartridgeTemplateFilePath, 
+                    _pageSettings.PlotCartridgePosition);
 
-                AddRectangle();
+                //AddDrawingBorders();
 
                 PlotExtents(_pageSettings);
 
@@ -74,19 +76,8 @@ namespace BatchPlot
             }
         }
 
-        private List<string> GetServerFilePaths(string[] categories, string[] energies)
+        private List<string> GetServerFilePaths(IEnumerable<string> categories, IEnumerable<string> energies)
         {
-/*
-'NETGIS', null    TOPO, DEFAULT_ENERGIE
-'CAPGIS', null    TOPO, DEFAULT_ENERGIE
-'RS',     null,   TOPO, IC
-'OX',     null,   OX
-'DZ',     null,   DZ
-
-'NETGIS', '*'     TOPO, *
-'*',      '*'     TOPO, *
-*/
-
             var da = new DataAccessService(Configuration.ConnectionString);
 /*
 SELECT path, fileName 
@@ -133,6 +124,50 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             return list;
         }
 
+        private IEnumerable<string> ExtendEnergiesSelection(IEnumerable<string> energies)
+        {
+            /*
+            'NETGIS', null    TOPO, DEFAULT_ENERGIE
+            'CAPGIS', null    TOPO, DEFAULT_ENERGIE
+            'RS',     null,   TOPO, IC
+            'OX',     null,   OX
+            'DZ',     null,   DZ
+            'NETGIS', '*'     TOPO, *
+            '*',      '*'     TOPO, *
+            */
+
+            if (energies.Count() == 1)
+            {
+                switch (energies.First())
+                {
+                    case "NETGIS":
+                    case "CAPGIS":
+                        energies = new[] { "TOPO", "DEFAULT_ENERGIE" };
+                        break;
+                    case "RS":
+                        energies = new[] { "TOPO", "IC" };
+                        break;
+                    case "OX":
+                    case "DZ":
+                        break;
+                }
+            }
+            else
+            {
+                energies = energies.Concat(new[] { "TOPO" }).ToArray();
+            }
+
+            var da = new DataAccessService(Configuration.ConnectionString);
+            // PLOTMAPLAYERTITLE (TITLEID,TITLE,TITLECATEGORY,RANK
+            var query = string.Format("SELECT DISTINCT ENERGY "
+                + "FROM PLOTSRV_REQENERGIEGROUP "
+                + "WHERE GROUPNAME IN('{0}') ",
+                string.Join("','", energies));
+            var list = da.IterateOverReader(query, x => x.GetString(0));
+            list = list.Concat(energies).Distinct().OrderBy(x => x);
+            return list;
+        }
+
         private IEnumerable<string> ImportServerFiles(IEnumerable<string> serverFilePaths)
         {
             foreach (var serverFilePath in serverFilePaths)
@@ -154,45 +189,46 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
         {
             var c = filePaths.Count();
             var i = 0;
-            foreach (var filePath in filePaths)
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
             {
-                i++;
-                Helper.Trace("OPEN FILE {1}/{2}   {0}", filePath, i, c);
-                OpenFile(filePath);
+                foreach (var filePath in filePaths)
+                {
+                    i++;
+                    Helper.Trace("OPEN FILE {1}/{2}   {0}", filePath, i, c);
+                    OpenFile(tr, filePath);
+                }
+                tr.Commit();
             }
         }
 
-        private void OpenFile(string filePath)
+        private void OpenFile(Transaction tr, string filePath)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
+            using (var btr = (BlockTableRecord) bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
             {
-                using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
-                using (var btr = (BlockTableRecord) bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
+                ObjectId id;
+                using (var db = new Database(false, true))
                 {
-                    ObjectId id;
-                    using (var db = new Database(false, true))
-                    {
-                        db.ReadDwgFile(filePath, FileShare.Read, true, "");
-                        var blockName = Path.GetFileNameWithoutExtension(filePath);
-                        id = _document.Database.Insert(blockName, db, true);
-                    }
+                    db.ReadDwgFile(filePath, FileShare.Read, true, "");
+                    var blockName = Path.GetFileNameWithoutExtension(filePath);
+                    id = _document.Database.Insert(blockName, db, true);
+
                     var br = new BlockReference(Point3d.Origin, id);
                     btr.AppendEntity(br);
                     tr.AddNewlyCreatedDBObject(br, true);
-
-                    //using (DBObjectCollection dbObjCol = new DBObjectCollection())
-                    //{
-                    //    br.Explode(dbObjCol);
-                    //    foreach (DBObject dbObj in dbObjCol)
-                    //    {
-                    //        Entity acEnt = dbObj as Entity;
-                    //        btr.AppendEntity(acEnt);
-                    //        tr.AddNewlyCreatedDBObject(dbObj, true);
-                    //        Helper.Trace("\nExploded Object: " + acEnt.GetRXClass().DxfName);
-                    //    }
-                    //}
                 }
-                tr.Commit();
+
+                //using (DBObjectCollection dbObjCol = new DBObjectCollection())
+                //{
+                //    br.Explode(dbObjCol);
+                //    foreach (DBObject dbObj in dbObjCol)
+                //    {
+                //        Entity acEnt = dbObj as Entity;
+                //        btr.AppendEntity(acEnt);
+                //        tr.AddNewlyCreatedDBObject(dbObj, true);
+                //        Helper.Trace("\nExploded Object: " + acEnt.GetRXClass().DxfName);
+                //    }
+                //}
             }
         }
 
@@ -227,11 +263,35 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             }
         }
 
-        private void AddRectangle()
+        private void AddStamp(Transaction tr, Layout layout)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             {
-                using (var layout = GetPlotLayout(tr))
+                using (DBText textObject = new DBText())
+                {
+                    var text = string.Format("ORES {0:dd.MM.yy}-[ServerName]-{1}-{2}-{3}/{4}",
+                        DateTime.Now, _pageSettings.s_plot_ticket, _pageSettings.s_plot_request,
+                        _pageSettings.n_ord_plan, 
+                        _pageSettings.n_tot_plan);
+                    textObject.SetDatabaseDefaults();
+                    textObject.TextString = text;
+                    textObject.HorizontalMode = TextHorizontalMode.TextLeft;
+                    textObject.VerticalMode = TextVerticalMode.TextTop;
+                    textObject.AlignmentPoint = _pageSettings.StampPosition;
+                    textObject.Rotation = Math.PI / 2;
+                    textObject.Height = 4;
+                    textObject.AdjustAlignment(_document.Database);
+                    btr.AppendEntity(textObject);
+                    tr.AddNewlyCreatedDBObject(textObject, true);
+                }
+            }
+        }
+
+        private void AddDrawingBorders(Transaction tr, Layout layout)
+        {
+            //using (var tr = _document.Database.TransactionManager.StartTransaction())
+            {
+                //using (var layout = GetPlotLayout(tr))
                 {
                     using (var btr = (BlockTableRecord)tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
                     {
@@ -267,11 +327,12 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                         tr.AddNewlyCreatedDBObject(rectangle, true);
                     }
                 }
-                tr.Commit();
+                //tr.Commit();
             }
         }
 
-        private static Polyline CreateRectangle(int x, int y, double height, double width)
+
+        private static Polyline CreateRectangle(double x, double y, double height, double width)
         {
             var line = new Polyline();
             line.AddVertexAt(0, new Point2d(x, y), 0, 0, 0);
@@ -355,11 +416,11 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 .ToList()
                 .ForEach(x => values.Add("PL" + ++i, x));
 
-            values.Add("OBJ1", "XXXX Situation des installations XXXX");
             values.Add("ECH", string.Format("1/{0}", _pageSettings.Resolution));
             values.Add("DAT", DateTime.Now.ToString("dd.MM.yy (HH:mm)"));
+            values.Add("NUM", _pageSettings.PlanchetteId);
+            values.Add("OBJ1", "XXXX Situation des installations XXXX");
             values.Add("DES", "XXXX DES XXXX");
-            values.Add("NUM", values["PL5"]);
 
             return values;
         }
@@ -416,6 +477,8 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                     {
                         SetViewportSettings(viewport);
                     }
+                    AddDrawingBorders(tr, layout);
+                    AddStamp(tr, layout);
                 }
                 tr.Commit();
             }
@@ -457,38 +520,40 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
 
         private ObjectId CreateAndMakeLayoutCurrent(string name)
         {
-            var id = LayoutManager.Current.GetLayoutId(name);
-            if (!id.IsValid)
-            {
+            ObjectId id;
+            //var id = LayoutManager.Current.GetLayoutId(name);
+            //if (!id.IsValid)
+            //{
                 id = LayoutManager.Current.CreateLayout(name);
-            }
+            //}
             LayoutManager.Current.CurrentLayout = name;
             return id;
         }
 
         private Viewport GetOrCreateViewport(Layout layout, Transaction tr, int vpNum)
         {
-            var vp = GetViewport(layout, tr, vpNum);
-            if (vp == null)
-            {
+            Viewport vp = null;
+            //var vp = GetViewport(layout, tr, vpNum);
+            //if (vp == null)
+            //{
                 vp = CreateViewport(layout, tr);
-            }
+            //}
             return vp;
         }
 
-        private Viewport GetViewport(Layout layout, Transaction tr, int vpNum)
-        {
-            var vpIds = layout.GetViewports();
-            foreach (ObjectId vpId in vpIds)
-            {
-                var vp = tr.GetObject(vpId, OpenMode.ForWrite) as Viewport;
-                if (vp != null && vp.Number == vpNum)
-                {
-                    return vp;
-                }
-            }
-            return null;
-        }
+        //private Viewport GetViewport(Layout layout, Transaction tr, int vpNum)
+        //{
+        //    var vpIds = layout.GetViewports();
+        //    foreach (ObjectId vpId in vpIds)
+        //    {
+        //        var vp = tr.GetObject(vpId, OpenMode.ForWrite) as Viewport;
+        //        if (vp != null && vp.Number == vpNum)
+        //        {
+        //            return vp;
+        //        }
+        //    }
+        //    return null;
+        //}
 
         private Viewport CreateViewport(Layout layout, Transaction tr)
         {
@@ -516,17 +581,9 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 psv.SetPlotConfigurationName(ps, pageSettings.Pc3Name, null);
                 psv.RefreshLists(ps);
 
-                var height = Configuration.DrawingSize.Height * _pageSettings.Scale 
-                    + 2 * Configuration.InternalBorderWidth
-                    + 2 * Configuration.ExternalBorderWidth;
-                var width = Configuration.DrawingSize.Width * _pageSettings.Scale 
-                    + 2 * Configuration.InternalBorderWidth
-                    + 2 * Configuration.ExternalBorderWidth
-                    + Configuration.PlotCartridgeWidth 
-                    + 2 * Configuration.CartridgeExternalBorderWidth;
-                
+                var pageSize = _pageSettings.PageSize;
                 var pageFormat = GetPageFormatList(psv, ps)
-                    .Where(x => x.PlotPaperSize.X >= width && x.PlotPaperSize.Y >= height)
+                    .Where(x => x.PlotPaperSize.X >= pageSize.Width && x.PlotPaperSize.Y >= pageSize.Height)
                     .OrderBy(x => x.PlotPaperSize.X * x.PlotPaperSize.Y)
                     .ToList()
                     .FirstOrDefault();
@@ -552,7 +609,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 }
                 else
                 {
-                    throw new ArgumentException("No styleSheet found for " + pageSettings.Pc3Name);
+                   // throw new ArgumentException("No styleSheet found for " + pageSettings.Pc3Name);
                 }
 
                 layout.CopyFrom(ps);
@@ -561,19 +618,26 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
 
         private IEnumerable<PageFormat> GetPageFormatList(PlotSettingsValidator psv, PlotSettings ps)
         {
-            var medlist = psv.GetCanonicalMediaNameList(ps);
-            for (var i = 0; i < medlist.Count; i++)
+            var list = psv.GetCanonicalMediaNameList(ps);
+            for (var i = 0; i < list.Count; i++)
             {
-                psv.SetCanonicalMediaName(ps, medlist[i]);
+                psv.SetCanonicalMediaName(ps, list[i]);
                 psv.RefreshLists(ps);
-                var sizex = ps.PlotPaperSize.X - ps.PlotPaperMargins.MinPoint.X - ps.PlotPaperMargins.MaxPoint.X;
-                var sizey = ps.PlotPaperSize.Y - ps.PlotPaperMargins.MinPoint.Y - ps.PlotPaperMargins.MaxPoint.Y;
+                var sizex = ps.PlotPaperSize.X 
+                    - ps.PlotPaperMargins.MinPoint.X 
+                    - ps.PlotPaperMargins.MaxPoint.X;
+                var sizey = ps.PlotPaperSize.Y 
+                    - ps.PlotPaperMargins.MinPoint.Y 
+                    - ps.PlotPaperMargins.MaxPoint.Y;
                 yield return new PageFormat()
                 {
                     CanonicalMediaName = ps.CanonicalMediaName,
                     PlotPaperSize = ps.PlotRotation == PlotRotation.Degrees090 ? new Point2d(sizey, sizex) : new Point2d(sizex, sizey),
                 };
-                Helper.Trace(">>>>>>>>>> {0,-40} {1}", ps.CanonicalMediaName, ps.PlotPaperSize);
+                if (_pageSettings.Debug)
+                {
+                    Helper.Trace("   Page size: {0,-40} {1}", ps.CanonicalMediaName, ps.PlotPaperSize);
+                }
             }
         }
 
@@ -740,10 +804,15 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                     case @"/imp":
                         SetImpetrant();
                         break;
+                    case @"/d":
+                        Debug = true;
+                        break;
                 }
             }
             Validate();
         }
+
+
 
         public string JobType = "Structured";
         public string s_plot_ticket = "952926";
@@ -776,8 +845,10 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
         public string CanonicalMediaName { get; set; }
 
         public string PlanchetteLetter { get; private set; }
-        
+
         public Point2d MapCoordinate { get; private set; }
+
+        public Boolean Debug { get; private set; }
 
         public string StyleSheet
         {
@@ -808,6 +879,31 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                     + 2 * Configuration.ExternalBorderWidth
                     + Configuration.CartridgeExternalBorderWidth;
                 return new Point3d(position, 0, 0);
+            }
+        }
+
+        public Point3d StampPosition 
+        {
+            get
+            {
+                var x = PageSize.Width - Configuration.CartridgeExternalBorderWidth + 5;
+                return new Point3d(x, 0, 0);
+            }
+        }
+
+        public Size PageSize 
+        {
+            get
+            {
+                var height = Configuration.DrawingSize.Height * Scale 
+                    + 2 * Configuration.InternalBorderWidth
+                    + 2 * Configuration.ExternalBorderWidth;
+                var width = Configuration.DrawingSize.Width * Scale 
+                    + 2 * Configuration.InternalBorderWidth
+                    + 2 * Configuration.ExternalBorderWidth
+                    + Configuration.PlotCartridgeWidth 
+                    + 2 * Configuration.CartridgeExternalBorderWidth;
+                return new Size(width, height);
             }
         }
 
@@ -873,8 +969,6 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             {
                 switch (Path.GetExtension(OutputFilePath))
                 {
-                    case "Impetrant":
-                        break;
                     case ".pdf":
                         Pc3Name = "PDF.pc3";
                         break;
