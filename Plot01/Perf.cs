@@ -24,7 +24,7 @@ namespace BatchPlot
     {
         private string _tempFolder;
         private readonly Document _document = Application.DocumentManager.MdiActiveDocument;
-        private PageSettings _pageSettings;
+        private PlotParameters _plotParameters;
 
         public void Initialize()
         {
@@ -45,20 +45,20 @@ namespace BatchPlot
 
                 var args = Environment.GetCommandLineArgs();
                 Helper.Log("ARGUMENTS: " + string.Join(" ", args));
-                _pageSettings = new PageSettings(args);
+                _plotParameters = new PlotParameters(args);
 
-                CreateAndConfigureLayout(_pageSettings);
+                CreateAndConfigureLayout();
 
                 var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files").Take(200);
-                //var energies = ExtendEnergiesSelection(_pageSettings.Energies);
-                //var serverFilePaths = GetServerFilePaths(_pageSettings.Categories, energies);
+                //var energies = ExtendEnergiesSelection(_plotParameters.Energies);
+                //var serverFilePaths = GetServerFilePaths(_plotParameters.Categories, energies);
                 //var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
                 OpenFiles(filePaths);
 
-                AddPlotCartridge(_pageSettings.CartridgeTemplate, _pageSettings.PlotCartridgePosition);
+                AddPlotCartridge(_plotParameters.CartridgeTemplate, _plotParameters.PlotCartridgePosition);
 
-                PlotExtents(_pageSettings);
+                PlotExtents();
 
                 //SaveDwg(@"C:\Test\Plot\Plot01\Scripts\dump2.dwg");
 
@@ -102,10 +102,10 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 + "AND path not like '%#%' "
                 + "AND xmax >= {1} AND xmin <= {2} AND ymax >= {3} AND ymin <= {4} ",
                 Configuration.FileServerName,
-                _pageSettings.DrawingExtend.MinPoint.X,
-                _pageSettings.DrawingExtend.MaxPoint.X,
-                _pageSettings.DrawingExtend.MinPoint.Y,
-                _pageSettings.DrawingExtend.MaxPoint.Y,
+                _plotParameters.DrawingExtend.MinPoint.X,
+                _plotParameters.DrawingExtend.MaxPoint.X,
+                _plotParameters.DrawingExtend.MinPoint.Y,
+                _plotParameters.DrawingExtend.MaxPoint.Y,
                 string.Join("','", categories),
                 string.Join("','", energies));
             var list = da.IterateOverReader(query, x => Path.Combine(x.GetString(0), x.GetString(1))).ToList();
@@ -255,13 +255,13 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 using (var textObject = new DBText())
                 {
                     var text = string.Format("ORES {0:dd.MM.yy}-{1}-{2}-{3}/{4}",
-                        DateTime.Now, Configuration.ServerName, _pageSettings.l_id_stamp, 
-                        _pageSettings.n_ord_plan, _pageSettings.n_tot_plan);
+                        DateTime.Now, Configuration.ServerName, _plotParameters.l_id_stamp, 
+                        _plotParameters.n_ord_plan, _plotParameters.n_tot_plan);
                     textObject.SetDatabaseDefaults();
                     textObject.TextString = text;
                     textObject.HorizontalMode = TextHorizontalMode.TextLeft;
                     textObject.VerticalMode = TextVerticalMode.TextTop;
-                    textObject.AlignmentPoint = _pageSettings.StampPosition;
+                    textObject.AlignmentPoint = _plotParameters.StampPosition;
                     textObject.Rotation = Math.PI / 2;
                     textObject.Height = 4;
                     textObject.AdjustAlignment(_document.Database);
@@ -277,8 +277,8 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             {
                 var x = Configuration.ExternalBorderWidth + Configuration.InternalBorderWidth;
                 var y = Configuration.ExternalBorderWidth + Configuration.InternalBorderWidth;
-                var width = Configuration.DrawingSize.Width * _pageSettings.Scale;
-                var height = Configuration.DrawingSize.Height * _pageSettings.Scale;
+                var width = Configuration.DrawingSize.Width * _plotParameters.Scale;
+                var height = Configuration.DrawingSize.Height * _plotParameters.Scale;
                 
                 var rectangle = CreateRectangle(x, y, height, width);
                 rectangle.ColorIndex = 9;
@@ -346,7 +346,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             //"EntityType=TEXT;LayerName=BR11,BT02,BW03,RUE,W0989"));
             var i = 0;
             var layers = new[] { "BR11", "BT02", "BW03", "RUE", "W0989" };
-            var list = QueryEntities<DBText>(tr, layers, _pageSettings.DrawingExtend);
+            var list = QueryEntities<DBText>(tr, layers, _plotParameters.DrawingExtend);
             var streets = list.Select(x => x.TextString)
                 .GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
@@ -364,7 +364,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             //"EntityType=TEXT;LayerName=BL02,COMMUNES,COMMUNE,W0980"));
             i = 0;
             layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
-            list = QueryEntities<DBText>(tr, layers, _pageSettings.DrawingExtend);
+            list = QueryEntities<DBText>(tr, layers, _plotParameters.DrawingExtend);
             var communes = list.Select(x => x.TextString)
                 .GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
@@ -375,7 +375,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 .ForEach(x => values.Add(i == 0 ? "COM" : "COM" + ++i, x));
 
             i = 0;
-            var list2 = QueryEntities<BlockReference>(tr, null, _pageSettings.DrawingExtend)
+            var list2 = QueryEntities<BlockReference>(tr, null, _plotParameters.DrawingExtend)
                 .Where(x => string.Equals(x.Name, "GIS_MODF")).ToArray();
             list2.Select(x => new {
                     date = ParseDate(x.GetAttribute("DATE", string.Empty)),
@@ -389,15 +389,15 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 .ForEach(x => values.Add("MD" + ++i, string.Format("{0:dd/MM/yyyy}-{1}-{2}", x.date, x.user, x.desc)));
 
             i = 0;
-            GetSurroundedPlanchetteIds(_pageSettings.MapCoordinate, _pageSettings.PlanchetteLetter)
+            GetSurroundedPlanchetteIds(_plotParameters.MapCoordinate, _plotParameters.PlanchetteLetter)
                 .ToList()
                 .ForEach(x => values.Add("PL" + ++i, x));
 
-            values.Add("ECH", string.Format("1/{0}", _pageSettings.Resolution));
+            values.Add("ECH", string.Format("1/{0}", _plotParameters.Resolution));
             values.Add("DAT", DateTime.Now.ToString("dd.MM.yy (HH:mm)"));
-            values.Add("NUM", _pageSettings.PlanchetteId);
+            values.Add("NUM", _plotParameters.PlanchetteId);
             values.Add("OBJ1", "XXXX Situation des installations XXXX");
-            values.Add("DES", _pageSettings.userid);
+            values.Add("DES", _plotParameters.userid);
 
             return values;
         }
@@ -452,13 +452,13 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             return null;
         }
 
-        private void CreateAndConfigureLayout(PageSettings pageSettings)
+        private void CreateAndConfigureLayout()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
             {
                 using (var layout = CreatePlotLayout(tr))
                 {
-                    SetPlotSettings(layout, pageSettings);
+                    SetPlotSettings(layout);
                     using (var viewport = CreateViewport(layout, tr))
                     {
                         SetViewportSettings(viewport);
@@ -472,21 +472,17 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
 
         private void SetViewportSettings(Viewport viewport)
         {
-            viewport.Width = Configuration.DrawingSize.Width * _pageSettings.Scale 
+            viewport.Width = Configuration.DrawingSize.Width * _plotParameters.Scale 
                 + 2 * Configuration.InternalBorderWidth;
-            viewport.Height = Configuration.DrawingSize.Height * _pageSettings.Scale 
+            viewport.Height = Configuration.DrawingSize.Height * _plotParameters.Scale 
                 + 2 * Configuration.InternalBorderWidth;
             viewport.CenterPoint = new Point3d(viewport.Width / 2 + Configuration.ExternalBorderWidth,
                 viewport.Height / 2 + Configuration.ExternalBorderWidth, 0);
 
             viewport.ViewDirection = new Vector3d(0, 0, 1);
-            //viewport.ViewCenter = new Point2d((_pageSettings.DrawingExtend.MinPoint.X
-            //    + _pageSettings.DrawingExtend.MaxPoint.X) / 2,
-            //    (_pageSettings.DrawingExtend.MinPoint.Y 
-            //    + _pageSettings.DrawingExtend.MaxPoint.Y) / 2);
-            viewport.ViewCenter = _pageSettings.DrawingCenter;
+            viewport.ViewCenter = _plotParameters.DrawingCenter;
             //acVport.StandardScale = StandardScaleType.ScaleToFit;
-            viewport.CustomScale = _pageSettings.Scale;
+            viewport.CustomScale = _plotParameters.Scale;
             viewport.Locked = true;
             viewport.On = true;
         }
@@ -523,22 +519,22 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             return vp;
         }
 
-        private void SetPlotSettings(Layout layout, PageSettings pageSettings)
+        private void SetPlotSettings(Layout layout)
         {
             using (var ps = new PlotSettings(layout.ModelType))
             {
                 ps.CopyFrom(layout);
                 var psv = PlotSettingsValidator.Current;
                 var devs = psv.GetPlotDeviceList();
-                if (!devs.Contains(pageSettings.Pc3Name))
+                if (!devs.Contains(_plotParameters.Pc3Name))
                 {
-                    throw new ArgumentException("PC3 not found " + pageSettings.Pc3Name);
+                    throw new ArgumentException("PC3 not found " + _plotParameters.Pc3Name);
                 }
 
-                psv.SetPlotConfigurationName(ps, pageSettings.Pc3Name, null);
+                psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, null);
                 psv.RefreshLists(ps);
 
-                var pageSize = _pageSettings.PageSize;
+                var pageSize = _plotParameters.PageSize;
                 var pageFormat = GetPageFormatList(psv, ps)
                     .Where(x => x.PlotPaperSize.X >= pageSize.Width && x.PlotPaperSize.Y >= pageSize.Height)
                     .OrderBy(x => x.PlotPaperSize.X * x.PlotPaperSize.Y)
@@ -546,19 +542,19 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                     .FirstOrDefault();
                 if (pageFormat == null)
                 {
-                    throw new ArgumentException("No paper format found for " + pageSettings.Pc3Name);
+                    throw new ArgumentException("No paper format found for " + _plotParameters.Pc3Name);
                 }
 
                 Helper.Log("Selected CanonicalMediaName: {0}", pageFormat.CanonicalMediaName);
-                pageSettings.CanonicalMediaName = pageFormat.CanonicalMediaName;
+                _plotParameters.CanonicalMediaName = pageFormat.CanonicalMediaName;
 
-                psv.SetCanonicalMediaName(ps, pageSettings.CanonicalMediaName);
+                psv.SetCanonicalMediaName(ps, _plotParameters.CanonicalMediaName);
                 psv.RefreshLists(ps);
 
                 var ssl = psv.GetPlotStyleSheetList();
-                if (ssl.Contains(pageSettings.StyleSheet))
+                if (ssl.Contains(_plotParameters.StyleSheet))
                 {
-                    psv.SetCurrentStyleSheet(ps, pageSettings.StyleSheet);
+                    psv.SetCurrentStyleSheet(ps, _plotParameters.StyleSheet);
                 }
                 else if (ssl.Contains(Configuration.DefaultStyleSheet))
                 {
@@ -566,7 +562,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 }
                 else
                 {
-                   // throw new ArgumentException("No styleSheet found for " + pageSettings.Pc3Name);
+                    // throw new ArgumentException("No styleSheet found for " + _plotParameters.Pc3Name);
                 }
 
                 layout.CopyFrom(ps);
@@ -591,7 +587,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                     CanonicalMediaName = ps.CanonicalMediaName,
                     PlotPaperSize = ps.PlotRotation == PlotRotation.Degrees090 ? new Point2d(sizey, sizex) : new Point2d(sizex, sizey),
                 };
-                if (_pageSettings.Debug)
+                if (_plotParameters.Debug)
                 {
                     Helper.Log("   Page size: {0,-40} {1}", ps.CanonicalMediaName, ps.PlotPaperSize);
                 }
@@ -671,7 +667,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             document.Database.SaveAs(filePath, true, DwgVersion.Current, document.Database.SecurityParameters);
         }
 
-        private void PlotExtents(PageSettings pageSettings)
+        private void PlotExtents()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
             {
@@ -700,7 +696,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 //{
                 //    psv.SetPlotRotation(ps, PlotRotation.Degrees090);
                 //}
-                psv.SetPlotConfigurationName(ps, pageSettings.Pc3Name, pageSettings.CanonicalMediaName);
+                psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, _plotParameters.CanonicalMediaName);
                 psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
 
                 var pi = new PlotInfo();
@@ -715,7 +711,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 using (var ppi = new PlotPageInfo())
                 {
                     pe.BeginPlot(null, null);
-                    pe.BeginDocument(pi, _document.Name, null, 1, true, pageSettings.OutputFilePath);
+                    pe.BeginDocument(pi, _document.Name, null, 1, true, _plotParameters.OutputFilePath);
                     pe.BeginPage(ppi, pi, true, null);
                     pe.BeginGenerateGraphics(null);
                     pe.EndGenerateGraphics(null);
@@ -735,9 +731,9 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
         public Point2d PlotPaperSize { get; set; }
     }
 
-    public class PageSettings
+    public class PlotParameters
     {
-        public PageSettings(string[] args)
+        public PlotParameters(string[] args)
         {
             for (var i = 1; i < args.Length; i++)
             {
