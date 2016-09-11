@@ -17,15 +17,15 @@ namespace BatchPlot.Services
             patternLayout.ConversionPattern = "%date [%thread] %-5level %logger - %message%newline";
             patternLayout.ActivateOptions();
 
-            var roller = new FileAppender();
+            var roller = new RollingFileAppender();  //new FileAppender();
             roller.AppendToFile = true;
             var assemblyFolder = Helper.GetAssemblyFolder();
             roller.File = Path.Combine(assemblyFolder, "#Test.log");
             roller.Layout = patternLayout;
-            //roller.MaxSizeRollBackups = 5;
-            //roller.MaximumFileSize = "10MB";
-            //roller.RollingStyle = RollingFileAppender.RollingMode.Size;
-            //roller.StaticLogFileName = true;
+            roller.MaxSizeRollBackups = 5;
+            roller.MaximumFileSize = "1MB";
+            roller.RollingStyle = RollingFileAppender.RollingMode.Size;
+            roller.StaticLogFileName = true;
             roller.ActivateOptions();
             hierarchy.Root.AddAppender(roller);
 

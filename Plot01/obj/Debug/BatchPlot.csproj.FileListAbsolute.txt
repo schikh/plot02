@@ -7,3 +7,4 @@ C:\Test\plot\Plot01\bin\Debug\Oracle.DataAccess.dll
 C:\Test\plot\Plot01\bin\Debug\Oracle.Web.dll
 C:\Test\plot\Plot01\obj\Debug\BatchPlot.dll
 C:\Test\plot\Plot01\obj\Debug\BatchPlot.pdb
+C:\Test\plot\Plot01\obj\Debug\BatchPlot.csprojResolveAssemblyReference.cache
