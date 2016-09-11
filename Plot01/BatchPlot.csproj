@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\BlockReferenceExtension.cs" />
+    <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="Services\Helper.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\DataAccessService.cs" />

@@ -15,7 +15,7 @@ using BatchPlot;
 using BatchPlot.Extensions;
 using BatchPlot.Services;
 
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 184128H /r 500 /z Est /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 184128H /r 500 /z Est /e "xx,yy,zz" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 
 [assembly: CommandClass(typeof(Perf))]
 namespace BatchPlot
@@ -44,13 +44,14 @@ namespace BatchPlot
                 _tempFolder = Helper.CreateTempFolder();
 
                 var args = Environment.GetCommandLineArgs();
-                Helper.Log("ARGUMENTS: " + string.Join(" ", args));
+                Helper.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
                 CreateAndConfigureLayout();
 
                 var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files").Take(200);
                 //var energies = ExtendEnergiesSelection(_plotParameters.Energies);
+                //_plotParameters.Energies = enegies;
                 //var serverFilePaths = GetServerFilePaths(_plotParameters.Categories, energies);
                 //var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
@@ -146,10 +147,12 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             }
 
             var da = new DataAccessService(Configuration.ConnectionString);
-            // PLOTMAPLAYERTITLE (TITLEID,TITLE,TITLECATEGORY,RANK
-            var query = string.Format("SELECT DISTINCT ENERGY "
-                + "FROM PLOTSRV_REQENERGIEGROUP "
-                + "WHERE GROUPNAME IN('{0}') ",
+            var query = string.Format("SELECT DISTINCT COALESCE(a.ENERGY, b.TITLEID) AS ENERGY "
+                + "FROM PLOTSRV_REQENERGIEGROUP a "
+                + "FULL OUTER JOIN PLOTMAPLAYERTITLE b "
+                + "ON a.GROUPNAME = b.TITLEID "
+                + "WHERE COALESCE(a.ENERGY, b.TITLEID) IN('{0}') "
+                + "ORDER BY COALESCE(b.RANK, 90), a.ENERGY ",
                 string.Join("','", energies));
             var list = da.IterateOverReader(query, x => x.GetString(0));
             list = list.Concat(energies).Distinct().OrderBy(x => x);
@@ -172,22 +175,6 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 }
             }
         }
-
-        //private void OpenFiles(IEnumerable<string> filePaths)
-        //{
-        //    var c = filePaths.Count();
-        //    var i = 0;
-        //    using (var tr = _document.Database.TransactionManager.StartTransaction())
-        //    {
-        //        foreach (var filePath in filePaths)
-        //        {
-        //            i++;
-        //            Helper.Log("OPEN FILE {1}/{2}   {0}", filePath, i, c);
-        //            OpenFile(tr, filePath);
-        //        }
-        //        tr.Commit();
-        //    }
-        //}
 
         private void OpenFiles(IEnumerable<string> filePaths)
         {
@@ -251,23 +238,21 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
         private void AddStamp(Transaction tr, Layout layout)
         {
             using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            using (var text = new DBText())
             {
-                using (var textObject = new DBText())
-                {
-                    var text = string.Format("ORES {0:dd.MM.yy}-{1}-{2}-{3}/{4}",
-                        DateTime.Now, Configuration.ServerName, _plotParameters.l_id_stamp, 
-                        _plotParameters.n_ord_plan, _plotParameters.n_tot_plan);
-                    textObject.SetDatabaseDefaults();
-                    textObject.TextString = text;
-                    textObject.HorizontalMode = TextHorizontalMode.TextLeft;
-                    textObject.VerticalMode = TextVerticalMode.TextTop;
-                    textObject.AlignmentPoint = _plotParameters.StampPosition;
-                    textObject.Rotation = Math.PI / 2;
-                    textObject.Height = 4;
-                    textObject.AdjustAlignment(_document.Database);
-                    btr.AppendEntity(textObject);
-                    tr.AddNewlyCreatedDBObject(textObject, true);
-                }
+                var stamp = string.Format("ORES {0:dd.MM.yy}-{1}-{2}-{3}/{4}",
+                    DateTime.Now, Configuration.ServerName, _plotParameters.l_id_stamp, 
+                    _plotParameters.n_ord_plan, _plotParameters.n_tot_plan);
+                text.SetDatabaseDefaults();
+                text.TextString = stamp;
+                text.HorizontalMode = TextHorizontalMode.TextLeft;
+                text.VerticalMode = TextVerticalMode.TextTop;
+                text.AlignmentPoint = _plotParameters.StampPosition;
+                text.Rotation = Math.PI / 2;
+                text.Height = 4;
+                text.AdjustAlignment(_document.Database);
+                btr.AppendEntity(text);
+                tr.AddNewlyCreatedDBObject(text, true);
             }
         }
 
@@ -295,7 +280,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             }
         }
 
-        private static Polyline InflateRectangle(Polyline rectangle, int size)
+        private Polyline InflateRectangle(Polyline rectangle, int size)
         {
             var line = new Polyline();
             line.AddVertexAt(0, rectangle.GetPoint2dAt(0).Add(new Vector2d(-size, -size)), 0, 0, 0);
@@ -306,7 +291,7 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
             return line;
         }
 
-        private static Polyline CreateRectangle(double x, double y, double height, double width)
+        private Polyline CreateRectangle(double x, double y, double height, double width)
         {
             var line = new Polyline();
             line.AddVertexAt(0, new Point2d(x, y), 0, 0, 0);
@@ -339,45 +324,75 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
         private Dictionary<string, string> GetCartridgeInfo(Transaction tr)
         {
             var values = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-                
-            //new string[] { "RUE" }, 
-            //5, 15, "", "Rues diverses", 
-            //boundaryPoints, 
-            //"EntityType=TEXT;LayerName=BR11,BT02,BW03,RUE,W0989"));
+            GetStandardCartridgeInfo(tr)
+                .Concat(GetStreetsList(tr))
+                .Concat(GetCommunesList(tr))
+                .Concat(GetModificationsList(tr))
+                .Concat(GetPlanchetteIdsList())
+                .ToList()
+                .ForEach(x => values.Add(x.Key, x.Value));
+            return values;
+        }
+
+        private Dictionary<string, string> GetStandardCartridgeInfo(Transaction tr)
+        {
+            var values = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            values.Add("ECH", string.Format("1/{0}", _plotParameters.Resolution));
+            values.Add("DAT", DateTime.Now.ToString("dd.MM.yy (HH:mm)"));
+            values.Add("NUM", _plotParameters.PlanchetteId);
+            values.Add("DES", _plotParameters.userid);
+            values.Add("RES", (_plotParameters.Energies.Length == 1 ? "Réseau: " : "Réseaux: ")
+                + string.Join(", ", _plotParameters.Energies));
+            values.Add("OBJ1", "??? Situation des installations ???");
+            return values;
+        }
+
+        private Dictionary<string, string> GetStreetsList(Transaction tr)
+        {
+            var values = new Dictionary<string, string>();
+            Enumerable.Range(1, 5).ToList().ForEach(x => values.Add("RUE" + x, ""));
             var i = 0;
             var layers = new[] { "BR11", "BT02", "BW03", "RUE", "W0989" };
             var list = QueryEntities<DBText>(tr, layers, _plotParameters.DrawingExtend);
-            var streets = list.Select(x => x.TextString)
+            list.Select(x => x.TextString)
                 .GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
                 .Select(x => x.Key)
-                .Take(15);
-            GroupListItems(streets, 5)
+                .Take(15)
+                .GroupListItems(5)
                 .ToList()
-                .ForEach(x => values.Add("RUE" + ++i, x));
-            // 1..5 > 1, 6..10 > 2, 11..15 > 3
+                .ForEach(x => values["RUE" + ++i] = x);
+            return values;
+        }
 
-            //cartridge.UpdateAttributes(GetMapCartridgeAttribute(
-            //new string[] { "COM", "COM2" }, 
-            //2, 5, "", "Communes diverses", 
-            //boundaryPoints, 
-            //"EntityType=TEXT;LayerName=BL02,COMMUNES,COMMUNE,W0980"));
-            i = 0;
-            layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
-            list = QueryEntities<DBText>(tr, layers, _plotParameters.DrawingExtend);
-            var communes = list.Select(x => x.TextString)
+        private Dictionary<string, string> GetCommunesList(Transaction tr)
+        {
+            var values = new Dictionary<string, string>();
+            values.Add("COM", "");
+            values.Add("COM2", "");
+            var i = 0;
+            var layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
+            var list = QueryEntities<DBText>(tr, layers, _plotParameters.DrawingExtend);
+            list.Select(x => x.TextString)
                 .GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
                 .Select(x => x.Key)
-                .Take(5);
-            GroupListItems(communes, 2)
+                .Take(5)
+                .GroupListItems(2)
                 .ToList()
-                .ForEach(x => values.Add(i == 0 ? "COM" : "COM" + ++i, x));
+                .ForEach(x => values[i == 0 ? "COM" : "COM" + ++i] = x);
+            return values;
+        }
 
-            i = 0;
-            var list2 = QueryEntities<BlockReference>(tr, null, _plotParameters.DrawingExtend)
+        private Dictionary<string, string> GetModificationsList(Transaction tr)
+        {
+            var values = new Dictionary<string, string>();
+            Enumerable.Range(1, 5).ToList().ForEach(x => values.Add("MD" + x, ""));
+            var i = 0;
+            var list = QueryEntities<BlockReference>(tr, null, _plotParameters.DrawingExtend)
                 .Where(x => string.Equals(x.Name, "GIS_MODF")).ToArray();
-            list2.Select(x => new {
+            list.Select(x => new
+                {
                     date = ParseDate(x.GetAttribute("DATE", string.Empty)),
                     user = x.GetAttribute("USER", string.Empty),
                     desc = x.GetAttribute("DESC", string.Empty),
@@ -386,29 +401,15 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 .OrderByDescending(x => x.date)
                 .Take(5)
                 .ToList()
-                .ForEach(x => values.Add("MD" + ++i, string.Format("{0:dd/MM/yyyy}-{1}-{2}", x.date, x.user, x.desc)));
-
-            i = 0;
-            GetSurroundedPlanchetteIds(_plotParameters.MapCoordinate, _plotParameters.PlanchetteLetter)
-                .ToList()
-                .ForEach(x => values.Add("PL" + ++i, x));
-
-            values.Add("ECH", string.Format("1/{0}", _plotParameters.Resolution));
-            values.Add("DAT", DateTime.Now.ToString("dd.MM.yy (HH:mm)"));
-            values.Add("NUM", _plotParameters.PlanchetteId);
-            values.Add("OBJ1", "XXXX Situation des installations XXXX");
-            values.Add("DES", _plotParameters.userid);
-
+                .ForEach(x => values["MD" + ++i] = string.Format("{0:dd/MM/yyyy}-{1}-{2}", x.date, x.user, x.desc));
             return values;
         }
 
-        private IEnumerable<string> GroupListItems(IEnumerable<string> list, double numberOfItemsPerLine)
+        private Dictionary<string, string> GetPlanchetteIdsList()
         {
-            var s = Convert.ToInt32(Math.Ceiling(list.Count() / numberOfItemsPerLine));
-            for (var j = 0; j < list.Count() ; j+=s)
-            {
-                yield return string.Join(", ", list.Skip(j).Take(s));
-            }
+            var i = 0;
+            return GetSurroundedPlanchetteIds(_plotParameters.MapCoordinate, _plotParameters.PlanchetteLetter)
+                .ToDictionary(x => "PL" + ++i);
         }
 
         private IEnumerable<string> GetSurroundedPlanchetteIds(Point2d planchettePosition, string planchetteLetter)
@@ -478,7 +479,6 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
                 + 2 * Configuration.InternalBorderWidth;
             viewport.CenterPoint = new Point3d(viewport.Width / 2 + Configuration.ExternalBorderWidth,
                 viewport.Height / 2 + Configuration.ExternalBorderWidth, 0);
-
             viewport.ViewDirection = new Vector3d(0, 0, 1);
             viewport.ViewCenter = _plotParameters.DrawingCenter;
             //acVport.StandardScale = StandardScaleType.ScaleToFit;
@@ -503,10 +503,41 @@ AND xmax >= 185000 AND xmin <= 186000 AND ymax >= 127000 AND ymin <= 128000
 
         private ObjectId CreateAndMakeLayoutCurrent(string name)
         {
-            var id = LayoutManager.Current.CreateLayout(name);
+            //ObjectId id;
+
+            //var id = LayoutManager.Current.GetLayoutId(name);
+            //if (!id.IsValid)
+            //{
+                var id = LayoutManager.Current.CreateLayout(name);
+            //}
             LayoutManager.Current.CurrentLayout = name;
             return id;
         }
+
+        //private Viewport GetOrCreateViewport(Layout layout, Transaction tr, int vpNum)
+        //{
+        //    Viewport vp = null;
+        //    //var vp = GetViewport(layout, tr, vpNum);
+        //    //if (vp == null)
+        //    //{
+        //        vp = CreateViewport(layout, tr);
+        //    //}
+        //    return vp;
+        //}
+
+        //private Viewport GetViewport(Layout layout, Transaction tr, int vpNum)
+        //{
+        //    var vpIds = layout.GetViewports();
+        //    foreach (ObjectId vpId in vpIds)
+        //    {
+        //        var vp = tr.GetObject(vpId, OpenMode.ForWrite) as Viewport;
+        //        if (vp != null && vp.Number == vpNum)
+        //        {
+        //            return vp;
+        //        }
+        //    }
+        //    return null;
+        //}
 
         private Viewport CreateViewport(Layout layout, Transaction tr)
         {

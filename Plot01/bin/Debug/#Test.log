@@ -1278,3 +1278,440 @@
 2016-09-11 10:44:31,999 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
 2016-09-11 10:44:32,166 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
 2016-09-11 10:44:32,284 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 11:00:26,768 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 11:00:33,664 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 11:00:33,776 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 11:00:34,149 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 11:00:35,074 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 11:00:35,324 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 11:00:35,596 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 11:00:36,034 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 11:00:36,119 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 11:00:36,501 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 11:00:37,631 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 11:00:37,791 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 11:00:38,184 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 11:00:38,541 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 11:00:38,584 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 11:00:39,236 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 11:00:39,451 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 11:00:40,621 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 11:00:40,866 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 11:00:41,049 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 11:00:41,189 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 11:00:41,379 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 11:00:41,824 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 11:00:42,016 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 11:00:42,156 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 11:29:09,375 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 11:29:15,563 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 11:29:15,625 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 11:29:15,635 [1] DEBUG BatchPlot.Services.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace;   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value);   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 551;   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\plot\Plot01\Perf.cs:line 462;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 50
+2016-09-11 11:29:15,658 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 11:38:33,012 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 11:38:33,037 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout2
+2016-09-11 11:38:33,037 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 11:38:33,042 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:07:21,730 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:07:21,766 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:07:21,766 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:09:06,434 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:09:06,449 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:09:06,449 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:09:12,805 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:09:12,961 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:09:13,699 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:09:14,853 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 12:09:15,150 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 12:09:15,509 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 12:09:16,042 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 12:09:16,166 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 12:09:16,650 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 12:09:17,919 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 12:09:18,059 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 12:09:18,465 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 12:09:18,802 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 12:09:18,849 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 12:09:19,476 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 12:09:19,697 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 12:09:20,841 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 12:09:21,075 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 12:09:21,231 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 12:09:21,342 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 12:09:21,514 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 12:09:21,891 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 12:09:22,063 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 12:09:22,172 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 12:18:14,645 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:18:14,661 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:18:14,676 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:18:20,047 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:18:20,093 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 12:18:20,093 [1] DEBUG BatchPlot.Services.Helper - Autodesk.AutoCAD.Runtime.Exception: eNotInPaperspace;   at Autodesk.AutoCAD.DatabaseServices.Viewport.set_On(Boolean value);   at BatchPlot.Perf.CreateViewport(Layout layout, Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 564;   at BatchPlot.Perf.CreateAndConfigureLayout() in C:\Test\plot\Plot01\Perf.cs:line 478;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 66
+2016-09-11 12:18:20,125 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 12:18:53,506 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:18:53,522 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:18:53,538 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:18:58,759 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:18:58,900 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:18:59,212 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:18:59,973 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 12:19:00,191 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 12:19:00,428 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 12:19:00,771 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 12:19:00,849 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 12:19:01,177 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 12:19:02,087 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 12:19:02,227 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 12:19:02,570 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 12:19:02,867 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 12:19:02,898 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 12:19:03,449 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 12:19:03,636 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 12:19:04,611 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 12:19:04,816 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 12:19:04,972 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 12:19:05,081 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 12:19:05,237 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 12:19:05,617 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 12:19:05,773 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 12:19:05,882 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 12:21:29,008 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:21:29,029 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:21:29,033 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:21:34,529 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:21:34,643 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:21:34,955 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:21:35,719 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 12:21:35,938 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 12:21:36,156 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 12:21:36,515 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 12:21:36,593 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 12:21:36,923 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 12:21:37,828 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 12:21:37,968 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 12:21:38,296 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 12:21:38,608 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 12:21:38,639 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 12:21:39,188 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 12:21:39,382 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 12:21:40,352 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 12:21:40,570 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 12:21:40,711 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 12:21:40,822 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 12:21:40,997 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 12:21:41,387 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 12:21:41,543 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 12:21:41,652 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 12:22:00,090 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 12:22:00,090 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:22:00,090 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:23:25,011 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:23:25,027 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:23:25,042 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 12:24:30,207 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:24:30,238 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:24:30,238 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 12:25:18,992 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:25:19,008 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:25:19,008 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:25:24,437 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:25:24,567 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:25:24,879 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:25:27,478 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 12:25:27,478 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:25:27,478 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:50:20,135 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:50:20,166 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:50:20,166 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:50:25,732 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:50:25,862 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:50:26,190 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:50:27,421 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 12:50:27,421 [1] DEBUG BatchPlot.Services.Helper - System.ArgumentNullException: Value cannot be null.;Parameter name: value;   at System.String.Join(String separator, String[] value);   at BatchPlot.Perf.GetCartridgeInfo(Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 379;   at BatchPlot.Perf.AddPlotCartridge(String templateFilePath, Point3d position) in C:\Test\plot\Plot01\Perf.cs:line 267;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 75
+2016-09-11 12:50:27,453 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 12:50:42,719 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:50:42,734 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:50:42,750 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:50:48,233 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:50:48,358 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:50:48,673 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:50:49,837 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 12:50:49,868 [1] DEBUG BatchPlot.Services.Helper - System.ArgumentNullException: Value cannot be null.;Parameter name: value;   at System.String.Join(String separator, String[] value);   at BatchPlot.Perf.GetCartridgeInfo(Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 379;   at BatchPlot.Perf.AddPlotCartridge(String templateFilePath, Point3d position) in C:\Test\plot\Plot01\Perf.cs:line 267;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 75
+2016-09-11 12:50:49,884 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 12:51:32,059 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:51:32,074 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:51:32,074 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 12:52:28,604 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-11 12:52:29,214 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:52:32,460 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:54:21,028 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:54:21,059 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:54:21,059 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 12:54:26,630 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 12:54:26,755 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:54:27,083 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:54:28,253 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 12:54:28,268 [1] DEBUG BatchPlot.Services.Helper - System.ArgumentNullException: Value cannot be null.;Parameter name: value;   at System.String.Join(String separator, String[] value);   at BatchPlot.Perf.GetCartridgeInfo(Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 379;   at BatchPlot.Perf.AddPlotCartridge(String templateFilePath, Point3d position) in C:\Test\plot\Plot01\Perf.cs:line 267;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 75
+2016-09-11 12:54:28,284 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 12:54:49,381 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:54:49,396 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:54:49,396 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 12:55:49,733 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-11 12:55:50,440 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 12:55:53,702 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 12:58:50,942 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 12:58:50,966 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 12:58:50,971 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /imp /c hhh,kkk /e xx,yy,zz /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 13:01:28,763 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 13:01:29,854 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 13:01:33,188 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 13:02:23,475 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:02:23,491 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:02:23,507 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /c hhh,yyy /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 13:02:29,070 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 13:02:29,210 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 13:02:29,522 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 13:02:32,163 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 13:02:32,178 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:02:32,178 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:15:49,468 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:15:49,484 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:15:49,499 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /c hhh,yyy /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 13:15:54,876 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 13:15:55,003 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 13:15:55,331 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 13:15:57,951 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 13:15:57,951 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:15:57,951 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:16:51,202 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:16:51,233 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:16:51,233 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /c hhh,yyy /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 13:16:56,681 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 13:16:56,821 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 13:16:57,136 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 13:16:57,890 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 13:16:58,118 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 13:16:58,352 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 13:16:58,716 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 13:16:58,794 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 13:16:59,122 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 13:17:00,034 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 13:17:00,174 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 13:17:00,507 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 13:17:00,803 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 13:17:00,850 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 13:17:01,396 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 13:17:01,586 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 13:17:02,553 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 13:17:02,776 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 13:17:02,917 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 13:17:03,042 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 13:17:03,198 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 13:17:03,575 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 13:17:03,735 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 13:17:03,844 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 13:17:06,218 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 13:17:06,218 [1] DEBUG BatchPlot.Services.Helper - System.ArgumentException: An item with the same key has already been added.;   at System.ThrowHelper.ThrowArgumentException(ExceptionResource resource);   at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add);   at BatchPlot.Perf.<>c__DisplayClass35.<GetCartridgeInfo>b__20(String x) in C:\Test\plot\Plot01\Perf.cs:line 393;   at System.Collections.Generic.List`1.ForEach(Action`1 action);   at BatchPlot.Perf.GetCartridgeInfo(Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 391;   at BatchPlot.Perf.AddPlotCartridge(String templateFilePath, Point3d position) in C:\Test\plot\Plot01\Perf.cs:line 267;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 75
+2016-09-11 13:17:06,265 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 13:19:49,990 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:19:50,013 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:19:50,017 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /c hhh,yyy /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 13:19:55,369 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 13:19:55,494 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 13:19:55,824 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 13:19:56,562 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 13:19:56,780 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 13:19:57,009 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 13:19:57,352 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 13:19:57,433 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 13:19:57,760 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 13:19:58,667 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 13:19:58,808 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 13:19:59,151 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 13:19:59,452 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 13:19:59,499 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 13:20:00,053 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 13:20:00,256 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 13:20:01,230 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 13:20:01,449 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 13:20:01,589 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 13:20:01,698 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 13:20:01,870 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 13:20:02,244 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 13:20:02,400 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 13:20:02,510 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 13:20:20,729 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 13:20:20,729 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:20:20,729 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:24:09,569 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:24:09,600 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 13:24:09,600 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /c hhh,yyy /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 13:24:15,099 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 13:24:15,239 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 13:24:15,567 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 13:24:18,282 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 13:24:18,282 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 13:24:18,282 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 14:10:50,764 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 14:10:50,780 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 14:10:50,796 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /c hhh,yyy /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 14:10:56,053 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 14:10:56,193 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 14:10:56,505 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 14:10:58,330 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 14:10:58,330 [1] DEBUG BatchPlot.Services.Helper - System.ArgumentException: An item with the same key has already been added.;   at System.ThrowHelper.ThrowArgumentException(ExceptionResource resource);   at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add);   at BatchPlot.Perf.<>c__DisplayClass3d.<GetModificationsList>b__38(<>f__AnonymousType0`3 x) in C:\Test\plot\Plot01\Perf.cs:line 449;   at System.Collections.Generic.List`1.ForEach(Action`1 action);   at BatchPlot.Perf.GetModificationsList(Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 439;   at BatchPlot.Perf.GetCartridgeInfo(Transaction tr) in C:\Test\plot\Plot01\Perf.cs:line 372;   at BatchPlot.Perf.AddPlotCartridge(String templateFilePath, Point3d position) in C:\Test\plot\Plot01\Perf.cs:line 267;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 75
+2016-09-11 14:10:58,377 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 14:11:37,450 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 14:11:37,481 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 14:11:37,481 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /imp /c hhh,kkk /e xx,yy,zz /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 14:16:05,007 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 14:16:11,357 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 14:16:14,695 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 14:18:30,555 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 14:18:30,571 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 14:18:30,586 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /c hhh,yyy /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /isolate
+2016-09-11 14:18:35,942 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 14:18:36,067 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 14:18:36,379 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 14:18:38,969 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 14:18:38,969 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 14:18:38,969 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 14:30:12,719 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 14:30:12,734 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 14:30:12,734 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 14:30:16,995 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-11 14:30:17,229 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 14:30:17,962 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 14:30:23,641 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Energis_plot_layout_name
+2016-09-11 14:30:23,656 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Layout1
+2016-09-11 14:30:23,656 [1] DEBUG BatchPlot.Services.Helper - >>>>>>>>>>>>>>>>>>>>>>>> Model
+2016-09-11 17:53:02,538 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 17:53:06,599 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-11 17:53:06,739 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 17:53:07,051 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 17:53:07,784 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 17:53:08,018 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 17:53:08,252 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 17:53:08,689 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 17:53:08,783 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 17:53:09,126 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 17:53:10,062 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 17:53:10,218 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 17:53:10,592 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 17:53:10,920 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 17:53:10,967 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 17:53:11,565 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 17:53:11,767 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 17:53:12,812 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 17:53:13,046 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 17:53:13,186 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 17:53:13,311 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 17:53:13,483 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 17:53:13,888 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 17:53:14,060 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 17:53:14,169 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 18:27:25,567 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 18:27:29,718 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-11 18:27:29,843 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 18:27:30,186 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 18:27:30,966 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 18:27:31,200 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 18:27:31,434 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 18:27:31,809 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 18:27:31,902 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 18:27:32,246 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 18:27:33,213 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 18:27:33,369 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 18:27:33,728 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 18:27:34,055 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 18:27:34,102 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 18:27:34,682 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 18:27:34,885 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 18:27:35,915 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 18:27:36,149 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 18:27:36,289 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 18:27:36,414 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 18:27:36,585 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 18:27:36,960 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 18:27:37,131 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 18:27:37,241 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 18:28:00,131 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 18:28:04,062 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-11 18:28:04,202 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 18:28:04,514 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 18:28:05,266 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 18:28:05,484 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 18:28:05,718 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 18:28:06,077 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 18:28:06,155 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 18:28:06,498 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 18:28:07,434 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 18:28:07,590 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 18:28:07,934 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 18:28:08,246 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 18:28:08,292 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 18:28:08,854 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 18:28:09,041 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 18:28:10,086 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 18:28:10,352 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 18:28:10,508 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 18:28:10,648 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 18:28:10,820 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 18:28:11,210 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 18:28:11,381 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 18:28:11,490 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 18:33:50,238 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 18:33:54,296 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-11 18:33:54,421 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 18:33:54,749 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 18:33:55,515 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 18:33:55,749 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 18:33:55,983 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 18:33:56,358 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 18:33:56,451 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 18:33:56,810 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 18:33:57,810 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 18:33:57,966 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 18:33:58,325 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 18:33:58,668 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 18:33:58,715 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 18:33:59,292 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 18:33:59,495 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 18:34:00,556 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 18:34:00,806 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 18:34:00,964 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 18:34:01,088 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 18:34:01,260 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 18:34:01,666 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 18:34:01,837 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 18:34:01,946 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
+2016-09-11 18:34:46,068 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /f /imp C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 18:34:46,099 [1] DEBUG BatchPlot.Services.Helper - *** ERROR ************************************************************
+2016-09-11 18:34:46,146 [1] DEBUG BatchPlot.Services.Helper - System.ArgumentException: Output file format /imp not suported;   at BatchPlot.PlotParameters.SetDiviceAndStyleSheet() in C:\Test\plot\Plot01\Perf.cs:line 993;   at BatchPlot.PlotParameters.SetOutputFilePath(String outputFilePath) in C:\Test\plot\Plot01\Perf.cs:line 936;   at BatchPlot.PlotParameters..ctor(String[] args) in C:\Test\plot\Plot01\Perf.cs:line 786;   at BatchPlot.Perf.TestImport() in C:\Test\plot\Plot01\Perf.cs:line 48
+2016-09-11 18:34:46,162 [1] DEBUG BatchPlot.Services.Helper - **********************************************************************
+2016-09-11 18:35:03,983 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 184128H /r 500 /z Est /e xx,yy,zz /imp /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate
+2016-09-11 18:35:08,819 [1] DEBUG BatchPlot.Services.Helper - Selected CanonicalMediaName: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-11 18:35:08,944 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/23   C:\Test\Plot\Plot01\Files\B184128.DWG
+2016-09-11 18:35:09,256 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/23   C:\Test\Plot\Plot01\Files\B185128.DWG
+2016-09-11 18:35:10,021 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/23   C:\Test\Plot\Plot01\Files\E185128.DWG
+2016-09-11 18:35:10,255 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/23   C:\Test\Plot\Plot01\Files\F184128.DWG
+2016-09-11 18:35:10,489 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/23   C:\Test\Plot\Plot01\Files\F184128C.DWG
+2016-09-11 18:35:10,832 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/23   C:\Test\Plot\Plot01\Files\F184128P.DWG
+2016-09-11 18:35:10,910 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/23   C:\Test\Plot\Plot01\Files\F185128.DWG
+2016-09-11 18:35:11,253 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/23   C:\Test\Plot\Plot01\Files\F185128C.DWG
+2016-09-11 18:35:12,173 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/23   C:\Test\Plot\Plot01\Files\F185128P.DWG
+2016-09-11 18:35:12,314 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/23   C:\Test\Plot\Plot01\Files\G184128.DWG
+2016-09-11 18:35:12,688 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/23   C:\Test\Plot\Plot01\Files\G185128.DWG
+2016-09-11 18:35:13,000 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/23   C:\Test\Plot\Plot01\Files\I185128.DWG
+2016-09-11 18:35:13,047 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/23   C:\Test\Plot\Plot01\Files\L184128.DWG
+2016-09-11 18:35:13,593 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/23   C:\Test\Plot\Plot01\Files\L184128A.DWG
+2016-09-11 18:35:13,796 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/23   C:\Test\Plot\Plot01\Files\L185128.DWG
+2016-09-11 18:35:14,810 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/23   C:\Test\Plot\Plot01\Files\L185128A.DWG
+2016-09-11 18:35:15,044 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 17/23   C:\Test\Plot\Plot01\Files\M168128.DWG
+2016-09-11 18:35:15,218 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 18/23   C:\Test\Plot\Plot01\Files\M184126.DWG
+2016-09-11 18:35:15,343 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 19/23   C:\Test\Plot\Plot01\Files\M184128.DWG
+2016-09-11 18:35:15,515 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 20/23   C:\Test\Plot\Plot01\Files\M185128.DWG
+2016-09-11 18:35:15,905 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 21/23   C:\Test\Plot\Plot01\Files\O185128.DWG
+2016-09-11 18:35:16,076 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 22/23   C:\Test\Plot\Plot01\Files\S168128.DWG
+2016-09-11 18:35:16,186 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 23/23   C:\Test\Plot\Plot01\Files\S185128.DWG
