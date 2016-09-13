@@ -30,6 +30,25 @@ namespace BatchPlot.Services
             Trace(message, parameters);
         }
 
+        public static void Log(Exception ex)
+        {
+            _log.Error("*** ERROR ************************************************************");
+            _log.Error("Exception:", ex);
+            _log.Error("**********************************************************************");
+            Trace("*** ERROR ************************************************************");
+            Trace("COMMAND ERROR: {0}", ex.ToString().Replace("\r\n", ";"));
+            Trace("**********************************************************************");
+        }
+
+        //public static void Log(Exception ex, string message, params object[] parameters)
+        //{
+        //    _log.Error("*** ERROR ************************************************************");
+        //    _log.ErrorFormat(message, parameters);
+        //    _log.Error("Exception:", ex);
+        //    _log.Error("**********************************************************************");
+        //    Trace(message, parameters);
+        //}
+
         public static void Trace(string message, params object[] parameters)
         {
             Debug.WriteLine(message, parameters);

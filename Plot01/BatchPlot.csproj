@@ -43,6 +43,7 @@
     <Reference Include="Oracle.Web, Version=2.111.7.20, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86" />
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -53,12 +54,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\PlotConfiguration.cs" />
     <Compile Include="Extensions\BlockReferenceExtension.cs" />
     <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="Services\Helper.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\DataAccessService.cs" />
-    <Compile Include="Perf.cs" />
+    <Compile Include="PlotToFileCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +71,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Scripts\test2.scr" />
     <None Include="Scripts\test.dwg" />
     <None Include="Scripts\test.scr" />

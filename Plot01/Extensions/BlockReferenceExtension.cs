@@ -8,6 +8,13 @@ namespace BatchPlot.Extensions
 {
     public static class BlockReferenceExtension
     {
+        public static Extents2d Inflate(this Extents2d extents, int size)
+        {
+            return new Extents2d(extents.MinPoint.X - size, extents.MinPoint.Y - size, 
+                extents.MaxPoint.X + size, extents.MaxPoint.Y + size);
+        }
+
+
         public static void UpdateAttributes(this BlockReference blockReference, Dictionary<string, string> values)
         {
             var tr = blockReference.Database.TransactionManager.TopTransaction;
