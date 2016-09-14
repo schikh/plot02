@@ -14,7 +14,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.PlottingServices;
 using Autodesk.AutoCAD.Runtime;
 using BatchPlot;
-using BatchPlot.Configuration2;
+using BatchPlot.Configuration;
 using BatchPlot.Extensions;
 using BatchPlot.Services;
 
@@ -52,11 +52,11 @@ namespace BatchPlot
                 Helper.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
-                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(2);
-                //var energies = ExtendEnergiesSelection(_plotParameters.Energies);
-                //_plotParameters.EnergyDescription = energies;
-                //var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
-                //var filePaths = ImportServerFiles(serverFilePaths).ToArray();
+                //var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
+                var energies = ExtendEnergiesSelection(_plotParameters.Energies);
+                _plotParameters.EnergyDescription = energies;
+                var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
+                var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
                 OpenFiles(filePaths);
 
@@ -104,8 +104,9 @@ namespace BatchPlot
                 _plotParameters.DrawingExtend.MaxPoint.Y,
                 category,
                 string.Join("','", energies));
-            Helper.Log("QUERY DESSIN:" + query);
             var list = da.IterateOverReader(query, x => Path.Combine(x.GetString(0), x.GetString(1))).ToList();
+            Helper.Log("Query table DESSIN: " + query);
+            Helper.Log("Number OF file found: " + list.Count);
             return list;
         }
 
@@ -503,7 +504,7 @@ namespace BatchPlot
 
             viewport.ViewDirection = new Vector3d(0, 0, 1);
             viewport.ViewCenter = _plotParameters.DrawingCenter;
-            Helper.Log(">>>> _plotParameters.DrawingCenter: {0}-{1}", _plotParameters.DrawingCenter.X, _plotParameters.DrawingCenter.Y);
+            Helper.Log("DrawingCenter: {0}-{1}", _plotParameters.DrawingCenter.X, _plotParameters.DrawingCenter.Y);
             //acVport.StandardScale = StandardScaleType.ScaleToFit;
             viewport.CustomScale = _plotParameters.Scale;
             viewport.Locked = true;
@@ -596,8 +597,8 @@ namespace BatchPlot
                     pageFormatList = GetPageFormatList(psv, ps).ToArray();
                 }
                 var pageFormat = pageFormatList
-                    .Where(x => x.PlotPaperSize.X >= pageSize.Width && x.PlotPaperSize.Y >= pageSize.Height)
-                    .OrderBy(x => x.PlotPaperSize.X * x.PlotPaperSize.Y)
+                    .Where(x => x.PlotPaperSize.Width >= pageSize.Width && x.PlotPaperSize.Height >= pageSize.Height)
+                    .OrderBy(x => x.PlotPaperSize.Width * x.PlotPaperSize.Height)
                     .ToList()
                     .FirstOrDefault();
                 if (pageFormat == null)
@@ -605,7 +606,7 @@ namespace BatchPlot
                     throw new ArgumentException("No paper format found for " + _plotParameters.Pc3Name);
                 }
 
-                Helper.Log("Selected CanonicalMediaName: {0}", pageFormat.CanonicalMediaName);
+                Helper.Log("Selected paper format: {0}", pageFormat.CanonicalMediaName);
                 _plotParameters.CanonicalMediaName = pageFormat.CanonicalMediaName;
 
                 psv.SetCanonicalMediaName(ps, _plotParameters.CanonicalMediaName);
@@ -622,7 +623,7 @@ namespace BatchPlot
                 }
                 else
                 {
-                    // throw new ArgumentException("No styleSheet found for " + _plotParameters.Pc3Name);
+                    throw new ArgumentException("No styleSheet found for " + _plotParameters.Pc3Name);
                 }
 
                 layout.CopyFrom(ps);
@@ -646,11 +647,11 @@ namespace BatchPlot
                 {
                     Pc3Name = "",
                     CanonicalMediaName = ps.CanonicalMediaName,
-                    PlotPaperSize = ps.PlotRotation == PlotRotation.Degrees090 ? new Point2d(sizey, sizex) : new Point2d(sizex, sizey)
+                    PlotPaperSize = ps.PlotRotation == PlotRotation.Degrees090 ? new Size(sizey, sizex) : new Size(sizex, sizey)
                 };
                 if (_plotParameters.Debug)
                 {
-                    Helper.Log("   Page size: {0,-40} {1}", ps.CanonicalMediaName, ps.PlotPaperSize);
+                    Helper.Log("Page size: {0,-40} {1}", ps.CanonicalMediaName, ps.PlotPaperSize);
                 }
             }
         }
@@ -857,7 +858,7 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
             }
         }
 
-        public void DeleteNotNeededLayers(Database db)
+        private void DeleteNotNeededLayers(Database db)
         {
             var regex = new Regex(PlotConfiguration.Config.LayersToDeleteRegexFilter, RegexOptions.IgnoreCase);
             using (var tr = db.TransactionManager.StartTransaction())
@@ -868,7 +869,6 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
                     var layer = (LayerTableRecord)tr.GetObject(id, OpenMode.ForWrite);
                     if (regex.IsMatch(layer.Name))
                     {
-                        Helper.Log("DELETE LAYER:" + layer.Name);
                         layer.IsLocked = false;
 
                         var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
@@ -880,7 +880,6 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
                                 var ent = (Entity)tr.GetObject(entId, OpenMode.ForRead);
                                 if (string.Equals(ent.Layer, layer.Name, StringComparison.InvariantCultureIgnoreCase))
                                 {
-                                    Helper.Log("ENTITY IN LAYER: {0}    {1}    {2}", layer.Name, ent.Layer, ent.GetType().Name);
                                     ent.UpgradeOpen();
                                     ent.Erase();
                                 }
@@ -1143,12 +1142,6 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
         Est,
         West
     }
-
-
-
-
-
-
 
     //public static class Configuration
     //{
