@@ -18,8 +18,9 @@ using BatchPlot.Configuration;
 using BatchPlot.Extensions;
 using BatchPlot.Services;
 
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 184128H /r 500 /z Est /c "MAP" /e "BT,MT,EP,BP,MP" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 079145E /r 500 /z Est /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf"  /imp /isolate
+//    C:\Users\adn534>print /d:\\U90PHIMPT005\NA83  "C:\Test\plot\Plot01\Scripts\dump2.bin"
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 184128H /r 500 /z West /c "MAP" /e "BT,MT,EP,BP,MP" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - ADER GOS IT - BSM Reseaux.pc3" /imp  /isolate
 
 // /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\test.scr" /id 184128H /r 500 /z Est /c "MAP" /e "BT,MT,EP,BP,MP" /imp  /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 [assembly: CommandClass(typeof(PlotToFileCommand))]
@@ -52,23 +53,24 @@ namespace BatchPlot
                 Helper.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
-                //var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
-                var energies = ExtendEnergiesSelection(_plotParameters.Energies);
-                _plotParameters.EnergyDescription = energies;
-                var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
-                var filePaths = ImportServerFiles(serverFilePaths).ToArray();
+                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
+                //var energies = ExtendEnergiesSelection(_plotParameters.Energies);
+                //_plotParameters.EnergyDescription = energies;
+                //var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
+                //var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
                 OpenFiles(filePaths);
 
-                //DeleteNotNeededLayers();
+                if (_plotParameters.Impetrant)
+                {
+                    using (var tr = _document.Database.TransactionManager.StartTransaction())
+                    {
+                        ApplyImpetrantStyle(tr);
+                        tr.Commit();
+                    }
+                }
 
                 CreateAndConfigureLayout();
-
-                using (var tr = _document.Database.TransactionManager.StartTransaction())
-                {
-                    ApplyImpetrantStyle(tr);
-                    tr.Commit();
-                }
 
                 AddPlotCartridge(_plotParameters.CartridgeTemplate, _plotParameters.PlotCartridgePosition);
 
@@ -77,12 +79,45 @@ namespace BatchPlot
                 SaveDwg(@"C:\Test\Plot\Plot01\Scripts\dump2.dwg");
 
                 //DeleteImportedFiles();
+
+                Helper.Log("PLOT SUCCESSFUL");
             }
             catch (System.Exception ex)
             {
-
+                Helper.Log("PLOT ERROR");
                 Helper.Log(ex);
-                //Environment.ExitCode = 999;
+                Environment.ExitCode = 999;
+            }
+        }
+
+        [CommandMethod("PlotFile")]
+        public void PlotFile()
+        {
+            try
+            {
+                _document.Database.Insunits = UnitsValue.Millimeters;
+
+                var args = Environment.GetCommandLineArgs();
+                Helper.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
+                _plotParameters = new PlotParameters(args);
+
+                CreateAndConfigureLayout();
+
+                AddPlotCartridge(_plotParameters.CartridgeTemplate, _plotParameters.PlotCartridgePosition);
+
+                PlotExtents();
+
+                SaveDwg(@"C:\Test\Plot\Plot01\Scripts\dump2.dwg");
+
+                //DeleteImportedFiles();
+
+                Helper.Log("PLOT SUCCESSFUL");
+            }
+            catch (System.Exception ex)
+            {
+                Helper.Log("PLOT ERROR");
+                Helper.Log(ex);
+                Environment.ExitCode = 999;
             }
         }
 
@@ -242,11 +277,8 @@ namespace BatchPlot
             using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             using (var text = new DBText())
             {
-                var stamp = string.Format("ORES {0:dd.MM.yy}-{1}-{2}-{3}/{4}",
-                    DateTime.Now, PlotConfiguration.Config.ServerName, _plotParameters.l_id_stamp, 
-                    _plotParameters.n_ord_plan, _plotParameters.n_tot_plan);
                 text.SetDatabaseDefaults();
-                text.TextString = stamp;
+                text.TextString = _plotParameters.Stamp;
                 text.HorizontalMode = TextHorizontalMode.TextLeft;
                 text.VerticalMode = TextVerticalMode.TextTop;
                 text.AlignmentPoint = _plotParameters.StampPosition;
@@ -361,7 +393,7 @@ namespace BatchPlot
             values.Add("ECH", string.Format("1/{0}", _plotParameters.Resolution));
             values.Add("DAT", DateTime.Now.ToString("dd.MM.yy (HH:mm)"));
             values.Add("NUM", _plotParameters.PlanchetteId);
-            values.Add("DES", _plotParameters.userid);
+            values.Add("DES", _plotParameters.UserId);
             values.Add("RES", (_plotParameters.Energies.Length == 1 ? "Réseau: " : "Réseaux: ")
                 + string.Join(", ", _plotParameters.Energies));
             values.Add("OBJ1", "Situation des installations");
@@ -623,7 +655,7 @@ namespace BatchPlot
                 }
                 else
                 {
-                    throw new ArgumentException("No styleSheet found for " + _plotParameters.Pc3Name);
+                    //throw new ArgumentException("No styleSheet found for " + _plotParameters.Pc3Name);
                 }
 
                 layout.CopyFrom(ps);
@@ -635,8 +667,8 @@ namespace BatchPlot
             var list = psv.GetCanonicalMediaNameList(ps);
             for (var i = 0; i < list.Count; i++)
             {
-                psv.SetCanonicalMediaName(ps, list[i]);
-                psv.RefreshLists(ps);
+                //psv.SetCanonicalMediaName(ps, list[i]);
+                //psv.RefreshLists(ps);
                 var sizex = ps.PlotPaperSize.X 
                     - ps.PlotPaperMargins.MinPoint.X 
                     - ps.PlotPaperMargins.MaxPoint.X;
@@ -911,6 +943,9 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
                     case @"/e":
                         Energies = args[++i].Split(',');
                         break;
+                    case @"/p":
+                        Pc3Name = args[++i];
+                        break;
                     case @"/id":
                         SetPlanchetteId(args[++i]);
                         break;
@@ -948,10 +983,14 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
         public string l_div	= "La Louvière";
         public string l_path_plan = "";
 
-        public string l_id_stamp = "1629628-29519681";
-        public string n_tot_plan = "7";
-        public string n_ord_plan = "1";
-        public string userid = "BZT";
+        // l_id_stamp
+        public string StampId = "1629628-29519681";
+        // n_tot_plan
+        public int PlanTotal = 7;
+        // n_ord_plan
+        public int PlanId = 1;
+        // userid
+        public string UserId = "BZT";
 
         // l_id_planchette
         public string PlanchetteId { get; private set; }
@@ -1057,12 +1096,35 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
             get { return Zone == Zone.Est ? PlotConfiguration.Config.EstFileServerName : PlotConfiguration.Config.WestFileServerName; }
         }
 
+        public string Stamp
+        {
+            get
+            {
+                return string.Format("ORES {0:dd.MM.yy}-{1}-{2}-{3}/{4}",
+                    DateTime.Now, PlotConfiguration.Config.ServerName, StampId, PlanId, PlanTotal);
+
+            }
+        }
+
         private void Validate()
         {
-            if(string.IsNullOrEmpty(Category))
+            if (string.IsNullOrEmpty(Category))
             {
                 throw new ArgumentException("Category (/c) missing");
             }
+            if (string.IsNullOrEmpty(Pc3Name) && string.IsNullOrEmpty(OutputFilePath))
+            {
+                throw new ArgumentException("Either the output file (/o) or the plotter pc3 (/p) required");
+            }
+
+            //if (Impetrant && !string.IsNullOrEmpty(OutputFilePath) && Path.GetExtension(OutputFilePath) != ".pdf")
+            //{
+            //    throw new ArgumentException("Impetrant is for pdf file only");
+            //}
+            //if (Impetrant && !string.Equals(Pc3Name, "Impetrant.pc3"))
+            //{
+            //    throw new ArgumentException("Impetrant is for pdf file only");
+            //}
         }
 
         private void SetPlanchetteId(string planchetteId)
@@ -1076,13 +1138,19 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
         private void SetOutputFilePath(string outputFilePath)
         {
             OutputFilePath = outputFilePath;
-            SetDiviceAndStyleSheet();
+            if (string.IsNullOrEmpty(Pc3Name))
+            {
+                SetDiviceAndStyleSheet();
+            }
         }
 
         private void SetImpetrant()
         {
             Impetrant = true;
-            SetDiviceAndStyleSheet();
+            if (string.IsNullOrEmpty(Pc3Name))
+            {
+                SetDiviceAndStyleSheet();
+            }
         }
 
         private Point2d ParsePlanchetteId(string planchetteId, out string planchetteLetter)
@@ -1142,65 +1210,67 @@ null,  'IMPETRANTGRAY', 'ViewportVisibility=0;LayerName=BR##,BB##,BF##,BH##,BG##
         Est,
         West
     }
-
-    //public static class Configuration
-    //{
-    //    public static string PlotLayoutName = "Energis_plot_layout_name";
-
-    //    public static Size DrawingSize = new Size(500, 250);
-    //    public static int ExternalBorderWidth = 5;
-    //    public static int InternalBorderWidth = 10;
-    //    public static double CartridgeExternalBorderWidth = 10;
-    //    public static int PlotCartridgeWidth = 190;
-    //    public static Point2d PlotOrigin = new Point2d(5, 5);
-
-    //    public static string EstCartridgeTemplateFilePath = @"C:\\Test\\Plot\\Plot01\\Scripts\\Gis_cstd_est.dwg";
-    //    public static string WestCartridgeTemplateFilePath = @"C:\\Test\\Plot\\Plot01\\Scripts\\Gis_cstd_ouest.dwg";
-
-    //    public static string DefaultStyleSheet = "Default.ctb";
-    //    public static string ConnectionString = "DATA SOURCE=WALLP1_UNWALL.WORLD;USER ID=GENERGIS;PASSWORD=GENERGIS87;PERSIST SECURITY INFO=True;Pooling=false;";
-    //    //_connectionString = "DATA SOURCE=WALLA1.WORLD;USER ID=GENERGIS;PASSWORD=GENERGIS87;PERSIST SECURITY INFO=True;Pooling=false;";
-    //    //_fileServerName = "RWA002AEST";
-    //    public static string WestFileServerName = "RWA005";
-    //    public static string EstFileServerName = "RWA004";
-
-    //    public static string ServerName                = "XXXXXXXXXX";
-    //    public static string TopoLayersRegexFilter     = @"^BR\d\d|BB\d\d|BF\d\d|BH\d\d|BG\d\d|BL\d\d|BP\d\d|BT\d\d|BW\d\d|W\d{4}$";
-    //    public static string LayersToDeleteRegexFilter = @"^BR05|niv_voirie|w0001|W0060|W0070$";
-
-    //    public static IEnumerable<PageFormat> GetDefaultPageFormat(string pc3Name)
-    //    {
-    //        var list = new[] {
-    //            new PageFormat() {
-    //                Pc3Name = "Impetrant.pc3",
-    //                CanonicalMediaName = "UserDefinedMetric (594.00 x 1270.00MM)",
-    //                PlotPaperSize = new Point2d(1270, 594)
-    //            },
-    //            new PageFormat() {
-    //                Pc3Name = "Impetrant.pc3",
-    //                CanonicalMediaName = "UserDefinedMetric (297.00 x 740.00MM)",
-    //                PlotPaperSize = new Point2d(740, 297)
-    //            },
-    //            new PageFormat() {
-    //                Pc3Name = "PDFXX.pc3",
-    //                CanonicalMediaName = "ISO_full_bleed_B0_(1000.00_x_1414.00_MM)",
-    //                PlotPaperSize = new Point2d(1000, 1414)
-    //            },
-    //            new PageFormat() {
-    //                Pc3Name = "PDFXX.pc3",
-    //                CanonicalMediaName = "CanonicalMediaName: ANSI_D_(22.00_x_34.00_Inches)",
-    //                PlotPaperSize = new Point2d(863.6, 558.8)
-    //            }
-    //        };
-    //        return list.Where(x => x.Pc3Name == pc3Name);
-    //    }
-    //}
-
-    //public class PageFormat
-    //{
-    //    public string Pc3Name { get; set; }
-    //    public string CanonicalMediaName { get; set; }
-    //    public Point2d PlotPaperSize { get; set; }
-    //}
 }
 
+
+        //using (Circle cir = new Circle(pr.Value, Vector3d.ZAxis, pr1.Value))
+        //{
+        //    using (Transaction tr = db.TransactionManager.StartTransaction())
+        //    {
+        //        BlockTable bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+        //        BlockTableRecord btr = (BlockTableRecord)tr.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+        //        cir.TransformBy(ed.CurrentUserCoordinateSystem);
+        //        btr.AppendEntity(cir);
+        //        tr.AddNewlyCreatedDBObject(cir, true);
+        //        tr.Commit();
+        //    }
+        //}
+
+        //using (Circle cir = new Circle(pr.Value, Vector3d.ZAxis, pr1.Value))
+        //{
+        //    using (Transaction tr = db.TransactionManager.StartTransaction())
+        //    {
+        //        BlockTable bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+        //        BlockTableRecord btr = (BlockTableRecord)tr.GetObject(bt[BlockTableRecord.PaperSpace], OpenMode.ForWrite);
+        //        cir.TransformBy(ed.CurrentUserCoordinateSystem);
+        //        btr.AppendEntity(cir);
+        //        tr.AddNewlyCreatedDBObject(cir, true);
+        //        tr.Commit();
+        //    }
+        //}
+
+        //using (Circle cir = new Circle(pr.Value, Vector3d.ZAxis, pr1.Value))
+        //{
+        //    using (Transaction tr = db.TransactionManager.StartTransaction())
+        //    {
+        //        BlockTableRecord btr = (BlockTableRecord)tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+        //        cir.TransformBy(ed.CurrentUserCoordinateSystem);
+        //        btr.AppendEntity(cir);
+        //        tr.AddNewlyCreatedDBObject(cir, true);
+        //        tr.Commit();
+        //    }
+        //}
+    
+
+//SELECT S_PLOT_TICKET,
+//  S_PLOT_REQUEST,
+//  S_PLTICKET_STATUS,
+//  O_DATE,
+//  N_ESSAY,
+//  C_ERROR,
+//  DESC_ERROR,
+//  L_ID_STAMP,
+//  L_ID_PLANCHETTE,
+//  C_TYPE_PLAN,
+//  L_DIV,
+//  N_TOT_PLAN,
+//  N_ORD_PLAN,
+//  USERID,
+//  C_TYPE_MAP,
+//  L_PATH_PLAN,
+//  LIST_ENERGY,
+//  L_PATH_RESULT_PDF,
+//  N_SCALE,
+//  C_SIDE,
+//  D_MAX_PEND
+//FROM CR_ENERGIS.PLT_MNGR_PLOT_TICKET where rownum < 100;

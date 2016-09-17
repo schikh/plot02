@@ -9,7 +9,7 @@ namespace BatchPlot.Services
     public static class Helper
     {
         private static readonly log4net.ILog _log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static double GetExecutionTime(Action action)
         {
@@ -51,7 +51,7 @@ namespace BatchPlot.Services
 
         public static void Trace(string message, params object[] parameters)
         {
-            Debug.WriteLine(message, parameters);
+            //Console.WriteLine(message, parameters);
             var ed = Application.DocumentManager.MdiActiveDocument.Editor;
             ed.WriteMessage(string.Format(message + "\n", parameters));
         }
