@@ -4,7 +4,7 @@
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe</StartProgram>
     <StartWorkingDirectory>C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\</StartWorkingDirectory>
-    <StartArguments>/i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\test.scr /id 079145E /r 1000 /z Est /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /isolate</StartArguments>
+    <StartArguments>/i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT"             /f "C:\Test\Plot\Plot01\Scripts\dump2.dwf"    /p "Canon C5235 - ADER GOS IT - BSM Reseaux" /imp  /isolate</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectView>ShowAllFiles</ProjectView>

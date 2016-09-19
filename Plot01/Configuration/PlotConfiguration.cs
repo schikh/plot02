@@ -118,9 +118,9 @@ namespace BatchPlot.Configuration
             get { return (PlotConfigurationCollection)base["PageFormats"]; }
         }
 
-        public IEnumerable<PageFormat> GetDefaultPageFormat(string pc3Name)
+        public IEnumerable<PageFormat> GetDefaultPageFormat(string plotterName)
         {
-            return PageFormats.Cast<PageFormat>().Where(x => x.Pc3Name == pc3Name);
+            return PageFormats.Cast<PageFormat>().Where(x => x.PlotterName == plotterName);
         }
     }
 
@@ -139,17 +139,39 @@ namespace BatchPlot.Configuration
         protected override object GetElementKey(ConfigurationElement element)
         {
             var e = (PageFormat)element;
-            return e.Pc3Name + e.CanonicalMediaName;
+            return e.PlotterName + e.CanonicalMediaName;
         }
     }
-
+    
     internal class PageFormat : ConfigurationElement
     {
-        [ConfigurationProperty("Pc3Name", IsRequired = true)]
+        [ConfigurationProperty("PlotterName", IsRequired = true)]
+        public string PlotterName
+        {
+            get { return (string)base["PlotterName"]; }
+            set { base["PlotterName"] = value; }
+        }
+
+        [ConfigurationProperty("Pc3Name")]
         public string Pc3Name
         {
-            get { return (string)base["Pc3Name"]; }
+            get
+            {
+                var value = (string) base["Pc3Name"];
+                return string.IsNullOrEmpty(value) ? PlotterName + ".pc3" : value;
+            }
             set { base["Pc3Name"] = value; }
+        }
+
+        [ConfigurationProperty("CtbName")]
+        public string CtbName
+        {
+            get
+            {
+                var value = (string) base["CtbName"];
+                return string.IsNullOrEmpty(value) ? PlotterName + ".ctb" : value;
+            }
+            set { base["CtbName"] = value; }
         }
 
         [ConfigurationProperty("CanonicalMediaName", IsRequired = true)]
@@ -159,11 +181,34 @@ namespace BatchPlot.Configuration
             set { base["CanonicalMediaName"] = value; }
         }
 
+        //[ConfigurationProperty("FeederType", IsRequired = true)]
+        //public string FeederType
+        //{
+        //    get { return (string)base["FeederType"]; }
+        //    set { base["FeederType"] = value; }
+        //}
+
+        //[ConfigurationProperty("IsDefaultPaperSize")]
+        //public bool IsDefaultPaperSize
+        //{
+        //    get { return (bool)base["IsDefaultPaperSize"]; }
+        //    set { base["IsDefaultPaperSize"] = value; }
+        //}
+
         [ConfigurationProperty("PlotPaperSize", IsRequired = true)]
         public Size PlotPaperSize
         {
             get { return (Size)this["PlotPaperSize"]; }
             set { base["PlotPaperSize"] = value; }
         }
+
+        [ConfigurationProperty("AlternateStyleName", DefaultValue = "PLOTDEFAULT")]
+        public string AlternateStyleName
+        {
+            get { return (string)base["AlternateStyleName"]; }
+            set { base["AlternateStyleName"] = value; }
+        }
+
+        public bool ShrinkDrawing { get; set; }
     }
 }

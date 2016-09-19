@@ -72,9 +72,10 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Scripts\PlotDwg.scr" />
     <None Include="Scripts\test2.scr" />
     <None Include="Scripts\test.dwg" />
-    <None Include="Scripts\test.scr" />
+    <None Include="Scripts\PlotPlanchette.scr" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
