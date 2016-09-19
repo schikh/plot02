@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
@@ -56,11 +54,11 @@ namespace BatchPlot
 				Helper.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
 				_plotParameters = new PlotParameters(args);
 
-				//var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(2);
-				var energies = ExtendEnergiesSelection(_plotParameters.Energies);
-				_plotParameters.EnergyDescription = energies;
-				var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
-				var filePaths = ImportServerFiles(serverFilePaths).ToArray();
+				var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(2);
+				//var energies = ExtendEnergiesSelection(_plotParameters.Energies);
+				//_plotParameters.EnergyDescription = energies;
+				//var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
+				//var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
 				OpenFiles(filePaths);
 
@@ -75,7 +73,8 @@ namespace BatchPlot
 
 				CreateAndConfigureLayout();
 
-				AddPlotCartridge(_plotParameters.CartridgeTemplate, _plotParameters.PlotCartridgePosition);
+				AddPlotCartridge(_plotParameters.CartridgeTemplate, 
+					_plotParameters.PlotCartridgePosition);
 
 				SetPageView();
 
@@ -129,7 +128,7 @@ namespace BatchPlot
 
 		private List<string> GetServerFilePaths(string category, IEnumerable<string> energies)
 		{
-			//              + "AND energie NOT IN ('SYS','COMM','ELEC','GAZ','IC','RE','TPCD','TPDV','TPMD','TPRC') "
+			// + "AND energie NOT IN ('SYS','COMM','ELEC','GAZ','IC','RE','TPCD','TPDV','TPMD','TPRC') "
 			var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
 			var query = string.Format("SELECT path, fileName "
 				+ "FROM dessin "
@@ -189,7 +188,7 @@ namespace BatchPlot
 
 			var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
 			var query = string.Format(
-                  "SELECT DISTINCT COALESCE(a.ENERGY, b.TITLEID) AS ENERGY, COALESCE(b.RANK, 50) "
+				  "SELECT DISTINCT COALESCE(a.ENERGY, b.TITLEID) AS ENERGY, COALESCE(b.RANK, 50) "
 				+ "FROM PLOTSRV_REQENERGIEGROUP a "
 				+ "FULL OUTER JOIN PLOTMAPLAYERTITLE b "
 				+ "ON a.ENERGY = b.TITLEID "
@@ -225,9 +224,9 @@ namespace BatchPlot
 			using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
 			using (var btr = (BlockTableRecord)bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
 			{
-                var c = filePaths.Count();
-                var i = 0;
-                foreach (var filePath in filePaths)
+				var c = filePaths.Count();
+				var i = 0;
+				foreach (var filePath in filePaths)
 				{
 					Helper.Log("OPEN FILE {1}/{2}   {0}", filePath, ++i, c);
 					var br = OpenFile(filePath);
@@ -253,29 +252,27 @@ namespace BatchPlot
 		private void AddPlotCartridge(string templateFilePath, Point3d position)
 		{
 			using (var tr = _document.Database.TransactionManager.StartTransaction())
+			using (var layout = GetPlotLayout(tr))
+			using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
 			{
-				using (var layout = GetPlotLayout(tr))
-				using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+				ObjectId blockId;
+				using (var db = new Database(false, true))
 				{
-					ObjectId blockId;
-					using (var db = new Database(false, true))
-					{
-						db.ReadDwgFile(templateFilePath, FileShare.Read, true, "");
-						var blockName = Path.GetFileNameWithoutExtension(templateFilePath);
-						blockId = _document.Database.Insert(blockName, db, true);
-					}
+					db.ReadDwgFile(templateFilePath, FileShare.Read, true, "");
+					var blockName = Path.GetFileNameWithoutExtension(templateFilePath);
+					blockId = _document.Database.Insert(blockName, db, true);
+				}
 
-					var values = GetCartridgeInfo(tr);
+				var values = GetCartridgeInfo(tr);
 
-					using (var blockDefinition = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForRead))
-					using (var br = new BlockReference(position, blockId))
-					{
-						btr.AppendEntity(br);
-						tr.AddNewlyCreatedDBObject(br, true);
-						blockDefinition.CopyAttributeDefinition(br, values);
-					}
-                    tr.Commit();
-                }
+				using (var blockDefinition = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForRead))
+				using (var br = new BlockReference(position, blockId))
+				{
+					btr.AppendEntity(br);
+					tr.AddNewlyCreatedDBObject(br, true);
+					blockDefinition.CopyAttributeDefinition(br, values);
+				}
+				tr.Commit();
 			}
 		}
 
@@ -519,17 +516,15 @@ namespace BatchPlot
 		private void CreateAndConfigureLayout()
 		{
 			using (var tr = _document.Database.TransactionManager.StartTransaction())
+			using (var layout = CreatePlotLayout(tr))
 			{
-				using (var layout = CreatePlotLayout(tr))
+				SetPlotSettings(layout);
+				using (var viewport = CreateViewport(layout, tr))
 				{
-					SetPlotSettings(layout);
-					using (var viewport = CreateViewport(layout, tr))
-					{
-						SetViewportSettings(viewport);
-					}
-					AddDrawingBorders(tr, layout);
-					AddStamp(tr, layout);
+					SetViewportSettings(viewport);
 				}
+				AddDrawingBorders(tr, layout);
+				AddStamp(tr, layout);
 				tr.Commit();
 			}
 		}
@@ -602,13 +597,15 @@ namespace BatchPlot
 
 		private Viewport CreateViewport(Layout layout, Transaction tr)
 		{
-			var btr = (BlockTableRecord)tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite);
-			var vp = new Viewport();
-			btr.AppendEntity(vp);
-			tr.AddNewlyCreatedDBObject(vp, true);
-			vp.On = true;
-			vp.GridOn = true;
-			return vp;
+			using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+			{
+				var vp = new Viewport();
+				btr.AppendEntity(vp);
+				tr.AddNewlyCreatedDBObject(vp, true);
+				vp.On = true;
+				vp.GridOn = true;
+				return vp;
+			}
 		}
 
 		private void SetPlotSettings(Layout layout)
@@ -668,7 +665,7 @@ namespace BatchPlot
 			}
 			if (pageFormatList == null || !pageFormatList.Any())
 			{
-				pageFormatList = GetPageFormatList(psv, ps).ToArray();
+				pageFormatList = GetPageFormatList(psv, ps, plotterName).ToArray();
 			}
 			pageFormatList = pageFormatList
 				.OrderBy(x => x.PlotPaperSize.Width * x.PlotPaperSize.Height);
@@ -713,7 +710,7 @@ namespace BatchPlot
 		//    return list;
 		//}
 
-		private IEnumerable<PageFormat> GetPageFormatList(PlotSettingsValidator psv, PlotSettings ps)
+		private IEnumerable<PageFormat> GetPageFormatList(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
 		{
 			var list = psv.GetCanonicalMediaNameList(ps);
 			for (var i = 0; i < list.Count; i++)
@@ -728,7 +725,7 @@ namespace BatchPlot
 					- ps.PlotPaperMargins.MaxPoint.Y;
 				yield return new PageFormat()
 				{
-					Pc3Name = "",
+					PlotterName = plotterName,
 					CanonicalMediaName = ps.CanonicalMediaName,
 					PlotPaperSize = ps.PlotRotation == PlotRotation.Degrees090 ? new Size(sizey, sizex) : new Size(sizex, sizey)
 				};
@@ -820,16 +817,15 @@ namespace BatchPlot
 
 		private void SaveDwg(string filePath)
 		{
-			var document = Application.DocumentManager.MdiActiveDocument;
-			document.Database.SaveAs(filePath, true, DwgVersion.Current, document.Database.SecurityParameters);
+			_document.Database.SaveAs(filePath, true, DwgVersion.Current, 
+				_document.Database.SecurityParameters);
 		}
 
 		private void PlotExtents()
 		{
 			using (var tr = _document.Database.TransactionManager.StartTransaction())
+			using (var layout = GetPlotLayout(tr))
 			{
-				var layout = GetPlotLayout(tr);
-
 				var ps = new PlotSettings(layout.ModelType);
 				ps.CopyFrom(layout);
 				ps.PlotPlotStyles = true;
@@ -839,7 +835,6 @@ namespace BatchPlot
 				psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
 				psv.SetUseStandardScale(ps, true);
 				//psv.SetPlotCentered(ps, true);
-				
 				psv.SetPlotOrigin(ps, PlotConfiguration.Config.PlotOrigin);
 				if (_plotParameters.PageFormat.ShrinkDrawing)
 				{
@@ -849,16 +844,6 @@ namespace BatchPlot
 				{
 					psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
 				}
-				//psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
-				//var extent2d = ps.PlotPaperMargins;
-				//if (extent2d.MaxPoint.Y > extent2d.MaxPoint.X)
-				//{
-				//    psv.SetPlotRotation(ps, PlotRotation.Degrees000);
-				//}
-				//else
-				//{
-				//    psv.SetPlotRotation(ps, PlotRotation.Degrees090);
-				//}
 				psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, _plotParameters.PageFormat.CanonicalMediaName);
 				psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
 
@@ -1059,7 +1044,7 @@ namespace BatchPlot
 						SetImpetrant();
 						break;
 					case @"/z":
-						Zone = (Zone) Enum.Parse(typeof(Zone), args[++i]);
+						Zone = (Zone) Enum.Parse(typeof(Zone), args[++i], true);
 						break;
 					case @"/d":
 						Debug = true;
