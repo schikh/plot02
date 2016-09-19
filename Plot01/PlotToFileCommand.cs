@@ -19,13 +19,13 @@ using BatchPlot.Extensions;
 using BatchPlot.Services;
 
 //    C:\Users\adn534>print /d:\\U90PHIMPT005\NA83  "C:\Test\plot\Plot01\Scripts\dump2.bin"
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z West /c "MAP" /e "BT,MT,EP,BP,MP" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /imp  /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /imp  /isolate
-//                                                                               /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z Est /c "MAP" /e "BT,MT,EP,BP,MP" /imp  /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z West /c "MAP" /e "BT,MT,EP,BP,MP" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534   /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534   /isolate
+//                                                                               /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z Est /c "MAP" /e "BT,MT,EP,BP,MP" /imp  /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp  /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
 [assembly: CommandClass(typeof(PlotToFileCommand))]
 namespace BatchPlot
 {
@@ -129,8 +129,8 @@ namespace BatchPlot
 
 		private List<string> GetServerFilePaths(string category, IEnumerable<string> energies)
 		{
-            //              + "AND energie NOT IN ('SYS','COMM','ELEC','GAZ','IC','RE','TPCD','TPDV','TPMD','TPRC') "
-            var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
+			//              + "AND energie NOT IN ('SYS','COMM','ELEC','GAZ','IC','RE','TPCD','TPDV','TPMD','TPRC') "
+			var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
 			var query = string.Format("SELECT path, fileName "
 				+ "FROM dessin "
 				+ "WHERE serveur = '{0}' "
@@ -188,7 +188,8 @@ namespace BatchPlot
 			}
 
 			var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
-			var query = string.Format("SELECT DISTINCT COALESCE(a.ENERGY, b.TITLEID) AS ENERGY, COALESCE(b.RANK, 50) "
+			var query = string.Format(
+                  "SELECT DISTINCT COALESCE(a.ENERGY, b.TITLEID) AS ENERGY, COALESCE(b.RANK, 50) "
 				+ "FROM PLOTSRV_REQENERGIEGROUP a "
 				+ "FULL OUTER JOIN PLOTMAPLAYERTITLE b "
 				+ "ON a.ENERGY = b.TITLEID "
@@ -220,13 +221,13 @@ namespace BatchPlot
 
 		private void OpenFiles(IEnumerable<string> filePaths)
 		{
-			var c = filePaths.Count();
-			var i = 0;
 			using (var tr = _document.Database.TransactionManager.StartTransaction())
 			using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
 			using (var btr = (BlockTableRecord)bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
 			{
-				foreach (var filePath in filePaths)
+                var c = filePaths.Count();
+                var i = 0;
+                foreach (var filePath in filePaths)
 				{
 					Helper.Log("OPEN FILE {1}/{2}   {0}", filePath, ++i, c);
 					var br = OpenFile(filePath);
@@ -273,8 +274,8 @@ namespace BatchPlot
 						tr.AddNewlyCreatedDBObject(br, true);
 						blockDefinition.CopyAttributeDefinition(br, values);
 					}
-				}
-				tr.Commit();
+                    tr.Commit();
+                }
 			}
 		}
 
@@ -418,8 +419,8 @@ namespace BatchPlot
 				.OrderByDescending(x => x.Count())
 				.Select(x => x.Key)
 				.Take(15)
-                .OrderBy(x => x)
-                .GroupListItems(5)
+				.OrderBy(x => x)
+				.GroupListItems(5)
 				.ToList()
 				.ForEach(x => values["RUE" + ++i] = x);
 			return values;
@@ -541,7 +542,6 @@ namespace BatchPlot
 
 			viewport.ViewDirection = new Vector3d(0, 0, 1);
 			viewport.ViewCenter = _plotParameters.DrawingCenter;
-			//acVport.StandardScale = StandardScaleType.ScaleToFit;
 			viewport.CustomScale = _plotParameters.Scale;
 			viewport.Locked = true;
 			viewport.On = true;
@@ -627,7 +627,6 @@ namespace BatchPlot
 				psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, null);
 				psv.RefreshLists(ps);
 
-				//GetPageFormatList(psv, ps).ToArray();
 				_plotParameters.PageFormat = GetPageFormat(psv, ps, _plotParameters.PlotterName);
 
 				psv.SetCanonicalMediaName(ps, _plotParameters.PageFormat.CanonicalMediaName);
@@ -740,17 +739,17 @@ namespace BatchPlot
 			}
 		}
 
-        private void SetPageView()
-        {
-            using (var view = _document.Editor.GetCurrentView())
-            {
-                var pageSize = _plotParameters.PageFormat.PlotPaperSize;
-                view.Width = pageSize.Width;
-                view.Height = pageSize.Height;
-                view.CenterPoint = new Point2d(pageSize.Width / 2, pageSize.Height / 2);
-                _document.Editor.SetCurrentView(view);
-            }
-        }
+		private void SetPageView()
+		{
+			using (var view = _document.Editor.GetCurrentView())
+			{
+				var pageSize = _plotParameters.PageFormat.PlotPaperSize;
+				view.Width = pageSize.Width;
+				view.Height = pageSize.Height;
+				view.CenterPoint = new Point2d(pageSize.Width / 2, pageSize.Height / 2);
+				_document.Editor.SetCurrentView(view);
+			}
+		}
 
 		//private string GetCanonicalMediaName(PlotSettingsValidator psv, PlotSettings ps, string pageSize)
 		//{
@@ -1030,8 +1029,6 @@ namespace BatchPlot
 		}
 	}
 
-
-
 	internal class PlotParameters
 	{
 		public PlotParameters(string[] args)
@@ -1067,6 +1064,18 @@ namespace BatchPlot
 					case @"/d":
 						Debug = true;
 						break;
+					case @"/st":
+						StampId = args[++i];
+						break;
+					case @"/t":
+						PlanTotal = int.Parse(args[++i]);
+						break;
+					case @"/n":
+						PlanId = int.Parse(args[++i]);
+						break;
+					case @"/u":
+						UserId = args[++i];
+						break;
 					case @"/i":
 					case @"/l":
 					case @"/s":
@@ -1082,22 +1091,24 @@ namespace BatchPlot
 		}
 
 		// PlotCardexEnerGISCommand => no stamp
-		public string JobType = "Structured";
-		public string s_plot_ticket = "952926";
-		public string s_plot_request = "129415";
-		public string c_type_plan = "T";
-		public string l_div	= "La Louvière";
-		public string l_path_plan = "";
+		//public string JobType = "Structured";
+		//public string s_plot_ticket = "952926";
+		//public string s_plot_request = "129415";
+		//public string c_type_plan = "T";
+		//public string l_div	= "La Louvière";
+		//public string l_path_plan = "";
+
+
+		// /st "1629628-29519681" /t = 7 /n 1 /u ADN534;
 
 		// l_id_stamp
-		public string StampId = "1629628-29519681";
+		public string StampId { get; private set; }
 		// n_tot_plan
-		public int PlanTotal = 7;
+		public int PlanTotal { get; private set; }
 		// n_ord_plan
-		public int PlanId = 1;
+		public int PlanId { get; private set; }
 		// userid
-		public string UserId = "BZT";
-
+		public string UserId { get; private set; }
 		// l_id_planchette
 		public string PlanchetteId { get; private set; }
 		// l_path_result_pdf

@@ -3140,3 +3140,139 @@ System.ArgumentException: PC3 not found Canon C5235 - ADER GOS IT - BSM Reseaux.
 2016-09-19 16:59:40,473 [1] DEBUG BatchPlot.Services.Helper - Drawing size: 1000.80652710056,1000.71630119999
 2016-09-19 17:00:40,258 [1] DEBUG BatchPlot.Services.Helper - Selected paper format: A3
 2016-09-19 17:00:55,347 [1] DEBUG BatchPlot.Services.Helper - PLOT SUCCESSFUL
+2016-09-19 17:27:30,540 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z West /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /p Canon C5235 - MERCK NAM IT - BSM Reseaux /d /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-19 17:27:31,237 [1] DEBUG BatchPlot.Services.Helper - Query table DESSIN: SELECT path, fileName FROM dessin WHERE serveur = 'RWA005' AND categorie = 'MAP' AND energie IN('BT','TOPO','TPCB','TPDV','TPMA','TPMD','TPPC','TPRC','TPWL') AND path NOT LIKE '%#%' AND xmax >= 79500 AND xmin <= 80000 AND ymax >= 145000 AND ymin <= 145250 
+2016-09-19 17:27:31,286 [1] DEBUG BatchPlot.Services.Helper - Number OF file found: 16
+2016-09-19 17:27:32,414 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145C.DWG
+2016-09-19 17:27:32,680 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145.DWG
+2016-09-19 17:27:32,971 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144.DWG
+2016-09-19 17:27:33,449 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145.DWG
+2016-09-19 17:27:33,805 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144.DWG
+2016-09-19 17:27:34,160 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144P.DWG
+2016-09-19 17:27:34,237 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145P.DWG
+2016-09-19 17:27:34,365 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144P.DWG
+2016-09-19 17:27:34,478 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145P.DWG
+2016-09-19 17:27:34,660 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144W.DWG
+2016-09-19 17:27:34,753 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145W.DWG
+2016-09-19 17:27:34,862 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145W.DWG
+2016-09-19 17:27:34,960 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079144.DWG
+2016-09-19 17:27:35,205 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079145.DWG
+2016-09-19 17:27:35,401 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080144.DWG
+2016-09-19 17:27:36,095 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080145.DWG
+2016-09-19 17:27:44,245 [1] DEBUG BatchPlot.Services.Helper - Drawing size: 1240,530
+2016-09-19 17:27:49,461 [1] DEBUG BatchPlot.Services.Helper - Page size: User256                                  (210.057998657227,297.095336914063) (7.22841644287109,7.22842407226563) (7.22840881347656,7.22842407226563)
+2016-09-19 17:27:54,720 [1] DEBUG BatchPlot.Services.Helper - Page size: A3                                       (296.925994873047,419.946655273438) (6.80508327484131,5.7890625) (6.80508422851563,5.78909301757813)
+2016-09-19 17:27:59,841 [1] DEBUG BatchPlot.Services.Helper - Page size: B4 (JIS)                                 (256.963348388672,363.981994628906) (6.80508327484131,5.7890625) (6.80509948730469,5.78909301757813)
+2016-09-19 17:28:01,395 [1] DEBUG BatchPlot.Services.Helper - Page size: A4                                       (209.973327636719,296.925994873047) (6.80508327484131,5.7890625) (6.80506896972656,5.78909301757813)
+2016-09-19 17:28:06,102 [1] DEBUG BatchPlot.Services.Helper - Page size: B5 (JIS)                                 (181.948654174805,256.963348388672) (6.80508327484131,5.78910827636719) (6.8050537109375,5.78907775878906)
+2016-09-19 17:28:10,883 [1] DEBUG BatchPlot.Services.Helper - Page size: A5                                       (147.997329711914,209.973327636719) (6.80508327484131,5.78907775878906) (6.80508422851563,5.78907775878906)
+2016-09-19 17:28:15,951 [1] DEBUG BatchPlot.Services.Helper - Page size: Executive                                (184.149993896484,266.700012207031) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:28:21,038 [1] DEBUG BatchPlot.Services.Helper - Page size: Statement                                (139.699996948242,215.899993896484) (7.14374971389771,5.78907775878906) (7.14375305175781,5.78907775878906)
+2016-09-19 17:28:25,996 [1] DEBUG BatchPlot.Services.Helper - Page size: Legal                                    (215.899993896484,355.600006103516) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:28:32,690 [1] DEBUG BatchPlot.Services.Helper - Page size: 11x17                                    (279.399993896484,431.799987792969) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:28:44,500 [1] DEBUG BatchPlot.Services.Helper - Page size: Letter                                   (215.899993896484,279.399993896484) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:28:44,532 [1] DEBUG BatchPlot.Services.Helper - Selected paper format: A3
+2016-09-19 17:28:52,065 [1] DEBUG BatchPlot.Services.Helper - DrawingCenter: 79750-145125
+2016-09-19 17:29:07,622 [1] DEBUG BatchPlot.Services.Helper - PLOT SUCCESSFUL
+2016-09-19 17:30:34,377 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z West /c MAP /e BT /p Canon C5235 - MERCK NAM IT - BSM Reseaux /d /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-19 17:30:35,038 [1] DEBUG BatchPlot.Services.Helper - Query table DESSIN: SELECT path, fileName FROM dessin WHERE serveur = 'RWA005' AND categorie = 'MAP' AND energie IN('BT','TOPO','TPCB','TPDV','TPMA','TPMD','TPPC','TPRC','TPWL') AND path NOT LIKE '%#%' AND xmax >= 79500 AND xmin <= 80000 AND ymax >= 145000 AND ymin <= 145250 
+2016-09-19 17:30:35,092 [1] DEBUG BatchPlot.Services.Helper - Number OF file found: 16
+2016-09-19 17:30:36,113 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145C.DWG
+2016-09-19 17:30:36,401 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145.DWG
+2016-09-19 17:30:36,701 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144.DWG
+2016-09-19 17:30:37,174 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145.DWG
+2016-09-19 17:30:37,514 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144.DWG
+2016-09-19 17:30:37,985 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144P.DWG
+2016-09-19 17:30:38,056 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145P.DWG
+2016-09-19 17:30:38,148 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144P.DWG
+2016-09-19 17:30:38,243 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145P.DWG
+2016-09-19 17:30:38,361 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144W.DWG
+2016-09-19 17:30:38,406 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145W.DWG
+2016-09-19 17:30:38,459 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145W.DWG
+2016-09-19 17:30:38,519 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079144.DWG
+2016-09-19 17:30:38,763 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079145.DWG
+2016-09-19 17:30:38,946 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080144.DWG
+2016-09-19 17:30:39,611 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080145.DWG
+2016-09-19 17:30:47,068 [1] DEBUG BatchPlot.Services.Helper - Drawing size: 1240,530
+2016-09-19 17:30:51,498 [1] DEBUG BatchPlot.Services.Helper - Page size: User256                                  (210.057998657227,297.095336914063) (7.22841644287109,7.22842407226563) (7.22840881347656,7.22842407226563)
+2016-09-19 17:30:56,812 [1] DEBUG BatchPlot.Services.Helper - Page size: A3                                       (296.925994873047,419.946655273438) (6.80508327484131,5.7890625) (6.80508422851563,5.78909301757813)
+2016-09-19 17:31:01,976 [1] DEBUG BatchPlot.Services.Helper - Page size: B4 (JIS)                                 (256.963348388672,363.981994628906) (6.80508327484131,5.7890625) (6.80509948730469,5.78909301757813)
+2016-09-19 17:31:03,693 [1] DEBUG BatchPlot.Services.Helper - Page size: A4                                       (209.973327636719,296.925994873047) (6.80508327484131,5.7890625) (6.80506896972656,5.78909301757813)
+2016-09-19 17:31:08,661 [1] DEBUG BatchPlot.Services.Helper - Page size: B5 (JIS)                                 (181.948654174805,256.963348388672) (6.80508327484131,5.78910827636719) (6.8050537109375,5.78907775878906)
+2016-09-19 17:31:13,860 [1] DEBUG BatchPlot.Services.Helper - Page size: A5                                       (147.997329711914,209.973327636719) (6.80508327484131,5.78907775878906) (6.80508422851563,5.78907775878906)
+2016-09-19 17:31:17,801 [1] DEBUG BatchPlot.Services.Helper - Page size: Executive                                (184.149993896484,266.700012207031) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:31:21,487 [1] DEBUG BatchPlot.Services.Helper - Page size: Statement                                (139.699996948242,215.899993896484) (7.14374971389771,5.78907775878906) (7.14375305175781,5.78907775878906)
+2016-09-19 17:31:26,520 [1] DEBUG BatchPlot.Services.Helper - Page size: Legal                                    (215.899993896484,355.600006103516) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:31:33,238 [1] DEBUG BatchPlot.Services.Helper - Page size: 11x17                                    (279.399993896484,431.799987792969) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:31:45,002 [1] DEBUG BatchPlot.Services.Helper - Page size: Letter                                   (215.899993896484,279.399993896484) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:31:45,023 [1] DEBUG BatchPlot.Services.Helper - Selected paper format: A3
+2016-09-19 17:31:52,258 [1] DEBUG BatchPlot.Services.Helper - DrawingCenter: 79750-145125
+2016-09-19 17:32:06,729 [1] DEBUG BatchPlot.Services.Helper - PLOT SUCCESSFUL
+2016-09-19 17:39:30,670 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z West /c MAP /e BT /p Canon C5235 - MERCK NAM IT - BSM Reseaux /d /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-19 17:39:31,301 [1] DEBUG BatchPlot.Services.Helper - Query table DESSIN: SELECT path, fileName FROM dessin WHERE serveur = 'RWA005' AND categorie = 'MAP' AND energie IN('BT','TOPO','TPCB','TPDV','TPMA','TPMD','TPPC','TPRC','TPWL') AND path NOT LIKE '%#%' AND xmax >= 79500 AND xmin <= 80000 AND ymax >= 145000 AND ymin <= 145250 
+2016-09-19 17:39:31,343 [1] DEBUG BatchPlot.Services.Helper - Number OF file found: 16
+2016-09-19 17:39:32,382 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145C.DWG
+2016-09-19 17:39:32,644 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145.DWG
+2016-09-19 17:39:32,932 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144.DWG
+2016-09-19 17:39:33,337 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145.DWG
+2016-09-19 17:39:33,567 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144.DWG
+2016-09-19 17:39:33,807 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144P.DWG
+2016-09-19 17:39:33,870 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145P.DWG
+2016-09-19 17:39:33,954 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144P.DWG
+2016-09-19 17:39:34,038 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145P.DWG
+2016-09-19 17:39:34,144 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144W.DWG
+2016-09-19 17:39:34,182 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145W.DWG
+2016-09-19 17:39:34,234 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145W.DWG
+2016-09-19 17:39:34,291 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079144.DWG
+2016-09-19 17:39:34,529 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079145.DWG
+2016-09-19 17:39:34,699 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080144.DWG
+2016-09-19 17:39:35,349 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080145.DWG
+2016-09-19 17:39:43,832 [1] DEBUG BatchPlot.Services.Helper - Drawing size: 1240,530
+2016-09-19 17:39:49,942 [1] DEBUG BatchPlot.Services.Helper - Page size: User256                                  (210.057998657227,297.095336914063) (7.22841644287109,7.22842407226563) (7.22840881347656,7.22842407226563)
+2016-09-19 17:39:55,631 [1] DEBUG BatchPlot.Services.Helper - Page size: A3                                       (296.925994873047,419.946655273438) (6.80508327484131,5.7890625) (6.80508422851563,5.78909301757813)
+2016-09-19 17:40:00,730 [1] DEBUG BatchPlot.Services.Helper - Page size: B4 (JIS)                                 (256.963348388672,363.981994628906) (6.80508327484131,5.7890625) (6.80509948730469,5.78909301757813)
+2016-09-19 17:40:02,356 [1] DEBUG BatchPlot.Services.Helper - Page size: A4                                       (209.973327636719,296.925994873047) (6.80508327484131,5.7890625) (6.80506896972656,5.78909301757813)
+2016-09-19 17:40:07,478 [1] DEBUG BatchPlot.Services.Helper - Page size: B5 (JIS)                                 (181.948654174805,256.963348388672) (6.80508327484131,5.78910827636719) (6.8050537109375,5.78907775878906)
+2016-09-19 17:40:12,536 [1] DEBUG BatchPlot.Services.Helper - Page size: A5                                       (147.997329711914,209.973327636719) (6.80508327484131,5.78907775878906) (6.80508422851563,5.78907775878906)
+2016-09-19 17:40:17,719 [1] DEBUG BatchPlot.Services.Helper - Page size: Executive                                (184.149993896484,266.700012207031) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:40:22,687 [1] DEBUG BatchPlot.Services.Helper - Page size: Statement                                (139.699996948242,215.899993896484) (7.14374971389771,5.78907775878906) (7.14375305175781,5.78907775878906)
+2016-09-19 17:40:27,423 [1] DEBUG BatchPlot.Services.Helper - Page size: Legal                                    (215.899993896484,355.600006103516) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:40:34,446 [1] DEBUG BatchPlot.Services.Helper - Page size: 11x17                                    (279.399993896484,431.799987792969) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:40:46,420 [1] DEBUG BatchPlot.Services.Helper - Page size: Letter                                   (215.899993896484,279.399993896484) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:40:46,437 [1] DEBUG BatchPlot.Services.Helper - Selected paper format: A3
+2016-09-19 17:40:53,160 [1] DEBUG BatchPlot.Services.Helper - DrawingCenter: 79750-145125
+2016-09-19 17:41:07,309 [1] DEBUG BatchPlot.Services.Helper - PLOT SUCCESSFUL
+2016-09-19 17:50:34,382 [1] DEBUG BatchPlot.Services.Helper - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z West /c MAP /e BT /p Canon C5235 - MERCK NAM IT - BSM Reseaux /d /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-19 17:50:35,090 [1] DEBUG BatchPlot.Services.Helper - Query table DESSIN: SELECT path, fileName FROM dessin WHERE serveur = 'RWA005' AND categorie = 'MAP' AND energie IN('BT','TOPO','TPCB','TPDV','TPMA','TPMD','TPPC','TPRC','TPWL') AND path NOT LIKE '%#%' AND xmax >= 79500 AND xmin <= 80000 AND ymax >= 145000 AND ymin <= 145250 
+2016-09-19 17:50:35,135 [1] DEBUG BatchPlot.Services.Helper - Number OF file found: 16
+2016-09-19 17:50:36,146 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 1/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145C.DWG
+2016-09-19 17:50:36,401 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 2/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145.DWG
+2016-09-19 17:50:36,686 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 3/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144.DWG
+2016-09-19 17:50:37,094 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 4/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145.DWG
+2016-09-19 17:50:37,321 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 5/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144.DWG
+2016-09-19 17:50:37,563 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 6/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144P.DWG
+2016-09-19 17:50:37,635 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 7/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145P.DWG
+2016-09-19 17:50:37,728 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 8/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080144P.DWG
+2016-09-19 17:50:37,825 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 9/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145P.DWG
+2016-09-19 17:50:37,939 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 10/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079144W.DWG
+2016-09-19 17:50:37,986 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 11/16   C:\Test\Plot\Plot01\bin\Debug\temp\F079145W.DWG
+2016-09-19 17:50:38,033 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 12/16   C:\Test\Plot\Plot01\bin\Debug\temp\F080145W.DWG
+2016-09-19 17:50:38,091 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 13/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079144.DWG
+2016-09-19 17:50:38,332 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 14/16   C:\Test\Plot\Plot01\bin\Debug\temp\B079145.DWG
+2016-09-19 17:50:38,502 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 15/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080144.DWG
+2016-09-19 17:50:39,177 [1] DEBUG BatchPlot.Services.Helper - OPEN FILE 16/16   C:\Test\Plot\Plot01\bin\Debug\temp\B080145.DWG
+2016-09-19 17:50:47,658 [1] DEBUG BatchPlot.Services.Helper - Drawing size: 1240,530
+2016-09-19 17:50:52,555 [1] DEBUG BatchPlot.Services.Helper - Page size: User256                                  (210.057998657227,297.095336914063) (7.22841644287109,7.22842407226563) (7.22840881347656,7.22842407226563)
+2016-09-19 17:50:57,856 [1] DEBUG BatchPlot.Services.Helper - Page size: A3                                       (296.925994873047,419.946655273438) (6.80508327484131,5.7890625) (6.80508422851563,5.78909301757813)
+2016-09-19 17:51:02,860 [1] DEBUG BatchPlot.Services.Helper - Page size: B4 (JIS)                                 (256.963348388672,363.981994628906) (6.80508327484131,5.7890625) (6.80509948730469,5.78909301757813)
+2016-09-19 17:51:04,514 [1] DEBUG BatchPlot.Services.Helper - Page size: A4                                       (209.973327636719,296.925994873047) (6.80508327484131,5.7890625) (6.80506896972656,5.78909301757813)
+2016-09-19 17:51:09,402 [1] DEBUG BatchPlot.Services.Helper - Page size: B5 (JIS)                                 (181.948654174805,256.963348388672) (6.80508327484131,5.78910827636719) (6.8050537109375,5.78907775878906)
+2016-09-19 17:51:14,666 [1] DEBUG BatchPlot.Services.Helper - Page size: A5                                       (147.997329711914,209.973327636719) (6.80508327484131,5.78907775878906) (6.80508422851563,5.78907775878906)
+2016-09-19 17:51:19,641 [1] DEBUG BatchPlot.Services.Helper - Page size: Executive                                (184.149993896484,266.700012207031) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:51:24,923 [1] DEBUG BatchPlot.Services.Helper - Page size: Statement                                (139.699996948242,215.899993896484) (7.14374971389771,5.78907775878906) (7.14375305175781,5.78907775878906)
+2016-09-19 17:51:29,739 [1] DEBUG BatchPlot.Services.Helper - Page size: Legal                                    (215.899993896484,355.600006103516) (7.14374971389771,5.78909301757813) (7.14373779296875,5.78909301757813)
+2016-09-19 17:51:36,248 [1] DEBUG BatchPlot.Services.Helper - Page size: 11x17                                    (279.399993896484,431.799987792969) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:51:47,977 [1] DEBUG BatchPlot.Services.Helper - Page size: Letter                                   (215.899993896484,279.399993896484) (7.14374971389771,5.7890625) (7.14373779296875,5.78909301757813)
+2016-09-19 17:51:48,002 [1] DEBUG BatchPlot.Services.Helper - Selected paper format: A3
+2016-09-19 17:51:54,915 [1] DEBUG BatchPlot.Services.Helper - DrawingCenter: 79750-145125
+2016-09-19 17:52:09,328 [1] DEBUG BatchPlot.Services.Helper - PLOT SUCCESSFUL
