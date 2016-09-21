@@ -54,11 +54,11 @@ namespace BatchPlot
 				Helper.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
 				_plotParameters = new PlotParameters(args);
 
-				var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(2);
-				//var energies = ExtendEnergiesSelection(_plotParameters.Energies);
-				//_plotParameters.EnergyDescription = energies;
-				//var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
-				//var filePaths = ImportServerFiles(serverFilePaths).ToArray();
+				//var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(2);
+				var energies = ExtendEnergiesSelection(_plotParameters.Energies);
+				_plotParameters.EnergyDescription = energies;
+				var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
+				var filePaths = ImportServerFiles(serverFilePaths).ToArray();
 
 				OpenFiles(filePaths);
 
@@ -80,7 +80,7 @@ namespace BatchPlot
 
 				PlotExtents();
 
-				SaveDwg(@"C:\Test\Plot\Plot01\Scripts\dump2.dwg");
+				//SaveDwg(@"C:\Test\Plot\Plot01\Scripts\dump2.dwg");
 
 				//DeleteImportedFiles();
 
@@ -489,7 +489,7 @@ namespace BatchPlot
 			{
 				for (var x = 0; x < 3; x++)
 				{
-					var l2 = letters[(l1 + lettersOffset[x, y] + dy[y] * 4) % 8];
+					var l2 = letters[(l1 + lettersOffset[x, y] + dy[y] * 4 + 8) % 8];
 					var px = Math.Truncate(planchettePosition.X / 1000) + dx[x];
 					var py = Math.Truncate(planchettePosition.Y / 1000) + dy[y];
 					yield return string.Format("{0}{1}{2}", px, py, l2);
@@ -640,7 +640,7 @@ namespace BatchPlot
 				}
 				else
 				{
-					throw new ArgumentException("No styleSheet found for " + _plotParameters.PageFormat.Pc3Name);
+					//throw new ArgumentException("No styleSheet found for " + _plotParameters.PageFormat.Pc3Name);
 				}
 
 				layout.CopyFrom(ps);
@@ -649,9 +649,32 @@ namespace BatchPlot
 
 		private Size GetPageSize()
 		{
-			return string.IsNullOrEmpty(_plotParameters.PlanchetteId) ?
-				new Size(_document.Database.Extmax.X - _document.Database.Extmin.X,
-				_document.Database.Extmax.Y - _document.Database.Extmin.Y) : _plotParameters.PageSize;
+			Helper.Log("_document.Database.Extmin: {0}", _document.Database.Extmin);
+			Helper.Log("_document.Database.Extmax: {0}", _document.Database.Extmax);
+			Helper.Log("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+			Helper.Log("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+			if (string.IsNullOrEmpty(_plotParameters.PlanchetteId))
+			{
+				if (_document.Database.TileMode)
+				{
+					return new Size(
+						_document.Database.Extmax.X - _document.Database.Extmin.X,
+						_document.Database.Extmax.Y - _document.Database.Extmin.Y);
+				}
+				else
+				{
+					return new Size(
+						_document.Database.Pextmax.X - _document.Database.Pextmin.X,
+						_document.Database.Pextmax.Y - _document.Database.Pextmin.Y);
+				}
+			}
+			else
+			{
+				return _plotParameters.PageSize;
+			}
+			//return string.IsNullOrEmpty(_plotParameters.PlanchetteId) ?
+			//    new Size(_document.Database.Extmax.X - _document.Database.Extmin.X,
+			//    _document.Database.Extmax.Y - _document.Database.Extmin.Y) : _plotParameters.PageSize;
 		}
 
 		private PageFormat GetPageFormat(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
@@ -855,6 +878,12 @@ namespace BatchPlot
 				piv.MediaMatchingPolicy = MatchingPolicy.MatchEnabled;
 				piv.Validate(pi);
 
+				var d = Path.GetDirectoryName(_plotParameters.OutputFilePath);
+				if (!Directory.Exists(d))
+				{
+					Directory.CreateDirectory(d);
+				}
+
 				using (var pe = PlotFactory.CreatePublishEngine())
 				using (var ppi = new PlotPageInfo())
 				{
@@ -983,33 +1012,39 @@ namespace BatchPlot
 			var regex = new Regex(PlotConfiguration.Config.LayersToDeleteRegexFilter, RegexOptions.IgnoreCase);
 			using (var tr = db.TransactionManager.StartTransaction())
 			{
-				var layerIds = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
-				foreach (var id in layerIds)
+				using (var layerIds = (LayerTable) tr.GetObject(db.LayerTableId, OpenMode.ForRead))
 				{
-					var layer = (LayerTableRecord)tr.GetObject(id, OpenMode.ForWrite);
-					if (regex.IsMatch(layer.Name))
+					foreach (var id in layerIds)
 					{
-						layer.IsLocked = false;
-
-						var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
-						foreach (var btrId in blockTable)
+						using (var layer = (LayerTableRecord)tr.GetObject(id, OpenMode.ForWrite))
 						{
-							var block = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
-							foreach (var entId in block)
+							if (regex.IsMatch(layer.Name))
 							{
-								var ent = (Entity)tr.GetObject(entId, OpenMode.ForRead);
-								if (string.Equals(ent.Layer, layer.Name, StringComparison.InvariantCultureIgnoreCase))
+								layer.IsLocked = false;
+
+								using (var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead))
 								{
-									ent.UpgradeOpen();
-									ent.Erase();
+									foreach (var btrId in blockTable)
+									{
+										var block = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
+										foreach (var entId in block)
+										{
+											var ent = (Entity)tr.GetObject(entId, OpenMode.ForRead);
+											if (string.Equals(ent.Layer, layer.Name, StringComparison.InvariantCultureIgnoreCase))
+											{
+												ent.UpgradeOpen();
+												ent.Erase();
+											}
+										}
+									}
 								}
+
+								layer.Erase(true);
 							}
 						}
-
-						layer.Erase(true);
 					}
+					tr.Commit();
 				}
-				tr.Commit();
 			}
 		}
 	}
@@ -1083,9 +1118,6 @@ namespace BatchPlot
 		//public string l_div	= "La Louvière";
 		//public string l_path_plan = "";
 
-
-		// /st "1629628-29519681" /t = 7 /n 1 /u ADN534;
-
 		// l_id_stamp
 		public string StampId { get; private set; }
 		// n_tot_plan
@@ -1108,8 +1140,6 @@ namespace BatchPlot
 		public bool Impetrant { get; private set; }
 
 		public string PlotterName { get; private set; }
-
-		//public string CanonicalMediaName { get; set; }
 
 		public string PlanchetteLetter { get; private set; }
 
@@ -1141,7 +1171,6 @@ namespace BatchPlot
 					s.Height / 2 + PlotConfiguration.Config.ExternalBorderWidth, 0);
 			}
 		}
-
 
 		public double Scale
 		{
@@ -1207,12 +1236,12 @@ namespace BatchPlot
 
 		public string CartridgeTemplate
 		{
-			get { return Zone == Zone.Est ? PlotConfiguration.Config.EstCartridgeTemplateFilePath : PlotConfiguration.Config.WestCartridgeTemplateFilePath; }
+			get { return Zone == Zone.E ? PlotConfiguration.Config.EstCartridgeTemplateFilePath : PlotConfiguration.Config.WestCartridgeTemplateFilePath; }
 		}
 
 		public string FileServerName
 		{
-			get { return Zone == Zone.Est ? PlotConfiguration.Config.EstFileServerName : PlotConfiguration.Config.WestFileServerName; }
+			get { return Zone == Zone.E ? PlotConfiguration.Config.EstFileServerName : PlotConfiguration.Config.WestFileServerName; }
 		}
 
 		public string Stamp
@@ -1251,7 +1280,7 @@ namespace BatchPlot
 		{
 			get
 			{
-				return string.IsNullOrEmpty(PlanchetteId);
+				return !string.IsNullOrEmpty(PlanchetteId);
 			}
 		}
 
@@ -1364,8 +1393,8 @@ namespace BatchPlot
 
 	public enum Zone
 	{
-		Est,
-		West
+		E,
+		O
 	}
 }
 
@@ -1408,7 +1437,7 @@ namespace BatchPlot
 		//        tr.Commit();
 		//    }
 		//}
-	
+
 /*
 ===============================================================================================
 
@@ -1484,9 +1513,67 @@ DROP SYNONYM GENERGIS.PTASK;
 CREATE SYNONYM GENERGIS.PTASK			FOR CR_ENERGIS.PTASK;
 DROP SYNONYM GENERGIS.PTASK_SEQ;
 CREATE SYNONYM GENERGIS.PTASK_SEQ		FOR CR_ENERGIS.PTASK_SEQ;
-  
-
- */
 
 
 
+
+INSERT INTO CR_ENERGIS.PJOB (PJOBID, 
+"S_PLOT_TICKET", 
+"S_PLTICKET_STATUS", 
+"O_DATE",
+"N_TOT_PLAN",        
+"USERID")        
+SELECT PJOB_SEQ.NEXTVAL, 
+a."S_PLOT_TICKET", 
+a."S_PLTICKET_STATUS", 
+a."O_DATE",
+a."N_TOT_PLAN",        
+a."USERID"
+FROM CR_ENERGIS.PLT_MNGR_PLOT_TICKET a 
+LEFT OUTER JOIN CR_ENERGIS.PJOB b   
+ON a."S_PLOT_TICKET" = b."S_PLOT_TICKET"  
+WHERE a.S_PLTICKET_STATUS = 0 
+AND b."S_PLOT_TICKET" IS NULL
+--FOR UPDATE SKIP LOCKED
+;
+
+INSERT INTO CR_ENERGIS.PTASK (PTASKID,
+PJOBID,	        
+"C_TYPE_PLAN",       
+"L_ID_STAMP",        
+"L_ID_PLANCHETTE",   
+"N_ORD_PLAN",        
+"C_TYPE_MAP",        
+"L_PATH_PLAN",       
+"LIST_ENERGY",       
+"L_PATH_RESULT_PDF", 
+"N_SCALE",           
+"N_ESSAY",           
+"S_PLTICKET_STATUS", 
+"C_SIDE")            
+SELECT PTASK_SEQ.NEXTVAL, 
+b.PJOBID,	        
+a."C_TYPE_PLAN",       
+a."L_ID_STAMP",        
+a."L_ID_PLANCHETTE",   
+a."N_ORD_PLAN",        
+a."C_TYPE_MAP",        
+a."L_PATH_PLAN",       
+a."LIST_ENERGY",       
+a."L_PATH_RESULT_PDF", 
+a."N_SCALE",           
+a."N_ESSAY",           
+a."S_PLTICKET_STATUS", 
+a."C_SIDE"            
+FROM CR_ENERGIS.PLT_MNGR_PLOT_TICKET a
+INNER JOIN CR_ENERGIS.PJOB b   
+ON a."S_PLOT_TICKET" = b."S_PLOT_TICKET"  
+LEFT OUTER JOIN CR_ENERGIS.PTASK c
+ON b.PJOBID = c.PJOBID
+WHERE a.S_PLTICKET_STATUS = 0
+AND c.PJOBID IS NULL
+--FOR UPDATE SKIP LOCKED
+;
+
+
+ *  */

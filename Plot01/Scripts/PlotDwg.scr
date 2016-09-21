@@ -1,2 +1,4 @@
-﻿(command "_.Netload" "C:\\Test\\Plot\\Plot01\\bin\\Debug\\BatchPlot.dll")
+﻿Y
+
+(command "_.Netload" "C:\\Test\\Plot\\Plot01\\bin\\Debug\\BatchPlot.dll")
 PlotDwg

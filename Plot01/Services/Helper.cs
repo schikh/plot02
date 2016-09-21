@@ -51,9 +51,9 @@ namespace BatchPlot.Services
 
         public static void Trace(string message, params object[] parameters)
         {
-            //Console.WriteLine(message, parameters);
-            var ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage(string.Format(message + "\n", parameters));
+            Console.WriteLine(message, parameters);
+            //var ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            //ed.WriteMessage(string.Format(message + "\n", parameters));
         }
 
         public static string GetAssemblyFolder()

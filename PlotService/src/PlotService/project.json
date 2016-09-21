@@ -1,19 +1,23 @@
-﻿{
+{
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true
   },
 
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0"
-    }
+    "Microsoft.Extensions.Configuration": "1.0.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0",
+    "Oracle.ManagedDataAccess": "12.1.24160719",
+    "System.Data.Common": "4.1.0"
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": "dnxcore50"
+    "net461": {
+      "Microsoft.NETCore.App": {
+        "type": "platform",
+        "version": "1.0.0"
+      }
     }
   }
 }
