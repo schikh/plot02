@@ -25,7 +25,6 @@ namespace PlotService2
 			var tasks = new List<Task>();
 			var plotTasks = new BlockingCollection<PlotTask>();
 			var stopwatch = Stopwatch.StartNew();
-			var count = 0;
 
 			tasks.Add(Task.Factory.StartNew(() =>
 			{
@@ -46,13 +45,14 @@ namespace PlotService2
 
 			tasks.AddRange(Enumerable.Range(0, Configuration.NumberOfConsoles)
 				.Select(x => Task.Factory.StartNew(() => {
+					var count = 0;
 					while (true)
 					{
 						try
 						{
 							Console.WriteLine("Main 4");
 							ProcessPlotTasks(plotTasks);
-							Helper.Log("PlotTask {0} {1} sec", count, Math.Round(stopwatch.Elapsed.TotalSeconds, 0));
+							Helper.Log("PlotTask {0} {1} sec", ++count, Math.Round(stopwatch.Elapsed.TotalSeconds, 0));
 						}
 						catch (Exception ex)
 						{
@@ -87,21 +87,16 @@ namespace PlotService2
 				Console.WriteLine("Main 5");
 				plotTask = plotTasks.Take();
 
-				lock (sysLock)
-				{
-					Console.ForegroundColor = ConsoleColor.Cyan;
-					Console.WriteLine(">>> " + plotTask.CommandLineParameters());
-					Console.ResetColor();
-				}
-
 				var result = false;
 
 				if (plotTask.TypePlan == "T")
 				{
+					Helper.Log("Plot ticket: {0} {1}", plotTask.TaskId, plotTask.CommandLineParameters());
 					result = ProcessPlotTickects(plotTask);
 				}
 				else
 				{
+					Helper.Log("Plot dwg: {0} {1}", plotTask.TaskId, plotTask.CommandLineParameters());
 					if (File.Exists(plotTask.PathPlan))
 					{
 						var tempFolder = Helper.CreateTempFolder();
@@ -177,15 +172,15 @@ namespace PlotService2
 
 				var standardOutput = process.StandardOutput.ReadToEnd();
 
-				//lock (sysLock)
-				//{
-				//    Console.ForegroundColor = ConsoleColor.Green;
-				//    Console.WriteLine(standardOutput);
-				//    Console.ResetColor();
-				//    Console.ForegroundColor = ConsoleColor.Red;
-				//    Console.WriteLine(process.StandardError.ReadToEnd());
-				//    Console.ResetColor();
-				//}
+				lock (sysLock)
+				{
+					Console.ForegroundColor = ConsoleColor.Green;
+					Console.WriteLine(standardOutput);
+					Console.ResetColor();
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.WriteLine(process.StandardError.ReadToEnd());
+					Console.ResetColor();
+				}
 
 				process.WaitForExit(Configuration.MaximumConsoleExecutionTime * 1000);
 
@@ -280,7 +275,7 @@ namespace PlotService2
 								FROM PJOB a
 								INNER JOIN PTASK b
 								ON a.PJOBID = b.PJOBID
-								WHERE a.S_PLTICKET_STATUS = 1 AND ROWNUM <= {0} ", Configuration.BatchSize);
+								WHERE b.S_PLTICKET_STATUS = 1 AND ROWNUM <= {0} ", Configuration.BatchSize);
 				var list = da.IterateOverReader(query, MapPlotTask);
 				return list;
 			}
@@ -324,7 +319,7 @@ namespace PlotService2
 			{
 				var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["WriteConnectionString"].ConnectionString;
 				var da = new DataAccessService(connectionString);
-				var query = string.Format("UPDATE PTASK SET S_PLTICKET_STATUS = {0} WHERE PTASKID = {0} ", taskStatus, taskId);
+				var query = string.Format("UPDATE PTASK SET S_PLTICKET_STATUS = {0} WHERE PTASKID = {1} ", taskStatus, taskId);
 				var result = da.ExecuteCommand(query);
 				return result == 1;
 			}

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
@@ -15,6 +16,11 @@ using BatchPlot;
 using BatchPlot.Configuration;
 using BatchPlot.Extensions;
 using BatchPlot.Services;
+
+// TODO: use StyleOCEGray
+// TODO: generate OJT and DWG when asked to generate DWG
+// TODO: 
+// TODO: 
 
 //    C:\Users\adn534>print /d:\\U90PHIMPT005\NA83  "C:\Test\plot\Plot01\Scripts\dump2.bin"
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z West /c "MAP" /e "BT,MT,EP,BP,MP" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
@@ -36,6 +42,7 @@ namespace BatchPlot
 
 		public void Initialize()
 		{
+			new Logger().Setup();
 		}
 
 		public void Terminate()
@@ -229,29 +236,30 @@ namespace BatchPlot
 				var i = 0;
 				foreach (var filePath in filePaths)
 				{
+					i++;
 					if (File.Exists(filePath))
 					{
-						Helper.Log("OPEN FILE {1}/{2}   {0}", filePath, ++i, c);
-						var br = OpenFile(filePath);
+						Helper.Log("OPEN FILE {1}/{2}   {0}", filePath, i, c);
+						var br = OpenFile(filePath, i);
 						btr.AppendEntity(br);
 						tr.AddNewlyCreatedDBObject(br, true);
 					}
 					else
 					{
-						Helper.Log("FILE NOT FOUND {1}/{2}   {0}", filePath, ++i, c);
+						Helper.Log("FILE NOT FOUND {1}/{2}   {0}", filePath, i, c);
 					}
 				}
 				tr.Commit();
 			}
 		}
 
-		private BlockReference OpenFile(string filePath)
+		private BlockReference OpenFile(string filePath, int fileId)
 		{
 			using (var db = new Database(false, true))
 			{
 				db.ReadDwgFile(filePath, FileShare.Read, false, "");
 				DeleteNotNeededLayers(db);
-				var blockName = Path.GetFileNameWithoutExtension(filePath);
+				var blockName = string.Format("{0}-{1}", Path.GetFileNameWithoutExtension(filePath),  fileId);
 				var id = _document.Database.Insert(blockName, db, true);
 				return new BlockReference(Point3d.Origin, id);
 			}
@@ -548,8 +556,6 @@ namespace BatchPlot
 			viewport.CustomScale = _plotParameters.Scale;
 			viewport.Locked = true;
 			viewport.On = true;
-
-			Helper.Log("DrawingCenter: {0}-{1}", _plotParameters.DrawingCenter.X, _plotParameters.DrawingCenter.Y);
 		}
 
 		private Layout GetPlotLayout(Transaction tr)
@@ -648,7 +654,7 @@ namespace BatchPlot
 				}
 				else
 				{
-					//throw new ArgumentException("No styleSheet found for " + _plotParameters.PageFormat.Pc3Name);
+					throw new ArgumentException("No styleSheet found for " + _plotParameters.PageFormat.Pc3Name);
 				}
 
 				layout.CopyFrom(ps);
@@ -865,7 +871,6 @@ namespace BatchPlot
 				psv.SetDefaultPlotConfig(ps);
 				psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
 				psv.SetUseStandardScale(ps, true);
-				//psv.SetPlotCentered(ps, true);
 				psv.SetPlotOrigin(ps, PlotConfiguration.Config.PlotOrigin);
 				if (_plotParameters.PageFormat.ShrinkDrawing)
 				{
@@ -1280,7 +1285,9 @@ namespace BatchPlot
 		}
 
 		public PageFormat PageFormat { get; set; }
+		
 		public IEnumerable<string> EnergyDescription { get; set; }
+
 		public string Pc3Name 
 		{
 			get
