@@ -67,16 +67,21 @@ namespace BatchPlot
                 //var filePaths = GetServerFilePaths(_plotParameters.Category, energies);
                 //var filePaths = ImportServerFiles(filePaths).ToArray();
 
-                OpenFiles(filePaths);
+                using (var tr = _document.Database.TransactionManager.StartTransaction())
+                using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
+                using (var btr = (BlockTableRecord) bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
+                {
+                    OpenFiles(tr, bt, btr, filePaths);
+                    if (_plotParameters.Impetrant)
+                    {
+                        ApplyImpetrantStyle(tr);
+                    }
+                    else if (_plotParameters.Oce)
+                    {
+                        ApplyOceGrayStyle(tr);
+                    }
+                }
 
-                if (_plotParameters.Impetrant)
-                {
-                    ApplyImpetrantStyle();
-                }
-                else if (_plotParameters.Oce)
-                {
-                    ApplyOceGrayStyle();
-                }
 
                 CreateAndConfigurePlotLayout();
 
@@ -224,11 +229,11 @@ namespace BatchPlot
         //    }
         //}
 
-        private void OpenFiles(IEnumerable<string> filePaths)
+        private void OpenFiles(Transaction tr, BlockTable bt, BlockTableRecord btr , IEnumerable<string> filePaths)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
-            using (var btr = (BlockTableRecord)bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
+            //using (var tr = _document.Database.TransactionManager.StartTransaction())
+            //using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
+            //using (var btr = (BlockTableRecord)bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
             {
                 var c = filePaths.Count();
                 var i = 0;
@@ -247,7 +252,7 @@ namespace BatchPlot
                         Logger.Log("FILE NOT FOUND {1}/{2}   {0}", filePath, i, c);
                     }
                 }
-                tr.Commit();
+                //tr.Commit();
             }
         }
 
@@ -969,9 +974,9 @@ namespace BatchPlot
                  jobScaleFactor   = xxx           = PlotDefaultLayoutScale (in db) = 1000
                 */
 
-        private void ApplyOceGrayStyle()
+        private void ApplyOceGrayStyle(Transaction tr)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            //using (var tr = _document.Database.TransactionManager.StartTransaction())
             {
                 var regex = new Regex(PlotConfiguration.Config.TopoLayersRegexFilter, RegexOptions.IgnoreCase);
                 var list = QueryEntities(tr, null, _plotParameters.ExternalDrawingExtend);
@@ -996,13 +1001,13 @@ namespace BatchPlot
                         }
                     }
                 }
-                tr.Commit();
+                //tr.Commit();
             }
         }
 
-        private void ApplyImpetrantStyle()
+        private void ApplyImpetrantStyle(Transaction tr)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            //using (var tr = _document.Database.TransactionManager.StartTransaction())
             {
                 var list = QueryEntities(tr, PlotConfiguration.Config.TopoLayersRegexFilter,
                     _plotParameters.ExternalDrawingExtend);
@@ -1025,7 +1030,7 @@ namespace BatchPlot
                     }
                     entity.DowngradeOpen();
                 }
-                tr.Commit();
+                //tr.Commit();
             }
         }
 
