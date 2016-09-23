@@ -118,7 +118,7 @@ namespace BatchPlot.Configuration
             get { return (PlotConfigurationCollection)base["PageFormats"]; }
         }
 
-        public IEnumerable<PageFormat> GetDefaultPageFormat(string plotterName)
+        public IEnumerable<PageFormat> GetDefaultPageFormats(string plotterName)
         {
             return PageFormats.Cast<PageFormat>().Where(x => x.PlotterName == plotterName);
         }

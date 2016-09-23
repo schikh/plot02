@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using log4net;
 using log4net.Appender;
@@ -10,10 +11,9 @@ namespace BatchPlot.Services
 {
     public class Logger
     {
-        private static readonly log4net.ILog _log =
-                log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void Setup()
+        public static void Setup()
         {
             var hierarchy = (Hierarchy)LogManager.GetRepository();
 
@@ -39,6 +39,43 @@ namespace BatchPlot.Services
 
             hierarchy.Root.Level = Level.Debug;
             hierarchy.Configured = true;
+        }
+
+        public static void Log(string message, object parameter)
+        {
+            Log(message, new[] { parameter });
+        }
+
+        public static void Log(string message, params object[] parameters)
+        {
+            _log.DebugFormat(message, parameters);
+            Trace(message, parameters);
+        }
+
+        public static void Log(Exception ex)
+        {
+            _log.Error("*** ERROR ************************************************************");
+            _log.Error("Exception:", ex);
+            _log.Error("**********************************************************************");
+            Trace("*** ERROR ************************************************************");
+            Trace("COMMAND ERROR: {0}", ex.ToString().Replace("\r\n", ";"));
+            Trace("**********************************************************************");
+        }
+
+        //public static void Log(Exception ex, string message, params object[] parameters)
+        //{
+        //    _log.Error("*** ERROR ************************************************************");
+        //    _log.ErrorFormat(message, parameters);
+        //    _log.Error("Exception:", ex);
+        //    _log.Error("**********************************************************************");
+        //    Trace(message, parameters);
+        //}
+
+        public static void Trace(string message, params object[] parameters)
+        {
+            Console.WriteLine(message, parameters);
+            //var ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            //ed.WriteMessage(string.Format(message + "\n", parameters));
         }
     }
 }

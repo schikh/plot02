@@ -94,3 +94,94 @@
 2016-09-23 12:01:49,551 DEBUG DEBUGid DEBUG - Selected paper format: UserDefinedMetric (297.00 x 740.00MM)
 2016-09-23 12:01:54,158 DEBUG DEBUGid DEBUG - PLOT SUCCESSFUL
 2016-09-23 12:01:55,376 DEBUG DEBUGid DEBUG - PLOT SUCCESSFUL
+2016-09-23 19:43:39,749 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z West /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 19:43:39,895 DEBUG - PLOT ERROR
+2016-09-23 19:43:39,897 ERROR - *** ERROR ************************************************************
+2016-09-23 19:43:39,898 ERROR - Exception:
+System.ArgumentException: Requested value 'West' was not found.
+   at System.Enum.EnumResult.SetFailure(ParseFailureKind failure, String failureMessageID, Object failureMessageFormatArgument)
+   at System.Enum.TryParseEnum(Type enumType, String value, Boolean ignoreCase, EnumResult& parseResult)
+   at System.Enum.Parse(Type enumType, String value, Boolean ignoreCase)
+   at BatchPlot.PlotParameters..ctor(String[] args) in C:\Test\plot\Plot01\PlotToFileCommand.cs:line 1094
+   at BatchPlot.PlotToFileCommand.PlotPlanchette() in C:\Test\plot\Plot01\PlotToFileCommand.cs:line 61
+2016-09-23 19:43:39,925 ERROR - **********************************************************************
+2016-09-23 19:47:35,445 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z o /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 19:47:35,502 DEBUG - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files2\B079144.DWG
+2016-09-23 19:47:35,939 DEBUG - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files2\B079145.DWG
+2016-09-23 19:47:36,790 DEBUG - _document.Database.Extmin: (79011.9347105827,144015.076512755,-1E-08)
+2016-09-23 19:47:36,791 DEBUG - _document.Database.Extmax: (80003.3371103082,146008.0832,1E-08)
+2016-09-23 19:47:36,792 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 19:47:36,794 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 19:47:36,798 DEBUG - Drawing size: 1240,530
+2016-09-23 19:47:36,819 DEBUG - Selected paper format: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-23 19:47:36,888 DEBUG - PLOT ERROR
+2016-09-23 19:47:36,890 ERROR - *** ERROR ************************************************************
+2016-09-23 19:47:36,891 ERROR - Exception:
+System.ArgumentException: No styleSheet found for Impetrant.pc3
+   at BatchPlot.PlotToFileCommand.SetPlotSettings(Layout layout) in C:\Test\plot\Plot01\PlotToFileCommand.cs:line 659
+   at BatchPlot.PlotToFileCommand.CreateAndConfigureLayout() in C:\Test\plot\Plot01\PlotToFileCommand.cs:line 536
+   at BatchPlot.PlotToFileCommand.PlotPlanchette() in C:\Test\plot\Plot01\PlotToFileCommand.cs:line 80
+2016-09-23 19:47:36,895 ERROR - **********************************************************************
+2016-09-23 19:48:57,105 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z o /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 19:48:57,142 DEBUG - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files2\B079144.DWG
+2016-09-23 19:48:57,461 DEBUG - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files2\B079145.DWG
+2016-09-23 19:48:58,057 DEBUG - _document.Database.Extmin: (79011.9347105827,144015.076512755,-1E-08)
+2016-09-23 19:48:58,057 DEBUG - _document.Database.Extmax: (80003.3371103082,146008.0832,1E-08)
+2016-09-23 19:48:58,058 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 19:48:58,062 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 19:48:58,067 DEBUG - Drawing size: 1240,530
+2016-09-23 19:48:58,073 DEBUG - Selected paper format: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-23 19:49:00,687 DEBUG - PLOT SUCCESSFUL
+2016-09-23 20:25:20,936 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z West /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 20:25:20,973 DEBUG - PLOT ERROR
+2016-09-23 20:25:20,973 ERROR - *** ERROR ************************************************************
+2016-09-23 20:25:20,976 ERROR - Exception:
+System.ArgumentException: Requested value 'West' was not found.
+   at System.Enum.EnumResult.SetFailure(ParseFailureKind failure, String failureMessageID, Object failureMessageFormatArgument)
+   at System.Enum.TryParseEnum(Type enumType, String value, Boolean ignoreCase, EnumResult& parseResult)
+   at System.Enum.Parse(Type enumType, String value, Boolean ignoreCase)
+   at BatchPlot.PlotParameters..ctor(String[] args) in C:\Test\plot\Plot01\PlotToFileCommand.cs:line 1094
+   at BatchPlot.PlotToFileCommand.PlotPlanchette() in C:\Test\plot\Plot01\PlotToFileCommand.cs:line 61
+2016-09-23 20:25:21,003 ERROR - **********************************************************************
+2016-09-23 20:25:35,043 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z O /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 20:25:35,096 DEBUG - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files2\B079144.DWG
+2016-09-23 20:25:35,483 DEBUG - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files2\B079145.DWG
+2016-09-23 20:25:36,423 DEBUG - _document.Database.Extmin: (79011.9347105827,144015.076512755,-1E-08)
+2016-09-23 20:25:36,423 DEBUG - _document.Database.Extmax: (80003.3371103082,146008.0832,1E-08)
+2016-09-23 20:25:36,426 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 20:25:36,428 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 20:25:36,431 DEBUG - Drawing size: 1240,530
+2016-09-23 20:25:36,443 DEBUG - Selected paper format: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-23 20:25:41,261 DEBUG - PLOT SUCCESSFUL
+2016-09-23 20:25:53,131 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z o /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /imp /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 20:25:53,169 DEBUG - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files2\B079144.DWG
+2016-09-23 20:25:53,469 DEBUG - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files2\B079145.DWG
+2016-09-23 20:25:54,016 DEBUG - _document.Database.Extmin: (79011.9347105827,144015.076512755,-1E-08)
+2016-09-23 20:25:54,019 DEBUG - _document.Database.Extmax: (80003.3371103082,146008.0832,1E-08)
+2016-09-23 20:25:54,019 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 20:25:54,021 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 20:25:54,026 DEBUG - Drawing size: 1240,530
+2016-09-23 20:25:54,031 DEBUG - Selected paper format: UserDefinedMetric (594.00 x 1270.00MM)
+2016-09-23 20:25:58,204 DEBUG - PLOT SUCCESSFUL
+2016-09-23 20:26:08,049 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z o /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 20:26:08,084 DEBUG - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files2\B079144.DWG
+2016-09-23 20:26:08,386 DEBUG - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files2\B079145.DWG
+2016-09-23 20:26:08,876 DEBUG - _document.Database.Extmin: (79011.9347105827,144015.076512755,-1E-08)
+2016-09-23 20:26:08,876 DEBUG - _document.Database.Extmax: (80003.3371103082,146008.0832,1E-08)
+2016-09-23 20:26:08,879 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 20:26:08,881 DEBUG - _document.Database.Pextmin: (1E+20,1E+20,1E+20)
+2016-09-23 20:26:08,884 DEBUG - Drawing size: 1240,530
+2016-09-23 20:26:08,889 DEBUG - Selected paper format: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-23 20:26:13,126 DEBUG - PLOT SUCCESSFUL
+2016-09-23 21:55:26,892 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z o /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 21:55:26,935 DEBUG - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files2\B079144.DWG
+2016-09-23 21:55:27,307 DEBUG - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files2\B079145.DWG
+2016-09-23 21:55:27,922 DEBUG - Drawing size: 1240,530
+2016-09-23 21:55:27,927 DEBUG - Selected paper format: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-23 21:55:32,805 DEBUG - PLOT SUCCESSFUL
+2016-09-23 22:17:17,349 DEBUG - ARGUMENTS: /i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 079145E /r 500 /z o /c MAP /e BT /f C:\Test\Plot\Plot01\Scripts\dump2.pdf /st 1629628-29519681 /t 7 /n 1 /u ADN534 /isolate
+2016-09-23 22:17:17,386 DEBUG - OPEN FILE 1/2   C:\Test\Plot\Plot01\Files2\B079144.DWG
+2016-09-23 22:17:17,699 DEBUG - OPEN FILE 2/2   C:\Test\Plot\Plot01\Files2\B079145.DWG
+2016-09-23 22:17:18,189 DEBUG - Drawing size: 1240,530
+2016-09-23 22:17:18,194 DEBUG - Selected paper format: ISO_full_bleed_B0_(1000.00_x_1414.00_MM)
+2016-09-23 22:17:22,474 DEBUG - PLOT SUCCESSFUL
