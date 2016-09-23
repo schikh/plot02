@@ -1,0 +1,9 @@
+C:\Test\plot\PlotService2\obj\x86\Debug\PlotService2.csprojResolveAssemblyReference.cache
+C:\Test\plot\PlotService2\bin\Debug\PlotService2.exe.config
+C:\Test\plot\PlotService2\bin\Debug\PlotService2.exe
+C:\Test\plot\PlotService2\bin\Debug\PlotService2.pdb
+C:\Test\plot\PlotService2\bin\Debug\Oracle.DataAccess.dll
+C:\Test\plot\PlotService2\obj\x86\Debug\PlotService2.exe
+C:\Test\plot\PlotService2\obj\x86\Debug\PlotService2.pdb
+C:\Test\plot\PlotService2\bin\Debug\log4net.dll
+C:\Test\plot\PlotService2\bin\Debug\Oracle.Web.dll

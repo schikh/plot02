@@ -1,0 +1,10 @@
+C:\Test\plot\Plot01\bin\Release\BatchPlot.dll.config
+C:\Test\plot\Plot01\bin\Release\BatchPlot.dll
+C:\Test\plot\Plot01\bin\Release\BatchPlot.pdb
+C:\Test\plot\Plot01\bin\Release\accoremgd.dll
+C:\Test\plot\Plot01\bin\Release\acdbmgd.dll
+C:\Test\plot\Plot01\bin\Release\log4net.dll
+C:\Test\plot\Plot01\bin\Release\Oracle.DataAccess.dll
+C:\Test\plot\Plot01\bin\Release\Oracle.Web.dll
+C:\Test\plot\Plot01\obj\Release\BatchPlot.dll
+C:\Test\plot\Plot01\obj\Release\BatchPlot.pdb

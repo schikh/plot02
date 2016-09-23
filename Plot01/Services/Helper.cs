@@ -66,7 +66,8 @@ namespace BatchPlot.Services
 
         public static string CreateTempFolder()
         {
-            var tempFolder = Path.Combine(GetAssemblyFolder(), "temp");
+            var tempFolder = Path.Combine(GetAssemblyFolder(), "temp",
+                Path.GetRandomFileName());
             if (!Directory.Exists(tempFolder))
             {
                 Directory.CreateDirectory(tempFolder);

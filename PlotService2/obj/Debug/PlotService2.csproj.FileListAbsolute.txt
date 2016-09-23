@@ -1,0 +1,8 @@
+C:\Test\plot\PlotService2\bin\Debug\PlotService2.exe.config
+C:\Test\plot\PlotService2\bin\Debug\PlotService2.exe
+C:\Test\plot\PlotService2\bin\Debug\PlotService2.pdb
+C:\Test\plot\PlotService2\bin\Debug\log4net.dll
+C:\Test\plot\PlotService2\bin\Debug\Oracle.DataAccess.dll
+C:\Test\plot\PlotService2\bin\Debug\Oracle.Web.dll
+C:\Test\plot\PlotService2\obj\Debug\PlotService2.exe
+C:\Test\plot\PlotService2\obj\Debug\PlotService2.pdb

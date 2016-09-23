@@ -1,0 +1,1 @@
+C:\Test\plot\PlotService2\bin\Release\PlotService2.exe.config

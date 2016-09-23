@@ -8,6 +8,8 @@
     "Microsoft.Extensions.Configuration": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Oracle.ManagedDataAccess": "12.1.24160719",
     "System.Data.Common": "4.1.0"
   },
@@ -18,6 +20,22 @@
         "type": "platform",
         "version": "1.0.0"
       }
+    }
+  },
+
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true,
+    "copyToOutput": {
+      "mappings": {
+        "appsettings.json": "appsettings.json"
+      }
+    }
+  },
+
+  "publishOptions": {
+    "mappings": {
+      "appsettings.json": "appsettings.json"
     }
   }
 }

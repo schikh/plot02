@@ -24,18 +24,18 @@ using BatchPlot.Services;
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /isolate
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+
 [assembly: CommandClass(typeof(PlotToFileCommand))]
 namespace BatchPlot
 {
 	public class PlotToFileCommand : IExtensionApplication
 	{
-		private string _tempFolder;
+		//private string _tempFolder;
 		private readonly Document _document = Application.DocumentManager.MdiActiveDocument;
 		private PlotParameters _plotParameters;
 
 		public void Initialize()
 		{
-			Logger.Setup();
 		}
 
 		public void Terminate()
@@ -48,7 +48,7 @@ namespace BatchPlot
 			try
 			{
 				_document.Database.Insunits = UnitsValue.Millimeters;
-				_tempFolder = Helper.CreateTempFolder();
+				// = Helper.CreateTempFolder();
 
 				var args = Environment.GetCommandLineArgs();
 				Helper.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
@@ -57,8 +57,8 @@ namespace BatchPlot
 				//var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(2);
 				var energies = ExtendEnergiesSelection(_plotParameters.Energies);
 				_plotParameters.EnergyDescription = energies;
-				var serverFilePaths = GetServerFilePaths(_plotParameters.Category, energies);
-				var filePaths = ImportServerFiles(serverFilePaths).ToArray();
+				var filePaths = GetServerFilePaths(_plotParameters.Category, energies);
+				//var filePaths = ImportServerFiles(filePaths).ToArray();
 
 				OpenFiles(filePaths);
 
@@ -129,6 +129,7 @@ namespace BatchPlot
 		private List<string> GetServerFilePaths(string category, IEnumerable<string> energies)
 		{
 			// + "AND energie NOT IN ('SYS','COMM','ELEC','GAZ','IC','RE','TPCD','TPDV','TPMD','TPRC') "
+			var e = _plotParameters.ExternalDrawingExtend;
 			var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
 			var query = string.Format("SELECT path, fileName "
 				+ "FROM dessin "
@@ -138,10 +139,10 @@ namespace BatchPlot
 				+ "AND path NOT LIKE '%#%' "
 				+ "AND xmax >= {1} AND xmin <= {2} AND ymax >= {3} AND ymin <= {4} ",
 				_plotParameters.FileServerName,
-				_plotParameters.DrawingExtend.MinPoint.X,
-				_plotParameters.DrawingExtend.MaxPoint.X,
-				_plotParameters.DrawingExtend.MinPoint.Y,
-				_plotParameters.DrawingExtend.MaxPoint.Y,
+				e.MinPoint.X,
+				e.MaxPoint.X,
+				e.MinPoint.Y,
+				e.MaxPoint.Y,
 				category,
 				string.Join("','", energies));
 			var list = da.IterateOverReader(query, x => Path.Combine(x.GetString(0), x.GetString(1))).ToList();
@@ -201,22 +202,22 @@ namespace BatchPlot
 			return list;
 		}
 
-		private IEnumerable<string> ImportServerFiles(IEnumerable<string> serverFilePaths)
-		{
-			foreach (var serverFilePath in serverFilePaths)
-			{
-				if (File.Exists(serverFilePath))
-				{
-					var localFilePath = Helper.GetLocalFilePath(serverFilePath, _tempFolder);
-					File.Copy(serverFilePath, localFilePath, true);
-					yield return localFilePath;
-				}
-				else
-				{
-					Helper.Log("FILE NOT FOUND {0}", serverFilePath);
-				}
-			}
-		}
+		//private IEnumerable<string> ImportServerFiles(IEnumerable<string> serverFilePaths)
+		//{
+		//    foreach (var serverFilePath in serverFilePaths)
+		//    {
+		//        if (File.Exists(serverFilePath))
+		//        {
+		//            var localFilePath = Helper.GetLocalFilePath(serverFilePath, _tempFolder);
+		//            File.Copy(serverFilePath, localFilePath, true);
+		//            yield return localFilePath;
+		//        }
+		//        else
+		//        {
+		//            Helper.Log("FILE NOT FOUND {0}", serverFilePath);
+		//        }
+		//    }
+		//}
 
 		private void OpenFiles(IEnumerable<string> filePaths)
 		{
@@ -228,10 +229,17 @@ namespace BatchPlot
 				var i = 0;
 				foreach (var filePath in filePaths)
 				{
-					Helper.Log("OPEN FILE {1}/{2}   {0}", filePath, ++i, c);
-					var br = OpenFile(filePath);
-					btr.AppendEntity(br);
-					tr.AddNewlyCreatedDBObject(br, true);
+					if (File.Exists(filePath))
+					{
+						Helper.Log("OPEN FILE {1}/{2}   {0}", filePath, ++i, c);
+						var br = OpenFile(filePath);
+						btr.AppendEntity(br);
+						tr.AddNewlyCreatedDBObject(br, true);
+					}
+					else
+					{
+						Helper.Log("FILE NOT FOUND {1}/{2}   {0}", filePath, ++i, c);
+					}
 				}
 				tr.Commit();
 			}
@@ -410,7 +418,7 @@ namespace BatchPlot
 			Enumerable.Range(1, 5).ToList().ForEach(x => values.Add("RUE" + x, ""));
 			var i = 0;
 			var layers = new[] { "BR11", "BT02", "BW03", "RUE", "W0989" };
-			var list = QueryEntities<DBText>(tr, layers, _plotParameters.DrawingExtend);
+			var list = QueryEntities<DBText>(tr, layers, _plotParameters.ExternalDrawingExtend);
 			list.Select(x => x.TextString)
 				.GroupBy(x => x)
 				.OrderByDescending(x => x.Count())
@@ -430,7 +438,7 @@ namespace BatchPlot
 			values.Add("COM2", "");
 			var i = 0;
 			var layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
-			var list = QueryEntities<DBText>(tr, layers, _plotParameters.DrawingExtend);
+			var list = QueryEntities<DBText>(tr, layers, _plotParameters.ExternalDrawingExtend);
 			list.Select(x => x.TextString)
 				.GroupBy(x => x)
 				.OrderByDescending(x => x.Count())
@@ -448,7 +456,7 @@ namespace BatchPlot
 			var values = new Dictionary<string, string>();
 			Enumerable.Range(1, 5).ToList().ForEach(x => values.Add("MD" + x, ""));
 			var i = 0;
-			var list = QueryEntities<BlockReference>(tr, null, _plotParameters.DrawingExtend)
+			var list = QueryEntities<BlockReference>(tr, null, _plotParameters.ExternalDrawingExtend)
 				.Where(x => string.Equals(x.Name, "GIS_MODF")).ToArray();
 			list.Select(x => new
 				{
@@ -826,17 +834,17 @@ namespace BatchPlot
 		//    return pr.StringResult.ToUpper();
 		//}
 
-		private void DeleteImportedFiles()
-		{
-			try
-			{
-				Helper.DeleteTempFolder(_tempFolder);
-			}
-			catch (System.Exception ex)
-			{
-				Helper.Log(ex.ToString());
-			}
-		}
+		//private void DeleteImportedFiles()
+		//{
+		//    try
+		//    {
+		//        Helper.DeleteTempFolder(_tempFolder);
+		//    }
+		//    catch (System.Exception ex)
+		//    {
+		//        Helper.Log(ex.ToString());
+		//    }
+		//}
 
 		private void SaveDwg(string filePath)
 		{
@@ -958,7 +966,7 @@ namespace BatchPlot
 		private void ApplyOceGrayStyle(Transaction tr)
 		{
 			var regex = new Regex(PlotConfiguration.Config.TopoLayersRegexFilter, RegexOptions.IgnoreCase);
-			var list = QueryEntities(tr, null, _plotParameters.DrawingExtend);
+			var list = QueryEntities(tr, null, _plotParameters.ExternalDrawingExtend);
 			foreach (var entity in list)
 			{
 				if (regex.IsMatch(entity.Layer))
@@ -985,7 +993,7 @@ namespace BatchPlot
 		private void ApplyImpetrantStyle(Transaction tr)
 		{
 			var list = QueryEntities(tr, PlotConfiguration.Config.TopoLayersRegexFilter,
-				_plotParameters.DrawingExtend.Inflate(PlotConfiguration.Config.InternalBorderWidth));
+				_plotParameters.ExternalDrawingExtend);
 			foreach (var entity in list)
 			{
 				entity.UpgradeOpen();
@@ -1186,6 +1194,16 @@ namespace BatchPlot
 					MapCoordinate.Y + PlotConfiguration.Config.DrawingSize.Height);
 			}
 		}
+
+		public Extents2d ExternalDrawingExtend
+		{
+			get
+			{
+				return DrawingExtend.Inflate(PlotConfiguration.Config.InternalBorderWidth);
+			}
+		}
+
+		
 
 		public Point2d DrawingCenter
 		{
@@ -1575,5 +1593,18 @@ AND c.PJOBID IS NULL
 --FOR UPDATE SKIP LOCKED
 ;
 
+UPDATE CR_ENERGIS.PJOB 
+SET S_PLTICKET_STATUS = 1
+WHERE "O_DATE" >= TO_DATE('01/08/2016','dd/mm/yyyy') ;
+
+UPDATE 
+(
+SELECT c.S_PLTICKET_STATUS
+FROM CR_ENERGIS.PJOB b   
+INNER JOIN CR_ENERGIS.PTASK c
+ON b.PJOBID = c.PJOBID
+WHERE b.S_PLTICKET_STATUS = 1
+) t
+SET t.S_PLTICKET_STATUS = 1;
 
  *  */
