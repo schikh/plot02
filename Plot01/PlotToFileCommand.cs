@@ -55,42 +55,22 @@ namespace BatchPlot
             try
             {
                 _document.Database.Insunits = UnitsValue.Millimeters;
-                // = Helper.CreateTempFolder();
 
                 var args = Environment.GetCommandLineArgs();
                 Logger.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
-                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(2);
+                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
                 //var energies = DecodeEnergiesSelection(_plotParameters.Energies);
                 //_plotParameters.EnergyDescription = energies;
                 //var filePaths = GetServerFilePaths(_plotParameters.Category, energies);
                 //var filePaths = ImportServerFiles(filePaths).ToArray();
 
-                using (var tr = _document.Database.TransactionManager.StartTransaction())
-                using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
-                using (var btr = (BlockTableRecord) bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
-                {
-                    OpenFiles(tr, bt, btr, filePaths);
-                    if (_plotParameters.Impetrant)
-                    {
-                        ApplyImpetrantStyle(tr);
-                    }
-                    else if (_plotParameters.Oce)
-                    {
-                        ApplyOceGrayStyle(tr);
-                    }
-                }
-
-
-                CreateAndConfigurePlotLayout();
-
-                AddPlotCartridge(_plotParameters.CartridgeTemplate, 
-                    _plotParameters.PlotCartridgePosition);
-
+                ImportDwgFilesAndApplyStyle(filePaths);
+                CreatePaperSpaceAndSetThePlotSettings();
+                AddViewportCartridgeBordersAndStampToPaperspace();
                 SetPageView();
-
-                PlotExtents();
+                PlotCurrentLayout();
 
                 //SaveDwg(@"C:\Test\Plot\Plot01\Scripts\dump2.dwg");
 
@@ -116,16 +96,8 @@ namespace BatchPlot
                 Logger.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
-                using (var tr = _document.Database.TransactionManager.StartTransaction())
-                {
-                    using (var layout = GetPlotLayout(tr))
-                    {
-                        SetPlotSettings(layout);
-                    }
-                    tr.Commit();
-                }
-
-                PlotExtents();
+                GetOpenedModelOrPaperSpaceAndSetThePlotSettings();
+                PlotCurrentLayout();
 
                 Logger.Log("PLOT SUCCESSFUL");
             }
@@ -133,6 +105,78 @@ namespace BatchPlot
             {
                 Logger.Log("PLOT ERROR");
                 Logger.Log(ex);
+            }
+        }
+
+        private void GetOpenedModelOrPaperSpaceAndSetThePlotSettings()
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var layout = GetPlotLayout(tr))
+            {
+                var pageSize = GetCurrentModelOrLayoutExtend();
+                SetPlotSettings(layout, pageSize);
+                tr.Commit();
+            }
+        }
+
+        private void ImportDwgFilesAndApplyStyle(IEnumerable<string> filePaths)
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var bt = (BlockTable) _document.Database.BlockTableId.GetObject(OpenMode.ForRead))
+            using (var btr = (BlockTableRecord) bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
+            {
+                ImportDwgFiles(tr, bt, btr, filePaths);
+                if (_plotParameters.Impetrant)
+                {
+                    ApplyImpetrantStyle(tr);
+                }
+                else if (_plotParameters.Oce)
+                {
+                    ApplyOceGrayStyle(tr);
+                }
+                //TODO: default style missing ?
+                tr.Commit();
+            }
+        }
+
+        private void CreatePaperSpaceAndSetThePlotSettings()
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var layout = CreatePlotLayout(tr))
+            {
+                SetPlotSettings(layout, _plotParameters.PageSize);
+                tr.Commit();
+            }
+        }
+
+        private void AddViewportCartridgeBordersAndStampToPaperspace()
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var layout = GetPlotLayout(tr))
+            using (var lbtr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            {
+                using (var viewport = CreateViewport(tr, lbtr))
+                {
+                    SetViewportSettings(viewport);
+                }
+                AddDrawingBorders(tr, layout, lbtr);
+                AddStamp(tr, layout, lbtr);
+                AddPlotCartridge(
+                    tr,
+                    layout,
+                    lbtr,
+                    _plotParameters.CartridgeTemplate,
+                    _plotParameters.PlotCartridgePosition);
+                tr.Commit();
+            }
+        }
+
+        private void PlotCurrentLayout()
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var layout = GetPlotLayout(tr))
+            {
+                PlotLayout(tr, layout);
             }
         }
 
@@ -229,12 +273,12 @@ namespace BatchPlot
         //    }
         //}
 
-        private void OpenFiles(Transaction tr, BlockTable bt, BlockTableRecord btr , IEnumerable<string> filePaths)
+        private void ImportDwgFiles(Transaction tr, BlockTable bt, BlockTableRecord btr, IEnumerable<string> filePaths)
         {
             //using (var tr = _document.Database.TransactionManager.StartTransaction())
             //using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
             //using (var btr = (BlockTableRecord)bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
-            {
+            //{
                 var c = filePaths.Count();
                 var i = 0;
                 foreach (var filePath in filePaths)
@@ -242,8 +286,8 @@ namespace BatchPlot
                     i++;
                     if (File.Exists(filePath))
                     {
-                        Logger.Log("OPEN FILE {1}/{2}   {0}", filePath, i, c);
-                        var br = OpenFile(filePath, i);
+                        Logger.Log("IMPORT FILE {1}/{2}   {0}", filePath, i, c);
+                        var br = ImportDwgFile(filePath, i);
                         btr.AppendEntity(br);
                         tr.AddNewlyCreatedDBObject(br, true);
                     }
@@ -253,10 +297,10 @@ namespace BatchPlot
                     }
                 }
                 //tr.Commit();
-            }
+            //}
         }
 
-        private BlockReference OpenFile(string filePath, int fileId)
+        private BlockReference ImportDwgFile(string filePath, int fileId)
         {
             using (var db = new Database(false, true))
             {
@@ -268,11 +312,11 @@ namespace BatchPlot
             }
         }
 
-        private void AddPlotCartridge(string templateFilePath, Point3d position)
+        private void AddPlotCartridge(Transaction tr, Layout layout, BlockTableRecord btr, string templateFilePath, Point3d position)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = GetPlotLayout(tr))
-            using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            //using (var tr = _document.Database.TransactionManager.StartTransaction())
+            //using (var layout = GetPlotLayout(tr))
+            //using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             {
                 ObjectId blockId;
                 using (var db = new Database(false, true))
@@ -291,13 +335,13 @@ namespace BatchPlot
                     tr.AddNewlyCreatedDBObject(br, true);
                     blockDefinition.CopyAttributeDefinition(br, values);
                 }
-                tr.Commit();
+                //tr.Commit();
             }
         }
 
-        private void AddStamp(Transaction tr, Layout layout)
+        private void AddStamp(Transaction tr, Layout layout, BlockTableRecord btr)
         {
-            using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            //using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             using (var text = new DBText())
             {
                 text.SetDatabaseDefaults();
@@ -313,9 +357,9 @@ namespace BatchPlot
             }
         }
 
-        private void AddDrawingBorders(Transaction tr, Layout layout)
+        private void AddDrawingBorders(Transaction tr, Layout layout, BlockTableRecord btr)
         {
-            using (var btr = (BlockTableRecord)tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            //using (var btr = (BlockTableRecord)tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             {
                 var x = PlotConfiguration.Config.ExternalBorderWidth + PlotConfiguration.Config.InternalBorderWidth;
                 var y = PlotConfiguration.Config.ExternalBorderWidth + PlotConfiguration.Config.InternalBorderWidth;
@@ -532,21 +576,21 @@ namespace BatchPlot
             return null;
         }
 
-        private void CreateAndConfigurePlotLayout()
-        {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = CreatePlotLayout(tr))
-            {
-                SetPlotSettings(layout);
-                using (var viewport = CreateViewport(layout, tr))
-                {
-                    SetViewportSettings(viewport);
-                }
-                AddDrawingBorders(tr, layout);
-                AddStamp(tr, layout);
-                tr.Commit();
-            }
-        }
+        //private void CreateAndConfigurePlotLayout()
+        //{
+        //    using (var tr = _document.Database.TransactionManager.StartTransaction())
+        //    using (var layout = CreatePlotLayout(tr))
+        //    {
+        //        SetPlotSettings(layout);
+        //        using (var viewport = CreateViewport(layout, tr))
+        //        {
+        //            SetViewportSettings(viewport);
+        //        }
+        //        AddDrawingBorders(tr, layout);
+        //        AddStamp(tr, layout);
+        //        tr.Commit();
+        //    }
+        //}
 
         private void SetViewportSettings(Viewport viewport)
         {
@@ -612,12 +656,12 @@ namespace BatchPlot
         //    return null;
         //}
 
-        private Viewport CreateViewport(Layout layout, Transaction tr)
+        private Viewport CreateViewport(Transaction tr, BlockTableRecord lbtr)
         {
-            using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            //using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             {
                 var vp = new Viewport();
-                btr.AppendEntity(vp);
+                lbtr.AppendEntity(vp);
                 tr.AddNewlyCreatedDBObject(vp, true);
                 vp.On = true;
                 vp.GridOn = true;
@@ -625,7 +669,7 @@ namespace BatchPlot
             }
         }
 
-        private void SetPlotSettings(Layout layout)
+        private void SetPlotSettings(Layout layout, Size pageSize)
         {
             using (var ps = new PlotSettings(layout.ModelType))
             {
@@ -641,7 +685,7 @@ namespace BatchPlot
                 psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, null);
                 psv.RefreshLists(ps);
 
-                _plotParameters.PageFormat = GetPageFormat(psv, ps, _plotParameters.PlotterName);
+                _plotParameters.PageFormat = GetPageFormat(psv, ps, _plotParameters.PlotterName, pageSize);
 
                 psv.SetCanonicalMediaName(ps, _plotParameters.PageFormat.CanonicalMediaName);
                 psv.RefreshLists(ps);
@@ -664,13 +708,9 @@ namespace BatchPlot
             }
         }
 
-        private Size GetPageSize()
+        private Size GetCurrentModelOrLayoutExtend()
         {
-            if (_plotParameters.IsPlanchette)
-            {
-                return _plotParameters.PageSize;
-            }
-
+            Logger.Log("_document.Database.TileMode: {0}", _document.Database.TileMode);
             Logger.Log("_document.Database.Extmin: {0}", _document.Database.Extmin);
             Logger.Log("_document.Database.Extmax: {0}", _document.Database.Extmax);
             Logger.Log("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
@@ -690,9 +730,8 @@ namespace BatchPlot
             }
         }
 
-        private PageFormat GetPageFormat(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
+        private PageFormat GetPageFormat(PlotSettingsValidator psv, PlotSettings ps, string plotterName, Size pageSize)
         {
-            var pageSize = GetPageSize();
             Logger.Log("Drawing size: {0}", pageSize);
             var pageFormats = GetDefaultOrPc3PageFormats(psv, ps, plotterName);
             pageFormats = pageFormats
@@ -864,10 +903,10 @@ namespace BatchPlot
                 _document.Database.SecurityParameters);
         }
 
-        private void PlotExtents()
+        private void PlotLayout(Transaction tr, Layout layout)
         {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = GetPlotLayout(tr))
+            //using (var tr = _document.Database.TransactionManager.StartTransaction())
+            //using (var layout = GetPlotLayout(tr))
             {
                 var ps = new PlotSettings(layout.ModelType);
                 ps.CopyFrom(layout);
@@ -977,7 +1016,7 @@ namespace BatchPlot
         private void ApplyOceGrayStyle(Transaction tr)
         {
             //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            {
+            //{
                 var regex = new Regex(PlotConfiguration.Config.TopoLayersRegexFilter, RegexOptions.IgnoreCase);
                 var list = QueryEntities(tr, null, _plotParameters.ExternalDrawingExtend);
                 foreach (var entity in list)
@@ -1002,13 +1041,13 @@ namespace BatchPlot
                     }
                 }
                 //tr.Commit();
-            }
+            //}
         }
 
         private void ApplyImpetrantStyle(Transaction tr)
         {
             //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            {
+            //{
                 var list = QueryEntities(tr, PlotConfiguration.Config.TopoLayersRegexFilter,
                     _plotParameters.ExternalDrawingExtend);
                 foreach (var entity in list)
@@ -1031,7 +1070,7 @@ namespace BatchPlot
                     entity.DowngradeOpen();
                 }
                 //tr.Commit();
-            }
+            //}
         }
 
         private void DeleteNotNeededLayers(Database db)
