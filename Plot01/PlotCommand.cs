@@ -32,10 +32,10 @@ using BatchPlot.Services;
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /isolate
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
 
-[assembly: CommandClass(typeof(PlotToFileCommand))]
+[assembly: CommandClass(typeof(PlotCommand))]
 namespace BatchPlot
 {
-    public class PlotToFileCommand : IExtensionApplication
+    public class PlotCommand : IExtensionApplication
     {
         private readonly Document _document = Application.DocumentManager.MdiActiveDocument;
         private PlotParameters _plotParameters;
@@ -57,7 +57,7 @@ namespace BatchPlot
                 _document.Database.Insunits = UnitsValue.Millimeters;
 
                 var args = Environment.GetCommandLineArgs();
-                Logger.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
+                Logger.Info("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
                 var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
@@ -74,14 +74,12 @@ namespace BatchPlot
 
                 //SaveDwg(@"C:\Test\Plot\Plot01\Scripts\dump2.dwg");
 
-                //DeleteImportedFiles();
-
-                Logger.Log("PLOT SUCCESSFUL");
+                Logger.Info("PLOT SUCCESSFUL");
             }
             catch (System.Exception ex)
             {
-                Logger.Log("PLOT ERROR");
-                Logger.Log(ex);
+                Logger.Error("PLOT ERROR");
+                Logger.Error(ex);
             }
         }
 
@@ -93,18 +91,18 @@ namespace BatchPlot
                 _document.Database.Insunits = UnitsValue.Millimeters;
 
                 var args = Environment.GetCommandLineArgs();
-                Logger.Log("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
+                Logger.Info("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
                 GetOpenedModelOrPaperSpaceAndSetThePlotSettings();
                 PlotCurrentLayout();
 
-                Logger.Log("PLOT SUCCESSFUL");
+                Logger.Info("PLOT SUCCESSFUL");
             }
             catch (System.Exception ex)
             {
-                Logger.Log("PLOT ERROR");
-                Logger.Log(ex);
+                Logger.Info("PLOT ERROR");
+                Logger.Error(ex);
             }
         }
 
@@ -161,11 +159,7 @@ namespace BatchPlot
                 }
                 AddDrawingBorders(tr, layout, lbtr);
                 AddStamp(tr, layout, lbtr);
-                AddPlotCartridge(
-                    tr,
-                    layout,
-                    lbtr,
-                    _plotParameters.CartridgeTemplate,
+                AddPlotCartridge(tr, layout, lbtr, _plotParameters.CartridgeTemplate, 
                     _plotParameters.PlotCartridgePosition);
                 tr.Commit();
             }
@@ -200,8 +194,8 @@ namespace BatchPlot
                 category,
                 string.Join("','", energies));
             var list = da.IterateOverReader(query, x => Path.Combine(x.GetString(0), x.GetString(1))).ToList();
-            Logger.Log("Query table DESSIN: " + query);
-            Logger.Log("Number OF file found: " + list.Count);
+            Logger.Info("Query table DESSIN: " + query);
+            Logger.Info("Number OF file found: " + list.Count);
             return list;
         }
 
@@ -286,14 +280,14 @@ namespace BatchPlot
                     i++;
                     if (File.Exists(filePath))
                     {
-                        Logger.Log("IMPORT FILE {1}/{2}   {0}", filePath, i, c);
+                        Logger.Info("IMPORT FILE {1}/{2}   {0}", filePath, i, c);
                         var br = ImportDwgFile(filePath, i);
                         btr.AppendEntity(br);
                         tr.AddNewlyCreatedDBObject(br, true);
                     }
                     else
                     {
-                        Logger.Log("FILE NOT FOUND {1}/{2}   {0}", filePath, i, c);
+                        Logger.Info("FILE NOT FOUND {1}/{2}   {0}", filePath, i, c);
                     }
                 }
                 //tr.Commit();
@@ -555,7 +549,7 @@ namespace BatchPlot
                     var l2 = letters[(l1 + lettersOffset[x, y] + dy[y] * 4 + 8) % 8];
                     var px = Math.Truncate(planchettePosition.X / 1000) + dx[x];
                     var py = Math.Truncate(planchettePosition.Y / 1000) + dy[y];
-                    yield return string.Format("{0}{1}{2}", px, py, l2);
+                    yield return string.Format("{0:000}{1:000}{2}", px, py, l2);
                 }
             }
         }
@@ -685,15 +679,15 @@ namespace BatchPlot
                 psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, null);
                 psv.RefreshLists(ps);
 
-                _plotParameters.PageFormat = GetPageFormat(psv, ps, _plotParameters.PlotterName, pageSize);
+                _plotParameters.PaperFormat = GetPaperFormat(psv, ps, _plotParameters.PlotterName, pageSize);
 
-                psv.SetCanonicalMediaName(ps, _plotParameters.PageFormat.CanonicalMediaName);
+                psv.SetCanonicalMediaName(ps, _plotParameters.PaperFormat.CanonicalMediaName);
                 psv.RefreshLists(ps);
 
                 var ssl = psv.GetPlotStyleSheetList();
-                if (ssl.Contains(_plotParameters.PageFormat.CtbName))
+                if (ssl.Contains(_plotParameters.PaperFormat.CtbName))
                 {
-                    psv.SetCurrentStyleSheet(ps, _plotParameters.PageFormat.CtbName);
+                    psv.SetCurrentStyleSheet(ps, _plotParameters.PaperFormat.CtbName);
                 }
                 else if (ssl.Contains(PlotConfiguration.Config.DefaultStyleSheet))
                 {
@@ -701,7 +695,7 @@ namespace BatchPlot
                 }
                 else
                 {
-                    //throw new ArgumentException("No styleSheet found for " + _plotParameters.PageFormat.Pc3Name);
+                    //throw new ArgumentException("No styleSheet found for " + _plotParameters.PaperFormat.Pc3Name);
                 }
 
                 layout.CopyFrom(ps);
@@ -710,11 +704,11 @@ namespace BatchPlot
 
         private Size GetCurrentModelOrLayoutExtend()
         {
-            Logger.Log("_document.Database.TileMode: {0}", _document.Database.TileMode);
-            Logger.Log("_document.Database.Extmin: {0}", _document.Database.Extmin);
-            Logger.Log("_document.Database.Extmax: {0}", _document.Database.Extmax);
-            Logger.Log("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-            Logger.Log("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+            Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
+            Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
+            Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
+            Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+            Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
             
             if (_document.Database.TileMode)
             {
@@ -730,43 +724,43 @@ namespace BatchPlot
             }
         }
 
-        private PageFormat GetPageFormat(PlotSettingsValidator psv, PlotSettings ps, string plotterName, Size pageSize)
+        private PaperFormat GetPaperFormat(PlotSettingsValidator psv, PlotSettings ps, string plotterName, Size pageSize)
         {
-            Logger.Log("Drawing size: {0}", pageSize);
-            var pageFormats = GetDefaultOrPc3PageFormats(psv, ps, plotterName);
-            pageFormats = pageFormats
+            Logger.Info("Drawing size: {0}", pageSize);
+            var paperFormats = GetDefaultOrPc3PaperFormats(psv, ps, plotterName);
+            paperFormats = paperFormats
                 .OrderBy(x => x.PlotPaperSize.Width * x.PlotPaperSize.Height);
-            var pageFormat = pageFormats
+            var paperFormat = paperFormats
                 .FirstOrDefault(x => x.PlotPaperSize.Width >= pageSize.Width 
                     && x.PlotPaperSize.Height >= pageSize.Height);
-            if (pageFormat == null && pageFormats.Any())
+            if (paperFormat == null && paperFormats.Any())
             {
-                pageFormat = pageFormats.Last();
-                pageFormat.ShrinkDrawing = true;
+                paperFormat = paperFormats.Last();
+                paperFormat.ShrinkDrawing = true;
             }
-            if (pageFormat == null)
+            if (paperFormat == null)
             {
                 throw new ArgumentException("No paper format found for " + plotterName);
             }
-            Logger.Log("Selected paper format: {0}", pageFormat.CanonicalMediaName);
-            return pageFormat;
+            Logger.Info("Selected paper format: {0}", paperFormat.CanonicalMediaName);
+            return paperFormat;
         }
 
-        private IEnumerable<PageFormat> GetDefaultOrPc3PageFormats(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
+        private IEnumerable<PaperFormat> GetDefaultOrPc3PaperFormats(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
         {
-            IEnumerable<PageFormat> pageFormats = null;
+            IEnumerable<PaperFormat> paperFormats = null;
             if (_plotParameters.IsPlanchette)
             {
-                pageFormats = PlotConfiguration.Config.GetDefaultPageFormats(plotterName);
+                paperFormats = PlotConfiguration.Config.GetDefaultPaperFormats(plotterName);
             }
-            if (pageFormats == null || !pageFormats.Any())
+            if (paperFormats == null || !paperFormats.Any())
             {
-                pageFormats = GetPc3PageFormats(psv, ps, plotterName).ToArray();
+                paperFormats = GetPc3PaperFormats(psv, ps, plotterName).ToArray();
             }
-            return pageFormats;
+            return paperFormats;
         }
 
-        //private IEnumerable<PageFormat> GetPageFormatList(string plotterName)
+        //private IEnumerable<PaperFormat> GetPaperFormatList(string plotterName)
         //{
         //    var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
         //    var query = string.Format( 
@@ -778,7 +772,7 @@ namespace BatchPlot
         //        + "INNER JOIN cr_energis.PAPERFORMAT d ON c.PAPERFORMATID = d.PAPERFORMATID "
         //        + "WHERE a.DESCRIPTION = '{0}' ",
         //        plotterName);
-        //    var list = da.IterateOverReader(query, x => new PageFormat()
+        //    var list = da.IterateOverReader(query, x => new PaperFormat()
         //        {
         //            PlotterName = x.GetString(0),
         //            Pc3Name = x.GetString(1),
@@ -792,7 +786,7 @@ namespace BatchPlot
         //    return list;
         //}
 
-        private IEnumerable<PageFormat> GetPc3PageFormats(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
+        private IEnumerable<PaperFormat> GetPc3PaperFormats(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
         {
             var list = psv.GetCanonicalMediaNameList(ps);
             for (var i = 0; i < list.Count; i++)
@@ -805,7 +799,7 @@ namespace BatchPlot
                 var sizey = ps.PlotPaperSize.Y
                     - ps.PlotPaperMargins.MinPoint.Y
                     - ps.PlotPaperMargins.MaxPoint.Y;
-                yield return new PageFormat()
+                yield return new PaperFormat()
                 {
                     PlotterName = plotterName,
                     CanonicalMediaName = ps.CanonicalMediaName,
@@ -813,7 +807,7 @@ namespace BatchPlot
                 };
                 if (_plotParameters.Debug)
                 {
-                    Logger.Log("Page size: {0,-40} {1} {2} {3}", ps.CanonicalMediaName, ps.PlotPaperSize, ps.PlotPaperMargins.MinPoint, ps.PlotPaperMargins.MaxPoint);
+                    Logger.Info("Page size: {0,-40} {1} {2} {3}", ps.CanonicalMediaName, ps.PlotPaperSize, ps.PlotPaperMargins.MinPoint, ps.PlotPaperMargins.MaxPoint);
                 }
             }
         }
@@ -822,7 +816,7 @@ namespace BatchPlot
         {
             using (var view = _document.Editor.GetCurrentView())
             {
-                var pageSize = _plotParameters.PageFormat.PlotPaperSize;
+                var pageSize = _plotParameters.PaperFormat.PlotPaperSize;
                 view.Width = pageSize.Width;
                 view.Height = pageSize.Height;
                 view.CenterPoint = new Point2d(pageSize.Width / 2, pageSize.Height / 2);
@@ -917,7 +911,7 @@ namespace BatchPlot
                 psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
                 psv.SetUseStandardScale(ps, true);
                 psv.SetPlotOrigin(ps, PlotConfiguration.Config.PlotOrigin);
-                if (_plotParameters.PageFormat.ShrinkDrawing)
+                if (_plotParameters.PaperFormat.ShrinkDrawing)
                 {
                     psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
                 }
@@ -925,7 +919,7 @@ namespace BatchPlot
                 {
                     psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
                 }
-                psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, _plotParameters.PageFormat.CanonicalMediaName);
+                psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, _plotParameters.PaperFormat.CanonicalMediaName);
                 psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
 
                 var pi = new PlotInfo();
@@ -1333,7 +1327,7 @@ namespace BatchPlot
             }
         }
 
-        public PageFormat PageFormat { get; set; }
+        public PaperFormat PaperFormat { get; set; }
         
         public IEnumerable<string> EnergyDescription { get; set; }
 
@@ -1341,10 +1335,10 @@ namespace BatchPlot
         {
             get
             {
-                var pageFormats = PlotConfiguration.Config.GetDefaultPageFormats(PlotterName);
-                if (pageFormats.Any())
+                var paperFormats = PlotConfiguration.Config.GetDefaultPaperFormats(PlotterName);
+                if (paperFormats.Any())
                 {
-                    return pageFormats.First().Pc3Name;
+                    return paperFormats.First().Pc3Name;
                 }
                 return PlotterName + ".pc3";
             }
@@ -1550,6 +1544,7 @@ GRANT SELECT ON PJOB_SEQ							TO GENERGIS;
 CREATE TABLE PTASK (
     PTASKID	    NUMBER(9) not null,
     PJOBID	    NUMBER(9) not null,
+    LOCKTIME    DATE,
 "C_TYPE_PLAN"       CHAR(1 BYTE), 
 "L_ID_STAMP"        VARCHAR2(25 BYTE), 
 "L_ID_PLANCHETTE"   VARCHAR2(40 BYTE), 

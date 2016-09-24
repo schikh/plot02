@@ -316,3 +316,70 @@
 2016-09-23 12:01:40,452 [13] DEBUG PlotService.Services.Helper - Plot ticket: /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "156127E" /r "1000" /z "O" /c "MAP" /e "BT" /f "C:\Home\EnerGis\West\201609\1_2_1665609_31048172\1_1_156127E_BT.pdf" /st "1665609-31048172" /t "24" /n "22" /u "BZT" /imp /d /isolate 
 2016-09-23 12:01:41,658 [11] DEBUG PlotService.Services.Helper - PlotTask 2 20 sec
 2016-09-23 12:01:41,663 [11] DEBUG PlotService.Services.Helper - Plot ticket: /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "157126C" /r "1000" /z "O" /c "MAP" /e "BT" /f "C:\Home\EnerGis\West\201609\1_2_1665609_31048172\1_1_157126C_BT.pdf" /st "1665609-31048172" /t "24" /n "23" /u "BZT" /imp /d /isolate 
+2016-09-24 18:43:37,541 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84713 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "072155B" /r "1000" /z "O" /c "MAP" /e "SI" /f "C:\Home\EnerGis\West\201608\1_2_1658728_30940363\1_5_072155B_SI.pdf" /st "1658728-30940363" /t "7" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:43:37,541 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84712 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "108146B" /r "1000" /z "O" /c "MAP" /e "BP" /f "C:\Home\EnerGis\West\201608\1_2_1658732_30940431\1_6_108146B_BP.pdf" /st "1658732-30940431" /t "12" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:43:37,541 [10] INFO  PlotService2.Services.Logger - Plot ticket: 84711 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "108146B" /r "1000" /z "O" /c "MAP" /e "MP" /f "C:\Home\EnerGis\West\201608\1_2_1658732_30940431\1_6_108146B_MP.pdf" /st "1658732-30940431" /t "12" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:43:52,241 [10] INFO  PlotService2.Services.Logger - PlotTask 1 19 sec
+2016-09-24 18:43:52,347 [10] INFO  PlotService2.Services.Logger - Plot dwg: 84714 /i "W:\RWA005\Cardex\Ouest\EDH\MUA\REPERAGE\EL\161167.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\West\201608\1_2_1658728_30940363\1_5_161167_52938.pdf" /d /isolate 
+2016-09-24 18:43:52,351 [10] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:43:52,360 [10] INFO  PlotService2.Services.Logger - PlotTask 2 19 sec
+2016-09-24 18:43:52,362 [10] INFO  PlotService2.Services.Logger - Plot ticket: 84715 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "072155B" /r "1000" /z "O" /c "MAP" /e "BP" /f "C:\Home\EnerGis\West\201608\1_2_1658728_30940363\1_5_072155B_BP.pdf" /st "1658728-30940363" /t "7" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:43:52,370 [11] INFO  PlotService2.Services.Logger - PlotTask 1 19 sec
+2016-09-24 18:43:52,372 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84716 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "072155B" /r "1000" /z "O" /c "MAP" /e "PC" /f "C:\Home\EnerGis\West\201608\1_2_1658728_30940363\1_5_072155B_PC.pdf" /st "1658728-30940363" /t "7" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:43:53,875 [12] INFO  PlotService2.Services.Logger - PlotTask 1 21 sec
+2016-09-24 18:43:53,877 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84717 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "072155B" /r "1000" /z "O" /c "MAP" /e "MT" /f "C:\Home\EnerGis\West\201608\1_2_1658728_30940363\1_5_072155B_MT.pdf" /st "1658728-30940363" /t "7" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:01,946 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84717 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "072155B" /r "1000" /z "O" /c "MAP" /e "MT" /f "C:\Home\EnerGis\West\201608\1_2_1658728_30940363\1_5_072155B_MT.pdf" /st "1658728-30940363" /t "7" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:01,946 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84718 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "072155B" /r "1000" /z "O" /c "MAP" /e "BPHS" /f "C:\Home\EnerGis\West\201608\1_2_1658728_30940363\1_5_072155B_BPHS.pdf" /st "1658728-30940363" /t "7" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:14,263 [11] INFO  PlotService2.Services.Logger - PlotTask 1 24 sec
+2016-09-24 18:54:31,585 [12] INFO  PlotService2.Services.Logger - PlotTask 1 41 sec
+2016-09-24 18:54:31,587 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84719 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "124125F" /r "1000" /z "O" /c "MAP" /e "BT" /f "C:\Home\EnerGis\West\201608\1_2_1658816_30944835\1_3_124125F_BT.pdf" /st "1658816-30944835" /t "11" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:31,613 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84720 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "118130C" /r "1000" /z "O" /c "MAP" /e "BT" /f "C:\Home\EnerGis\West\201608\1_2_1658814_30944828\1_3_118130C_BT.pdf" /st "1658814-30944828" /t "8" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:42,714 [11] INFO  PlotService2.Services.Logger - PlotTask 2 53 sec
+2016-09-24 18:54:42,876 [12] INFO  PlotService2.Services.Logger - PlotTask 2 53 sec
+2016-09-24 18:54:42,877 [11] INFO  PlotService2.Services.Logger - Plot dwg: 84721 /i "W:\RWA005\Cardex\Ouest\EDH\MUA\REPERAGE\EL\080574-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\West\201608\1_2_1658815_30944826\1_5_080574-2_51982.pdf" /d /isolate 
+2016-09-24 18:54:42,885 [11] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:54:42,889 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84722 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "070156F" /r "1000" /z "O" /c "MAP" /e "EP" /f "C:\Home\EnerGis\West\201608\1_2_1658815_30944826\1_5_070156F_EP.pdf" /st "1658815-30944826" /t "13" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:42,892 [11] INFO  PlotService2.Services.Logger - PlotTask 3 53 sec
+2016-09-24 18:54:42,901 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84723 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "070156F" /r "1000" /z "O" /c "MAP" /e "BT" /f "C:\Home\EnerGis\West\201608\1_2_1658815_30944826\1_5_070156F_BT.pdf" /st "1658815-30944826" /t "13" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:55,249 [11] INFO  PlotService2.Services.Logger - PlotTask 4 65 sec
+2016-09-24 18:54:55,421 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84724 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "070156F" /r "1000" /z "O" /c "MAP" /e "MT" /f "C:\Home\EnerGis\West\201608\1_2_1658815_30944826\1_5_070156F_MT.pdf" /st "1658815-30944826" /t "13" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:54:55,423 [12] INFO  PlotService2.Services.Logger - PlotTask 3 65 sec
+2016-09-24 18:54:55,433 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84470 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "133145F" /r "1000" /z "O" /c "MAP" /e "MT" /f "C:\Home\EnerGis\West\201608\1_2_1658789_30944654\1_2_133145F_MT.pdf" /st "1658789-30944654" /t "12" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:55:06,516 [12] INFO  PlotService2.Services.Logger - PlotTask 4 76 sec
+2016-09-24 18:55:06,521 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84471 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "133145F" /r "1000" /z "O" /c "MAP" /e "FO" /f "C:\Home\EnerGis\West\201608\1_2_1658789_30944654\1_2_133145F_FO.pdf" /st "1658789-30944654" /t "12" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:55:07,708 [11] INFO  PlotService2.Services.Logger - PlotTask 5 78 sec
+2016-09-24 18:55:07,715 [11] INFO  PlotService2.Services.Logger - Plot dwg: 84472 /i "W:\RWA005\Cardex\Ouest\Edbs\Tub\Reperage\El\T69-1-1-5.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\West\201608\1_2_1658789_30944654\5_2_T69-1-1-5_110101.pdf" /d /isolate 
+2016-09-24 18:55:07,715 [11] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:55:07,722 [11] INFO  PlotService2.Services.Logger - PlotTask 6 78 sec
+2016-09-24 18:55:07,729 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84473 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "133145G" /r "1000" /z "O" /c "MAP" /e "BT" /f "C:\Home\EnerGis\West\201608\1_2_1658789_30944654\1_2_133145G_BT.pdf" /st "1658789-30944654" /t "12" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:55:16,998 [12] INFO  PlotService2.Services.Logger - PlotTask 5 87 sec
+2016-09-24 18:55:17,003 [12] INFO  PlotService2.Services.Logger - Plot dwg: 84474 /i "W:\RWA005\Cardex\Ouest\Edbs\Tub\Reperage\El\1104-2-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\West\201608\1_2_1658788_30944653\5_2_1104-2-2_105022.pdf" /d /isolate 
+2016-09-24 18:55:17,004 [12] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:55:17,010 [12] INFO  PlotService2.Services.Logger - PlotTask 6 87 sec
+2016-09-24 18:55:17,016 [12] INFO  PlotService2.Services.Logger - Plot dwg: 84475 /i "W:\RWA005\Cardex\Ouest\Edbs\Tub\Reperage\El\K1-11BT.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\West\201608\1_2_1658788_30944653\5_2_K1-11BT_109050.pdf" /d /isolate 
+2016-09-24 18:55:17,017 [12] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:55:17,022 [12] INFO  PlotService2.Services.Logger - PlotTask 7 87 sec
+2016-09-24 18:55:17,028 [12] INFO  PlotService2.Services.Logger - Plot ticket: 84476 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "134145B" /r "1000" /z "O" /c "MAP" /e "BP" /f "C:\Home\EnerGis\West\201608\1_2_1658788_30944653\1_2_134145B_BP.pdf" /st "1658788-30944653" /t "5" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:55:18,180 [11] INFO  PlotService2.Services.Logger - PlotTask 7 88 sec
+2016-09-24 18:55:18,187 [11] INFO  PlotService2.Services.Logger - Plot dwg: 84477 /i "W:\RWA005\Cardex\Ouest\Edbs\Tub\Reperage\El\K1-05BT.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\West\201608\1_2_1658788_30944653\5_2_K1-05BT_109045.pdf" /d /isolate 
+2016-09-24 18:55:18,188 [11] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:55:18,193 [11] INFO  PlotService2.Services.Logger - PlotTask 8 88 sec
+2016-09-24 18:55:18,200 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84478 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "134145B" /r "1000" /z "O" /c "MAP" /e "MP" /f "C:\Home\EnerGis\West\201608\1_2_1658788_30944653\1_2_134145B_MP.pdf" /st "1658788-30944653" /t "5" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:55:27,694 [12] INFO  PlotService2.Services.Logger - PlotTask 8 98 sec
+2016-09-24 18:55:27,699 [12] INFO  PlotService2.Services.Logger - Plot dwg: 84479 /i "W:\RWA005\Cardex\Ouest\Edh\Lva\Projet\312003-c.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\West\201608\1_2_1658787_30944652\1_2_312003-C_200256.pdf" /d /isolate 
+2016-09-24 18:55:27,700 [12] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:55:27,705 [12] INFO  PlotService2.Services.Logger - PlotTask 9 98 sec
+2016-09-24 18:55:27,711 [12] INFO  PlotService2.Services.Logger - Plot dwg: 84480 /i "W:\RWA004\Cardex\Est\EDNA\Cin\Reperage\fo\EDNA-FO-D455-76.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Home\EnerGis\East\201608\3_1_1639061_30941100\4_2_EDNA-FO-D455-76_98855.pdf" /d /isolate 
+2016-09-24 18:55:27,711 [12] ERROR PlotService2.Services.Logger - Input file not found
+2016-09-24 18:55:27,716 [12] INFO  PlotService2.Services.Logger - PlotTask 10 98 sec
+2016-09-24 18:55:28,698 [11] INFO  PlotService2.Services.Logger - PlotTask 9 99 sec
+2016-09-24 18:55:28,704 [11] INFO  PlotService2.Services.Logger - PlotTask 10 99 sec
+2016-09-24 18:55:28,709 [11] INFO  PlotService2.Services.Logger - PlotTask 11 99 sec
+2016-09-24 18:55:28,714 [11] INFO  PlotService2.Services.Logger - PlotTask 12 99 sec
+2016-09-24 18:55:28,719 [11] INFO  PlotService2.Services.Logger - PlotTask 13 99 sec
+2016-09-24 18:55:28,723 [11] INFO  PlotService2.Services.Logger - PlotTask 14 99 sec
+2016-09-24 18:55:28,728 [11] INFO  PlotService2.Services.Logger - PlotTask 15 99 sec
+2016-09-24 18:55:28,734 [11] INFO  PlotService2.Services.Logger - PlotTask 16 99 sec
+2016-09-24 18:55:28,741 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84481 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "173131H" /r "1000" /z "E" /c "MAP" /e "FO" /f "C:\Home\EnerGis\East\201608\3_1_1639060_30941088\4_1_173131H_FO.pdf" /st "1639060-30941088" /t "4" /n "999" /u "BZT" /imp /d /isolate 
+2016-09-24 18:55:37,968 [11] INFO  PlotService2.Services.Logger - PlotTask 17 108 sec
+2016-09-24 18:55:37,973 [11] INFO  PlotService2.Services.Logger - Plot ticket: 84482 /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id "173131G" /r "1000" /z "E" /c "MAP" /e "FO" /f "C:\Home\EnerGis\East\201608\3_1_1639060_30941088\4_1_173131G_FO.pdf" /st "1639060-30941088" /t "4" /n "999" /u "BZT" /imp /d /isolate 

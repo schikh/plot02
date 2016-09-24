@@ -41,18 +41,24 @@ namespace BatchPlot.Services
             hierarchy.Configured = true;
         }
 
-        public static void Log(string message, object parameter)
-        {
-            Log(message, new[] { parameter });
-        }
+        //public static void Info(string message, object parameter)
+        //{
+        //    Info(message, new[] { parameter });
+        //}
 
-        public static void Log(string message, params object[] parameters)
+        public static void Info(string message, params object[] parameters)
         {
-            _log.DebugFormat(message, parameters);
+            _log.InfoFormat(message, parameters);
             Trace(message, parameters);
         }
 
-        public static void Log(Exception ex)
+        public static void Error(string message, params object[] parameters)
+        {
+            _log.ErrorFormat(message, parameters);
+            Trace(message, parameters);
+        }
+
+        public static void Error(Exception ex)
         {
             _log.Error("*** ERROR ************************************************************");
             _log.Error("Exception:", ex);

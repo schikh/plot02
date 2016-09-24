@@ -7,6 +7,6 @@
     <StartArguments>/i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 151127A /r 1000 /z O /c MAP /e BP /f c:\test\EnerGis\HUB001A_PRD\BIZT_HUB_0347_04\West\201609\1_2_1663348_31012075\1_1_151127A_BP.pdf /st 1663348-31012075 /t 5 /n 3 /u BZT /imp /d /isolate</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
 </Project>

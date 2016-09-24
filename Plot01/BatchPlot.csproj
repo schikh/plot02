@@ -57,10 +57,11 @@
     <Compile Include="Configuration\PlotConfiguration.cs" />
     <Compile Include="Extensions\BlockReferenceExtension.cs" />
     <Compile Include="Extensions\ListExtension.cs" />
+    <Compile Include="Extensions\Style.cs" />
     <Compile Include="Services\Helper.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\DataAccessService.cs" />
-    <Compile Include="PlotToFileCommand.cs" />
+    <Compile Include="PlotCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

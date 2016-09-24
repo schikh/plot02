@@ -112,38 +112,38 @@ namespace BatchPlot.Configuration
             get { return (string)this["LayersToDeleteRegexFilter"]; }
         }
 
-        [ConfigurationProperty("PageFormats", IsRequired = false, IsDefaultCollection = true)]
-        public PlotConfigurationCollection PageFormats
+        [ConfigurationProperty("PaperFormats", IsRequired = false, IsDefaultCollection = true)]
+        public PlotConfigurationCollection PaperFormats
         {
-            get { return (PlotConfigurationCollection)base["PageFormats"]; }
+            get { return (PlotConfigurationCollection)base["PaperFormats"]; }
         }
 
-        public IEnumerable<PageFormat> GetDefaultPageFormats(string plotterName)
+        public IEnumerable<PaperFormat> GetDefaultPaperFormats(string plotterName)
         {
-            return PageFormats.Cast<PageFormat>().Where(x => x.PlotterName == plotterName);
+            return PaperFormats.Cast<PaperFormat>().Where(x => x.PlotterName == plotterName);
         }
     }
 
     internal class PlotConfigurationCollection : ConfigurationElementCollection
     {
-        public PageFormat this[int index]
+        public PaperFormat this[int index]
         {
-            get { return (PageFormat)BaseGet(index); }
+            get { return (PaperFormat)BaseGet(index); }
         }
 
         protected override ConfigurationElement CreateNewElement()
         {
-            return new PageFormat();
+            return new PaperFormat();
         }
 
         protected override object GetElementKey(ConfigurationElement element)
         {
-            var e = (PageFormat)element;
+            var e = (PaperFormat)element;
             return e.PlotterName + e.CanonicalMediaName;
         }
     }
     
-    internal class PageFormat : ConfigurationElement
+    internal class PaperFormat : ConfigurationElement
     {
         [ConfigurationProperty("PlotterName", IsRequired = true)]
         public string PlotterName
