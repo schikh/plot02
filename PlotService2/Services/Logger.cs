@@ -6,7 +6,7 @@ using log4net;
 
 namespace PlotService2.Services
 {
-    public class Logger
+    public static class Logger
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

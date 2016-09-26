@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-//[assembly: log4net.Config.XmlConfigurator(Watch = true)]
-
-namespace PlotService.Services
+namespace PlotService2.Services
 {
     public static class Extensions
     {
@@ -19,9 +17,6 @@ namespace PlotService.Services
 
     public static class Helper
     {
-        private static readonly log4net.ILog _log =
-            log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         public static double GetExecutionTime(Action action)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -29,32 +24,6 @@ namespace PlotService.Services
             stopwatch.Stop();
             return Math.Round(stopwatch.Elapsed.TotalSeconds, 2);
         }
-
-        //public static void Log(string message, object parameter)
-        //{
-        //    Log(message, new[] { parameter });
-        //}
-
-        //public static void Log(string message, params object[] parameters)
-        //{
-        //    _log.DebugFormat(message, parameters);
-        //    Trace(message, parameters);
-        //}
-
-        //public static void Log(Exception ex)
-        //{
-        //    _log.Error("*** ERROR ************************************************************");
-        //    _log.Error("Exception:", ex);
-        //    _log.Error("**********************************************************************");
-        //    Trace("*** ERROR ************************************************************");
-        //    Trace("COMMAND ERROR: {0}", ex.ToString().Replace("\r\n", ";"));
-        //    Trace("**********************************************************************");
-        //}
-
-        //public static void Trace(string message, params object[] parameters)
-        //{
-        //    Console.WriteLine(message, parameters);
-        //}
 
         public static string GetAssemblyFolder()
         {

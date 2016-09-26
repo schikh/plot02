@@ -9,100 +9,160 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using PlotService.Services;
+using PlotService2.Configuration;
 using PlotService2.Services;
+using Topshelf;
 
 namespace PlotService2
 {
+    // my.exe install -instance:1 -username:bob -password:pwd
     public class Program
     {
-        private static object sysLock = new object();
-
-        public static void Main(string[] args)
+        public static void Main2(string[] args)
         {
-            Console.WriteLine("Main 1");
-            
+            var plotTaskManager = new PlotTaskManager();
+            plotTaskManager.Start();
+        }
+
+        static void Main(string[] args)
+        {
+            HostFactory.Run(x => 
+            {
+                x.Service<PlotTaskManager>(s =>
+                {
+                    s.ConstructUsing(name => new PlotTaskManager());
+                    s.WhenStarted(tc => tc.Start());
+                    s.WhenStopped(tc => tc.Stop());
+                });
+                x.RunAsLocalSystem();
+
+                x.SetDescription("Energis plot service");
+                x.SetDisplayName("Energis plot service");
+                x.SetServiceName("EnergisPlotService");
+            });
+            HostFactory.New(x =>
+            {
+                x.EnableServiceRecovery(
+                    rc =>
+                    {
+                        rc.RestartService(1);
+                    });
+            });
+        }
+    }
+
+    public class PlotTaskManager
+    {
+        private readonly object _sysLock = new object();
+        private readonly PlotTaskRepository _plotTaskRepository = new PlotTaskRepository();
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
+        public void Start()
+        {
+            //var plotTask = new PlotTask();
+            //plotTask.PathPlan = @"W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg";
+            //plotTask.PathResultPdf = @"C:\Test\plot\Plot01\Scripts\dump2.pdf";
+            //var tempFolder = Helper.CreateTempFolder();
+            //var f = new FileHelper();
+            //var file = f.ImportServerFile(plotTask.PathPlan, tempFolder);
+            //var list = f.GetAttachedFilePaths(plotTask.PathPlan).ToArray();
+            //f.ImportServerFiles(list, tempFolder);
+            //plotTask.PathPlan = file;
+            //var result = ProcessPlotTickects(plotTask);
+            //return;
+
             var tasks = new List<Task>();
             var plotTasks = new BlockingCollection<PlotTask>();
             var stopwatch = Stopwatch.StartNew();
-            var cancellationToken = new CancellationTokenSource().Token;
+            var cancellationToken = _cancellationTokenSource.Token;
 
-            tasks.Add(Task.Factory.StartNew(() =>
-            {
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    try
-                    {
-                        Console.WriteLine("Main 2");
-                        RetrieveNewTasks(plotTasks);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex);
-                    }
-                    Thread.Sleep(Configuration.BatchLoadInterval * 1000);
-                }
-            }, cancellationToken));
-
-            tasks.AddRange(Enumerable.Range(0, Configuration.NumberOfConsoles)
-                .Select(x => Task.Factory.StartNew(() => {
-                    var count = 0;
-                    while (!cancellationToken.IsCancellationRequested)
-                    {
-                        try
+            tasks.Add(
+                Task.Factory.StartNew(
+                    () => {
+                        while (!cancellationToken.IsCancellationRequested)
                         {
-                            ProcessPlotTasks(plotTasks);
-                            Logger.Info("PlotTask {0} {1} sec", ++count, Math.Round(stopwatch.Elapsed.TotalSeconds, 0));
+                            try
+                            {
+                                _plotTaskRepository.UpdatePlotJobStatusesFromPlotTaskStatuses();
+                                if (plotTasks.Count() < Settings.BatchSize / 2)
+                                {
+                                    RetrieveNewTasks(plotTasks);
+                                    _plotTaskRepository.ImportNewPlotTasks();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Error(ex);
+                            }
+                            Thread.Sleep(Settings.BatchLoadInterval * 1000);
                         }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex);
-                        }
-                    }
-                }, cancellationToken)));
+                    },
+                    cancellationToken));
 
-            Console.WriteLine("Main 7");
+            var count = 0;
+
+            tasks.AddRange(
+                Enumerable.Range(0, Settings.NumberOfConsoles)
+                    .Select(
+                        x => Task.Factory.StartNew(
+                            () => {
+                                while (!cancellationToken.IsCancellationRequested)
+                                {
+                                    try
+                                    {
+                                        if (ProcessPlotTasks(plotTasks))
+                                        {
+                                            Logger.Info("PlotTask {0} {1} sec", ++count, Math.Round(stopwatch.Elapsed.TotalSeconds, 0));
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Logger.Error(ex);
+                                    }
+                                }
+                            },
+                            cancellationToken)));
 
             Task.WaitAll(tasks.ToArray());
         }
 
-        private static void RetrieveNewTasks(BlockingCollection<PlotTask> plotTasks)
+        public void Stop()
         {
-            if (plotTasks.Count() < Configuration.BatchSize / 2)
-            {
-                Console.WriteLine("Main 3");
-                var plotManager = new PlotManager();
-                var list = plotManager.GetPlotTasks();
-                list.ToList().ForEach(x => plotTasks.Add(x));
-            }
-            Console.WriteLine("Tasks:" + plotTasks.Count());
+            _cancellationTokenSource.Cancel();
         }
 
-        private static void ProcessPlotTasks(BlockingCollection<PlotTask> plotTasks)
+        private void RetrieveNewTasks(BlockingCollection<PlotTask> plotTasks)
         {
-            var plotManager = new PlotManager();
-            PlotTask plotTask = null;
-
-            Console.WriteLine("Main 5");
-            plotTask = plotTasks.Take();
-
-            if (!plotManager.LockPlotTask(plotTask.TaskId))
+            if (plotTasks.Count() < Settings.QueueMinimumThreshold)
             {
-                return;
+                var list = _plotTaskRepository.GetPlotTasks();
+                plotTasks.TakeWhile(qItem => true);
+                list.ToList().ForEach(x => plotTasks.Add(x));
+            }
+            Console.WriteLine("Tasks queue length:" + plotTasks.Count());
+        }
+
+        private bool ProcessPlotTasks(BlockingCollection<PlotTask> plotTasks)
+        {
+            var plotTask = plotTasks.Take();
+            var result = false;
+
+            Logger.Info("Plot task: {0} {1}", plotTask.TaskId, plotTask.CommandLineParameters());
+
+            if (!_plotTaskRepository.LockPlotTask(plotTask.TaskId))
+            {
+                Logger.Info("Plot task: {0} already locked", plotTask.TaskId);
+                return false;
             }
 
             try
             {
-                var result = false;
-
-                if (plotTask.TypePlan == "T")
+                if (plotTask.IsImpetrant)
                 {
-                    Logger.Info("Plot ticket: {0} {1}", plotTask.TaskId, plotTask.CommandLineParameters());
                     result = ProcessPlotTickects(plotTask);
                 }
                 else
                 {
-                    Logger.Info("Plot dwg: {0} {1}", plotTask.TaskId, plotTask.CommandLineParameters());
                     if (File.Exists(plotTask.PathPlan))
                     {
                         var tempFolder = Helper.CreateTempFolder();
@@ -116,31 +176,30 @@ namespace PlotService2
                     }
                     else
                     {
-                        Logger.Error("Input file not found");
+                        Logger.Error("Plot task: {0} Input file not found", plotTask.TaskId);
                     }
                 }
 
-                plotManager.UpdatePlotTaskStatus(plotTask.TaskId, result ? 5 : 3);
+                _plotTaskRepository.UpdatePlotTaskStatus(plotTask.TaskId, result);
             }
             catch (Exception ex)
             {
+                Logger.Error("Plot task: {0} ERROR", plotTask.TaskId);
                 Logger.Error(ex);
-
-                if (plotTask != null)
-                {
-                    plotManager.UpdatePlotTaskStatus(plotTask.TaskId, 3);
-                }
+                _plotTaskRepository.UpdatePlotTaskStatus(plotTask.TaskId, false);
             }
+
+            return result;
         }
 
-        private static bool ProcessPlotTickects(PlotTask plotTask)
+        private bool ProcessPlotTickects(PlotTask plotTask)
         {
             //var fileName = @"C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe";
             //var xxx =  @"/i W:\RWA004\Cardex\Est\Edpl\Vvs\Projet\EDPL-PP-115871.dwg /s C:\Test\Plot\Plot01\Scripts\PlotDwg.scr /f c:\test\EnerGis\xxx.pdf ";
 
             using (var process = new Process())
             {
-                process.StartInfo.FileName = Configuration.AcConsolePath;
+                process.StartInfo.FileName = Settings.AcConsolePath;
                 process.StartInfo.Arguments = plotTask.CommandLineParameters();
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.ErrorDialog = false;
@@ -176,7 +235,7 @@ namespace PlotService2
 
                 var standardOutput = process.StandardOutput.ReadToEnd();
 
-                lock (sysLock)
+                lock (_sysLock)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine(standardOutput);
@@ -186,7 +245,7 @@ namespace PlotService2
                     Console.ResetColor();
                 }
 
-                process.WaitForExit(Configuration.MaximumConsoleExecutionTime * 1000);
+                process.WaitForExit(Settings.MaximumConsoleExecutionTime * 1000);
 
                 if (!process.HasExited)
                 {
@@ -196,143 +255,136 @@ namespace PlotService2
                 return standardOutput.Contains("PLOT SUCCESSFUL");
             }
         }
+    }
 
-        public class FileHelper
+    public class FileHelper
+    {
+        public IEnumerable<string> GetAttachedFilePaths(string dwgFile)
         {
-            public IEnumerable<string> GetAttachedFilePaths(string dwgFile)
+            var directory = Path.GetDirectoryName(dwgFile);
+            var xmlFile = Path.Combine(directory, Path.GetFileNameWithoutExtension(dwgFile) + ".xml");
+            if (File.Exists(xmlFile))
             {
-                var directory = Path.GetDirectoryName(dwgFile);
-                var xmlFile   = Path.Combine(directory, Path.GetFileNameWithoutExtension(dwgFile) + ".xml");
-                if (File.Exists(xmlFile))
+                //var text = File.ReadAllText(xmlFile);
+                //var pattern = @"<file .* filename=""(?<fileName>[^""]*)"" .*>";
+                //var expr = new Regex(pattern, RegexOptions.Multiline);
+                //foreach (var file in expr
+                //    .Matches(text).Cast<Match>()
+                //    .Select(x => x.Groups["fileName"].Value)
+                //    .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase )))
+                //{
+                //    yield return Path.Combine(directory, file);
+                //}
+                var doc = XDocument.Load(xmlFile);
+                var files = doc.Descendants("file")
+                    .Attributes("fileName")
+                    .Concat(doc.Descendants("file")
+                    .Attributes("filename"))
+                    .Select(x => x.Value)
+                    .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase));
+                foreach (var file in files)
                 {
-                    //var text = File.ReadAllText(xmlFile);
-                    //var pattern = @"<file .* filename=""(?<fileName>[^""]*)"" .*>";
-                    //var expr = new Regex(pattern, RegexOptions.Multiline);
-                    //foreach (var file in expr
-                    //    .Matches(text).Cast<Match>()
-                    //    .Select(x => x.Groups["fileName"].Value)
-                    //    .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase )))
-                    //{
-                    //    yield return Path.Combine(directory, file);
-                    //}
-                    var doc = XDocument.Load(xmlFile);
-                    var files = doc.Descendants("file")
-                        .Attributes("fileName")
-                        .Select(x => x.Value)
-                        .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase));
-                    foreach (var file in files)
-                    {
-                        yield return Path.Combine(directory, file);
-                    }
-                }
-            }
-
-            public string ImportServerFile(string serverFilePath, string tempFolder)
-            {
-                var localFilePath = Helper.GetLocalFilePath(serverFilePath, tempFolder);
-                File.Copy(serverFilePath, localFilePath, true);
-                return localFilePath;
-            }
-
-            public void ImportServerFiles(IEnumerable<string> serverFilePaths, string tempFolder)
-            {
-                foreach (var serverFilePath in serverFilePaths)
-                {
-                    if (File.Exists(serverFilePath))
-                    {
-                        ImportServerFile(serverFilePath, tempFolder);
-                    }
-                    else
-                    {
-                        Logger.Info("FILE NOT FOUND {0}", serverFilePath);
-                    }
+                    yield return Path.Combine(directory, file);
                 }
             }
         }
 
-        public class PlotManager
+        public string ImportServerFile(string serverFilePath, string tempFolder)
         {
-            public IEnumerable<PlotTask> GetPlotTasks()
-            {
-                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["WriteConnectionString"].ConnectionString;
-                var da = new DataAccessService(connectionString);
-                var query = string.Format(@"SELECT 
-                                a.PJOBID,
-                                a.S_PLOT_TICKET,
-                                a.S_PLTICKET_STATUS,
-                                a.O_DATE,
-                                a.N_TOT_PLAN,
-                                a.USERID,
-                                b.PTASKID,
-                                b.C_TYPE_PLAN,
-                                b.L_ID_STAMP,
-                                b.L_ID_PLANCHETTE,
-                                b.N_ORD_PLAN,
-                                b.C_TYPE_MAP,
-                                b.L_PATH_PLAN,
-                                b.LIST_ENERGY,
-                                b.L_PATH_RESULT_PDF,
-                                b.N_SCALE,
-                                b.N_ESSAY,
-                                b.S_PLTICKET_STATUS,
-                                b.C_SIDE
-                                FROM PJOB a
-                                INNER JOIN PTASK b
-                                ON a.PJOBID = b.PJOBID
-                                WHERE b.S_PLTICKET_STATUS = 1 
-                                AND ROWNUM <= {0}
-                                AND (b.LOCKTIME IS NULL OR b.LOCKTIME <= SYS_EXTRACT_UTC(SYSTIMESTAMP))", Configuration.BatchSize);
-                var list = da.IterateOverReader(query, MapPlotTask);
-                return list;
-            }
+            var localFilePath = Helper.GetLocalFilePath(serverFilePath, tempFolder);
+            File.Copy(serverFilePath, localFilePath, true);
+            return localFilePath;
+        }
 
-            public PlotTask MapPlotTask(IDataReader reader)
+        public void ImportServerFiles(IEnumerable<string> serverFilePaths, string tempFolder)
+        {
+            foreach (var serverFilePath in serverFilePaths)
             {
-                var p = new PlotTask();
-                p.JobId = Convert.ToInt32(reader.GetValue(0));
-                p.PlotTicket = Convert.ToInt32(reader.GetValue(1));
-                p.JobStatus = Convert.ToInt32(reader.GetValue(2));
-                p.Date = reader.GetDateTime(3);
-                p.TotalPlan = Convert.ToInt32(reader.GetValue(4));
-                p.UserId = reader.GetSafe<string>(5);
-                p.TaskId = Convert.ToInt32(reader.GetValue(6));
-                p.TypePlan = reader.GetSafe<string>(7);
-                p.IdStamp = reader.GetSafe<string>(8);
-                p.IdPlanchette = reader.GetSafe<string>(9);
-                p.OrdPlan = Convert.ToInt32(reader.GetValue(10));
-                p.TypMap = reader.GetSafe<string>(11);
-                p.PathPlan = reader.GetSafe<string>(12);
-                p.ListEnergy = reader.GetSafe<string>(13);
-                p.PathResultPdf = Configuration.LocalRootPath 
-                    + reader.GetSafe<string>(14).Substring(Configuration.ProductionRootPath.Length);
-                p.Scale = reader.GetSafe<string>(15);
-                p.Essay = Convert.ToInt32(reader.GetValue(16));
-                p.PlotTicketStatus = Convert.ToInt32(reader.GetValue(17));
-                p.Side = reader.GetSafe<string>(18);
-                return p;
+                if (File.Exists(serverFilePath))
+                {
+                    ImportServerFile(serverFilePath, tempFolder);
+                }
+                else
+                {
+                    Logger.Info("FILE NOT FOUND {0}", serverFilePath);
+                }
             }
+        }
+    }
 
-            public bool LockPlotTask(int taskId)
-            {
-                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["WriteConnectionString"].ConnectionString;
-                var da = new DataAccessService(connectionString);
-                var query = string.Format("UPDATE PTASK "
-                    + "SET LOCKTIME = SYS_EXTRACT_UTC(SYSTIMESTAMP) + interval '3' minute "
-                    + "WHERE PTASKID = {0} "
-                    + "AND S_PLTICKET_STATUS = 1 "
-                    + "AND (LOCKTIME IS NULL OR LOCKTIME <= SYS_EXTRACT_UTC(SYSTIMESTAMP)) ", taskId);
-                var result = da.ExecuteCommand(query);
-                return result == 1;
-            }
+    public class PlotTaskRepository
+    {
+        readonly string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["WriteConnectionString"].ConnectionString;
 
-            public bool UpdatePlotTaskStatus(int taskId, int taskStatus)
-            {
-                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["WriteConnectionString"].ConnectionString;
-                var da = new DataAccessService(connectionString);
-                var query = string.Format("UPDATE PTASK SET S_PLTICKET_STATUS = {0} WHERE PTASKID = {1} ", taskStatus, taskId);
-                var result = da.ExecuteCommand(query);
-                return result == 1;
-            }
+        public IEnumerable<PlotTask> GetPlotTasks()
+        {
+            var da = new DataAccessService(_connectionString);
+            var template = QueryTemplates.Templates.GetTemplate("Retreive_PTASK_records_to_process").Template;
+            var query = string.Format(template, Settings.BatchSize);
+            var list = da.IterateOverReader(query, MapPlotTask);
+            return list;
+        }
+
+        public PlotTask MapPlotTask(IDataReader reader)
+        {
+            var p = new PlotTask();
+            p.JobId = Convert.ToInt32(reader.GetValue(0));
+            p.PlotTicket = Convert.ToInt32(reader.GetValue(1));
+            p.JobStatus = Convert.ToInt32(reader.GetValue(2));
+            p.Date = reader.GetDateTime(3);
+            p.TotalPlan = Convert.ToInt32(reader.GetValue(4));
+            p.UserId = reader.GetSafe<string>(5);
+            p.TaskId = Convert.ToInt32(reader.GetValue(6));
+            p.TypePlan = reader.GetSafe<string>(7);
+            p.IdStamp = reader.GetSafe<string>(8);
+            p.IdPlanchette = reader.GetSafe<string>(9);
+            p.OrdPlan = Convert.ToInt32(reader.GetValue(10));
+            p.TypMap = reader.GetSafe<string>(11);
+            p.PathPlan = reader.GetSafe<string>(12);
+            p.ListEnergy = reader.GetSafe<string>(13);
+            p.PathResultPdf = Settings.LocalRootPath
+                + reader.GetSafe<string>(14).Substring(Settings.ProductionRootPath.Length);
+            p.Scale = reader.GetSafe<string>(15);
+            p.Essay = Convert.ToInt32(reader.GetValue(16));
+            p.PlotTicketStatus = Convert.ToInt32(reader.GetValue(17));
+            p.Side = reader.GetSafe<string>(18);
+            return p;
+        }
+
+        public bool LockPlotTask(int taskId)
+        {
+            var da = new DataAccessService(_connectionString);
+            var template = QueryTemplates.Templates.GetTemplate("Lock_PTASK_record").Template;
+            var query = string.Format(template, taskId);
+            var result = da.ExecuteCommand(query);
+            return result == 1;
+        }
+
+        public bool UpdatePlotTaskStatus(int taskId, bool successful)
+        {
+            var da = new DataAccessService(_connectionString);
+            var templateName = successful ? "Update_PTASK_record_to_successful_status"
+                : "Update_PTASK_record_to_failed_status";
+            var template = QueryTemplates.Templates.GetTemplate(templateName).Template;
+            var query = string.Format(template, taskId);
+            var result = da.ExecuteCommand(query);
+            return result == 1;
+        }
+
+        public void ImportNewPlotTasks()
+        {
+            var da = new DataAccessService(_connectionString);
+            var query = QueryTemplates.Templates.GetTemplate("Import_PJOB_from_PLT_MNGR_PLOT_TICKET").Template;
+            var result = da.ExecuteCommand(query);
+            query = QueryTemplates.Templates.GetTemplate("Import_PTASK_from_PLT_MNGR_PLOT_TICKET").Template;
+            result = da.ExecuteCommand(query);
+        }
+
+        public void UpdatePlotJobStatusesFromPlotTaskStatuses()
+        {
+            var da = new DataAccessService(_connectionString);
+            var query = QueryTemplates.Templates.GetTemplate("Update_PJOB_status_from_PTASK_statuses").Template;
+            var result = da.ExecuteCommand(query);
         }
     }
 
@@ -380,13 +432,17 @@ namespace PlotService2
         public int PlotTicketStatus { get; set; }
         public string Side { get; set; }
 
+        public bool IsImpetrant {
+            get { return string.Equals(TypePlan, "T", StringComparison.InvariantCultureIgnoreCase); }
+        }
+
         public string CommandLineParameters()
         {
             var builder = new CommandLineParametersBuilder();
-            if (string.Equals(TypePlan, "T", StringComparison.InvariantCultureIgnoreCase))
+            if (IsImpetrant)
             {
-                builder.Add("i", Configuration.EmptyDwgPath) 
-                    .Add("s", Configuration.PlotPlanchetteScriptPath)
+                builder.Add("i", Settings.EmptyDwgPath)
+                    .Add("s", Settings.PlotPlanchetteScriptPath)
                     .Add("id", IdPlanchette)
                     .Add("r", Scale)
                     .Add("z", Side)
@@ -404,13 +460,17 @@ namespace PlotService2
             else
             {
                 builder.Add("i", PathPlan)
-                    .Add("s", Configuration.PlotDwgScriptPath)
+                    .Add("s", Settings.PlotDwgScriptPath)
                     .Add("f", PathResultPdf)
                     .Add("d")
                     .Add("isolate");
             }
             return builder.GetCommandLineParameters();
         }
+
+
+
+
 
         //################################################################################################################################
         //#

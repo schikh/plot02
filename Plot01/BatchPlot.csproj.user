@@ -4,9 +4,9 @@
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe</StartProgram>
     <StartWorkingDirectory>C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\</StartWorkingDirectory>
-    <StartArguments>/i C:\Test\Plot\Plot01\Scripts\Empty.dwg /s C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr /id 151127A /r 1000 /z O /c MAP /e BP /f c:\test\EnerGis\HUB001A_PRD\BIZT_HUB_0347_04\West\201609\1_2_1663348_31012075\1_1_151127A_BP.pdf /st 1663348-31012075 /t 5 /n 3 /u BZT /imp /d /isolate</StartArguments>
+    <StartArguments>/i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z E /c "MAP" /e "GAZ,MP" /imp  /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
 </Project>

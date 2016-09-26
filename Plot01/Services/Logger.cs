@@ -24,7 +24,13 @@ namespace BatchPlot.Services
             roller.LockingModel = new FileAppender.InterProcessLock();
             roller.AppendToFile = true;
             var assemblyFolder = Helper.GetAssemblyFolder();
-            roller.File = Path.Combine(assemblyFolder, "logs", "PlotPluggin.log");
+            var logsFolder = Path.Combine(assemblyFolder, "logs");
+            if (!Directory.Exists(logsFolder))
+            {
+                Directory.CreateDirectory(logsFolder);
+            }
+            var file = Path.Combine(logsFolder, "PlotPluggin.log");
+            roller.File = file;
             roller.Layout = patternLayout;
             roller.MaxSizeRollBackups = 15;
             //roller.MaximumFileSize = "10MB";

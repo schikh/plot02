@@ -1,10 +1,20 @@
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
 namespace BatchPlot.Services
 {
+    public static class Extensions
+    {
+        public static T GetSafe<T>(this IDataReader reader, int id)
+        {
+            var value = reader[id];
+            return value == DBNull.Value ? default(T) : (T)value;
+        }
+    }
+
     public static class Helper
     {
         public static double GetExecutionTime(Action action)

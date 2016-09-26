@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.PlottingServices;
 using Autodesk.AutoCAD.Runtime;
 using BatchPlot;
 using BatchPlot.Configuration;
@@ -31,6 +28,9 @@ using BatchPlot.Services;
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /isolate
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+
+ //"C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+
 
 [assembly: CommandClass(typeof(PlotCommand))]
 namespace BatchPlot
@@ -60,11 +60,11 @@ namespace BatchPlot
                 Logger.Info("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
-                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
-                //var energies = DecodeEnergiesSelection(_plotParameters.Energies);
-                //_plotParameters.EnergyDescription = energies;
-                //var filePaths = GetServerFilePaths(_plotParameters.Category, energies);
-                //var filePaths = ImportServerFiles(filePaths).ToArray();
+                //var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
+                var energies = DecodeEnergiesSelection(_plotParameters.Energies);
+                var xxx = energies.Select(x => x.Name);
+                var filePaths = GetServerFilePaths(_plotParameters.Category, xxx);
+                _plotParameters.EnergyDescription = energies.Where(x => x.Rank < 99).Select(x => x.Name);
 
                 ImportDwgFilesAndApplyStyle(filePaths);
                 CreatePaperSpaceAndSetThePlotSettings();
@@ -126,11 +126,11 @@ namespace BatchPlot
                 ImportDwgFiles(tr, bt, btr, filePaths);
                 if (_plotParameters.Impetrant)
                 {
-                    ApplyImpetrantStyle(tr);
+                    _document.Database.ApplyImpetrantStyle(tr, _plotParameters.ExternalDrawingExtend);
                 }
                 else if (_plotParameters.Oce)
                 {
-                    ApplyOceGrayStyle(tr);
+                    _document.Database.ApplyOceGrayStyle(tr, _plotParameters.ExternalDrawingExtend);
                 }
                 //TODO: default style missing ?
                 tr.Commit();
@@ -170,7 +170,7 @@ namespace BatchPlot
             using (var tr = _document.Database.TransactionManager.StartTransaction())
             using (var layout = GetPlotLayout(tr))
             {
-                PlotLayout(tr, layout);
+                _document.PlotLayout(tr, layout, _plotParameters);
             }
         }
 
@@ -199,7 +199,7 @@ namespace BatchPlot
             return list;
         }
 
-        private IEnumerable<string> DecodeEnergiesSelection(IEnumerable<string> energies)
+        private IEnumerable<EnergyTitle> DecodeEnergiesSelection(IEnumerable<string> energies)
         {
             /*
             'NETGIS', null    TOPO, DEFAULT_ENERGIE
@@ -237,17 +237,24 @@ namespace BatchPlot
 
             var da = new DataAccessService(PlotConfiguration.Config.ConnectionString);
             var query = string.Format(
-                  "SELECT DISTINCT COALESCE(a.ENERGY, b.TITLEID) AS ENERGY, COALESCE(b.RANK, 50) "
+                  "SELECT DISTINCT a.ENERGY AS NAME, COALESCE(b.RANK, 999) "
                 + "FROM PLOTSRV_REQENERGIEGROUP a "
-                + "FULL OUTER JOIN PLOTMAPLAYERTITLE b "
+                + "LEFT OUTER JOIN PLOTMAPLAYERTITLE b "
                 + "ON a.ENERGY = b.TITLEID "
-                + "WHERE a.GROUPNAME IN('{0}') " 
-                + "OR b.TITLEID IN('{0}') "
+                + "WHERE a.GROUPNAME IN('{0}') "
+                + "OR a.ENERGY IN('{0}') "
                 + "ORDER BY 2, 1 ",
                 string.Join("','", energies));
-            var list = da.IterateOverReader(query, x => x.GetString(0));
-            list = list.Concat(energies).Distinct().OrderBy(x => x);
-            return list;
+            var list = da.IterateOverReader(query, x => new { Name = x.GetString(0), Rank = Convert.ToInt32(x.GetDecimal(1)) } );
+            list = list.Concat(energies.Select(x => new { Name = x, Rank = 999 })).Distinct().OrderBy(x => x.Rank);
+            var list2 = list.Select(x => new EnergyTitle() { Name = x.Name, Rank = x.Rank });
+            return list2;
+        }
+
+        private class EnergyTitle
+        {
+            public string Name { get; set; }
+            public int Rank { get; set; }
         }
 
         //private IEnumerable<string> ImportServerFiles(IEnumerable<string> serverFilePaths)
@@ -299,7 +306,7 @@ namespace BatchPlot
             using (var db = new Database(false, true))
             {
                 db.ReadDwgFile(filePath, FileShare.Read, false, "");
-                DeleteNotNeededLayers(db);
+                db.DeleteNotNeededLayers(PlotConfiguration.Config.LayersToDeleteRegexFilter);
                 var blockName = string.Format("{0}-{1}", Path.GetFileNameWithoutExtension(filePath),  fileId);
                 var id = _document.Database.Insert(blockName, db, true);
                 return new BlockReference(Point3d.Origin, id);
@@ -360,80 +367,22 @@ namespace BatchPlot
                 var width = PlotConfiguration.Config.DrawingSize.Width * _plotParameters.Scale;
                 var height = PlotConfiguration.Config.DrawingSize.Height * _plotParameters.Scale;
                 
-                var rectangle = CreateRectangle(x, y, height, width);
+                var rectangle = AutocadExtensions.CreateRectangle(x, y, height, width);
                 rectangle.ColorIndex = 9;
                 btr.AppendEntity(rectangle);
                 tr.AddNewlyCreatedDBObject(rectangle, true);
 
-                rectangle = InflateRectangle(rectangle, PlotConfiguration.Config.InternalBorderWidth);
+                rectangle = rectangle.InflateRectangle(PlotConfiguration.Config.InternalBorderWidth);
                 btr.AppendEntity(rectangle);
                 tr.AddNewlyCreatedDBObject(rectangle, true);
 
-                rectangle = InflateRectangle(rectangle, PlotConfiguration.Config.ExternalBorderWidth);
+                rectangle = rectangle.InflateRectangle(PlotConfiguration.Config.ExternalBorderWidth);
                 btr.AppendEntity(rectangle);
                 tr.AddNewlyCreatedDBObject(rectangle, true);
             }
         }
 
-        private Polyline InflateRectangle(Polyline rectangle, int size)
-        {
-            var line = new Polyline();
-            line.AddVertexAt(0, rectangle.GetPoint2dAt(0).Add(new Vector2d(-size, -size)), 0, 0, 0);
-            line.AddVertexAt(1, rectangle.GetPoint2dAt(1).Add(new Vector2d(-size, +size)), 0, 0, 0);
-            line.AddVertexAt(2, rectangle.GetPoint2dAt(2).Add(new Vector2d(+size, +size)), 0, 0, 0);
-            line.AddVertexAt(3, rectangle.GetPoint2dAt(3).Add(new Vector2d(+size, -size)), 0, 0, 0);
-            line.AddVertexAt(4, rectangle.GetPoint2dAt(4).Add(new Vector2d(-size, -size)), 0, 0, 0);
-            return line;
-        }
 
-        private Polyline CreateRectangle(double x, double y, double height, double width)
-        {
-            var line = new Polyline();
-            line.AddVertexAt(0, new Point2d(x, y), 0, 0, 0);
-            line.AddVertexAt(1, new Point2d(x, y + height), 0, 0, 0);
-            line.AddVertexAt(2, new Point2d(x + width, y + height), 0, 0, 0);
-            line.AddVertexAt(3, new Point2d(x + width, y), 0, 0, 0);
-            line.AddVertexAt(4, new Point2d(x, y), 0, 0, 0);
-            return line;
-        }
-
-        private IEnumerable<T> QueryEntities<T>(Transaction tr, IEnumerable<string> layers, Extents2d extend) where T : Entity
-        {
-            var bt = (IEnumerable<dynamic>)(dynamic)_document.Database.BlockTableId;
-            var list = bt.SelectMany(x => (IEnumerable<dynamic>)x)
-                .Where(x => x.IsKindOf(typeof(T)))
-                .Select(x => (T)tr.GetObject(x, OpenMode.ForRead));
-            if (layers != null)
-            {
-                list = list.Where(x => layers.Contains(x.Layer));
-            }
-            list = list.Where(x => x.Bounds.HasValue
-                && x.Bounds.Value.MaxPoint.X >= extend.MinPoint.X
-                && x.Bounds.Value.MinPoint.X <= extend.MaxPoint.X
-                && x.Bounds.Value.MaxPoint.Y >= extend.MinPoint.Y
-                && x.Bounds.Value.MinPoint.Y <= extend.MaxPoint.Y)
-                .ToArray();
-            return list;
-        }
-
-        private IEnumerable<Entity> QueryEntities(Transaction tr, string layerRegexFilter, Extents2d extend)
-        {
-            var bt = (IEnumerable<dynamic>)(dynamic)_document.Database.BlockTableId;
-            var list = bt.SelectMany(x => (IEnumerable<dynamic>)x)
-                .Select(x => (Entity)tr.GetObject(x, OpenMode.ForRead));
-            if (layerRegexFilter != null)
-            {
-                var regex = new Regex(layerRegexFilter, RegexOptions.IgnoreCase);
-                list = list.Where(x => regex.IsMatch(x.Layer));
-            }
-            list = list.Where(x => x.Bounds.HasValue
-                && x.Bounds.Value.MaxPoint.X >= extend.MinPoint.X
-                && x.Bounds.Value.MinPoint.X <= extend.MaxPoint.X
-                && x.Bounds.Value.MaxPoint.Y >= extend.MinPoint.Y
-                && x.Bounds.Value.MinPoint.Y <= extend.MaxPoint.Y)
-                .ToArray();
-            return list;
-        }
 
         private Dictionary<string, string> GetCartridgeInfo(Transaction tr)
         {
@@ -467,7 +416,7 @@ namespace BatchPlot
             Enumerable.Range(1, 5).ToList().ForEach(x => values.Add("RUE" + x, ""));
             var i = 0;
             var layers = new[] { "BR11", "BT02", "BW03", "RUE", "W0989" };
-            var list = QueryEntities<DBText>(tr, layers, _plotParameters.ExternalDrawingExtend);
+            var list = _document.Database.QueryEntities<DBText>(tr, layers, _plotParameters.ExternalDrawingExtend);
             list.Select(x => x.TextString)
                 .GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
@@ -487,7 +436,7 @@ namespace BatchPlot
             values.Add("COM2", "");
             var i = 0;
             var layers = new[] { "BL02", "COMMUNES", "COMMUNE", "W0980" };
-            var list = QueryEntities<DBText>(tr, layers, _plotParameters.ExternalDrawingExtend);
+            var list = _document.Database.QueryEntities<DBText>(tr, layers, _plotParameters.ExternalDrawingExtend);
             list.Select(x => x.TextString)
                 .GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
@@ -505,7 +454,7 @@ namespace BatchPlot
             var values = new Dictionary<string, string>();
             Enumerable.Range(1, 5).ToList().ForEach(x => values.Add("MD" + x, ""));
             var i = 0;
-            var list = QueryEntities<BlockReference>(tr, null, _plotParameters.ExternalDrawingExtend)
+            var list = _document.Database.QueryEntities<BlockReference>(tr, null, _plotParameters.ExternalDrawingExtend)
                 .Where(x => string.Equals(x.Name, "GIS_MODF")).ToArray();
             list.Select(x => new
                 {
@@ -729,13 +678,17 @@ namespace BatchPlot
             Logger.Info("Drawing size: {0}", pageSize);
             var paperFormats = GetDefaultOrPc3PaperFormats(psv, ps, plotterName);
             paperFormats = paperFormats
-                .OrderBy(x => x.PlotPaperSize.Width * x.PlotPaperSize.Height);
+                .OrderBy(x => x.PlotPaperSize.Height).ThenBy(x => x.PlotPaperSize.Width);
             var paperFormat = paperFormats
                 .FirstOrDefault(x => x.PlotPaperSize.Width >= pageSize.Width 
                     && x.PlotPaperSize.Height >= pageSize.Height);
             if (paperFormat == null && paperFormats.Any())
             {
-                paperFormat = paperFormats.Last();
+                var lastPaperFormatHeight = paperFormats.Last().PlotPaperSize.Height;
+                pageSize = new Size(lastPaperFormatHeight, pageSize.Width / pageSize.Height * lastPaperFormatHeight);
+                paperFormat = paperFormats
+                    .FirstOrDefault(x => x.PlotPaperSize.Width >= pageSize.Width
+                        && x.PlotPaperSize.Height >= pageSize.Height);
                 paperFormat.ShrinkDrawing = true;
             }
             if (paperFormat == null)
@@ -897,61 +850,64 @@ namespace BatchPlot
                 _document.Database.SecurityParameters);
         }
 
-        private void PlotLayout(Transaction tr, Layout layout)
-        {
-            //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            //using (var layout = GetPlotLayout(tr))
-            {
-                var ps = new PlotSettings(layout.ModelType);
-                ps.CopyFrom(layout);
-                ps.PlotPlotStyles = true;
+        //private void PlotLayout(Transaction tr, Layout layout)
+        //{
+        //    //using (var tr = _document.Database.TransactionManager.StartTransaction())
+        //    //using (var layout = GetPlotLayout(tr))
+        //    {
+        //        var ps = new PlotSettings(layout.ModelType);
+        //        ps.CopyFrom(layout);
+        //        ps.PlotPlotStyles = true;
 
-                var psv = PlotSettingsValidator.Current;
-                psv.SetDefaultPlotConfig(ps);
-                psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
-                psv.SetUseStandardScale(ps, true);
-                psv.SetPlotOrigin(ps, PlotConfiguration.Config.PlotOrigin);
-                if (_plotParameters.PaperFormat.ShrinkDrawing)
-                {
-                    psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
-                }
-                else
-                {
-                    psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
-                }
-                psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, _plotParameters.PaperFormat.CanonicalMediaName);
-                psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
+        //        var psv = PlotSettingsValidator.Current;
+        //        psv.SetDefaultPlotConfig(ps);
+        //        psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
+        //        psv.SetUseStandardScale(ps, true);
+        //        psv.SetPlotOrigin(ps, PlotConfiguration.Config.PlotOrigin);
+        //        if (_plotParameters.PaperFormat.ShrinkDrawing)
+        //        {
+        //            psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
+        //        }
+        //        else
+        //        {
+        //            psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
+        //        }
+        //        psv.SetPlotConfigurationName(ps, _plotParameters.Pc3Name, _plotParameters.PaperFormat.CanonicalMediaName);
+        //        psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
 
-                var pi = new PlotInfo();
-                pi.Layout = layout.ObjectId;
-                pi.OverrideSettings = ps;
+        //        var pi = new PlotInfo();
+        //        pi.Layout = layout.ObjectId;
+        //        pi.OverrideSettings = ps;
 
-                var piv = new PlotInfoValidator();
-                piv.MediaMatchingPolicy = MatchingPolicy.MatchEnabled;
-                piv.Validate(pi);
+        //        var piv = new PlotInfoValidator();
+        //        piv.MediaMatchingPolicy = MatchingPolicy.MatchEnabled;
+        //        piv.Validate(pi);
 
-                var d = Path.GetDirectoryName(_plotParameters.OutputFilePath);
-                if (!Directory.Exists(d))
-                {
-                    Directory.CreateDirectory(d);
-                }
+        //        var d = Path.GetDirectoryName(_plotParameters.OutputFilePath);
+        //        if (!Directory.Exists(d))
+        //        {
+        //            Directory.CreateDirectory(d);
+        //        }
 
-                using (var pe = PlotFactory.CreatePublishEngine())
-                using (var ppi = new PlotPageInfo())
-                {
-                    pe.BeginPlot(null, null);
-                    pe.BeginDocument(pi, _document.Name, null, 1, _plotParameters.PlotToFile, _plotParameters.OutputFilePath);
-                    pe.BeginPage(ppi, pi, true, null);
-                    pe.BeginGenerateGraphics(null);
-                    pe.EndGenerateGraphics(null);
-                    pe.EndPage(null);
-                    pe.EndDocument(null);
-                    pe.EndPlot(null);
-                }
+        //        using (var pe = PlotFactory.CreatePublishEngine())
+        //        using (var ppi = new PlotPageInfo())
+        //        {
+        //            pe.BeginPlot(null, null);
+        //            pe.BeginDocument(pi, _document.Name, null, 1, _plotParameters.PlotToFile, _plotParameters.OutputFilePath);
+        //            pe.BeginPage(ppi, pi, true, null);
+        //            pe.BeginGenerateGraphics(null);
+        //            pe.EndGenerateGraphics(null);
+        //            pe.EndPage(null);
+        //            pe.EndDocument(null);
+        //            pe.EndPlot(null);
+        //        }
 
-                tr.Commit();
-            }
-        }
+        //        tr.Commit();
+        //    }
+        //}
+
+
+
 
         /*
         INSERT INTO PLOTTER(PLOTTERID,DESCRIPTION,CONFIGURATIONFILE,COLORTABLE,PLOTTERPROPERTIESID,ISEDITABLE,ISDEFAULTINSTALLED,REQUIREDPRIVILEGE,POSTPROCESSOR) VALUES (PLOTTER_ID_SEQ.NEXTVAL,'PlotWave 750 - EDLX AYE - Bureau de dessin',      'PlotWave 750 - EDLX AYE - Bureau de dessin.pc3', 'PlotWave 750 - EDLX AYE - Bureau de dessin.ctb',        50,1,0,'PlotClient',null);
@@ -1007,462 +963,7 @@ namespace BatchPlot
                  jobScaleFactor   = xxx           = PlotDefaultLayoutScale (in db) = 1000
                 */
 
-        private void ApplyOceGrayStyle(Transaction tr)
-        {
-            //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            //{
-                var regex = new Regex(PlotConfiguration.Config.TopoLayersRegexFilter, RegexOptions.IgnoreCase);
-                var list = QueryEntities(tr, null, _plotParameters.ExternalDrawingExtend);
-                foreach (var entity in list)
-                {
-                    if (regex.IsMatch(entity.Layer))
-                    {
-                        if (!(entity is DBText || entity is MText))
-                        {
-                            entity.UpgradeOpen();
-                            entity.ColorIndex = 252;
-                            entity.DowngradeOpen();
-                        }
-                    }
-                    else
-                    {
-                        if (!(entity is Image))
-                        {
-                            entity.UpgradeOpen();
-                            entity.ColorIndex = 7;
-                            entity.DowngradeOpen();
-                        }
-                    }
-                }
-                //tr.Commit();
-            //}
-        }
 
-        private void ApplyImpetrantStyle(Transaction tr)
-        {
-            //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            //{
-                var list = QueryEntities(tr, PlotConfiguration.Config.TopoLayersRegexFilter,
-                    _plotParameters.ExternalDrawingExtend);
-                foreach (var entity in list)
-                {
-                    entity.UpgradeOpen();
-                    if (entity is DBText)
-                    {
-                        entity.ColorIndex = 7;
-                    }
-                    else if (entity is MText)
-                    {
-                        //var mtext = (MText)entity;
-                        //if (mtext.TextHeight < 1.5) mtext.TextHeight = 1.5;
-                        entity.ColorIndex = 7;
-                    }
-                    else
-                    {
-                        entity.ColorIndex = 252;
-                    }
-                    entity.DowngradeOpen();
-                }
-                //tr.Commit();
-            //}
-        }
-
-        private void DeleteNotNeededLayers(Database db)
-        {
-            var regex = new Regex(PlotConfiguration.Config.LayersToDeleteRegexFilter, RegexOptions.IgnoreCase);
-            using (var tr = db.TransactionManager.StartTransaction())
-            using (var layerIds = (LayerTable) tr.GetObject(db.LayerTableId, OpenMode.ForRead))
-            {
-                foreach (var id in layerIds)
-                {
-                    using (var layer = (LayerTableRecord)tr.GetObject(id, OpenMode.ForWrite))
-                    {
-                        if (regex.IsMatch(layer.Name))
-                        {
-                            layer.IsLocked = false;
-
-                            using (var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead))
-                            {
-                                foreach (var btrId in blockTable)
-                                {
-                                    var block = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
-                                    foreach (var entId in block)
-                                    {
-                                        var ent = (Entity)tr.GetObject(entId, OpenMode.ForRead);
-                                        if (string.Equals(ent.Layer, layer.Name, StringComparison.InvariantCultureIgnoreCase))
-                                        {
-                                            ent.UpgradeOpen();
-                                            ent.Erase();
-                                        }
-                                    }
-                                }
-                            }
-
-                            layer.Erase(true);
-                        }
-                    }
-                }
-                tr.Commit();
-            }
-        }
-    }
-
-    internal class PlotParameters
-    {
-        public PlotParameters(string[] args)
-        {
-            for (var i = 1; i < args.Length; i++)
-            {
-                switch (args[i].ToLower())
-                {
-                    case @"/r":
-                        Resolution = int.Parse(args[++i]);
-                        break;
-                    case @"/c":
-                        Category = args[++i];
-                        break;
-                    case @"/e":
-                        Energies = args[++i].Split(',');
-                        break;
-                    case @"/p":
-                        PlotterName = args[++i];
-                        break;
-                    case @"/id":
-                        SetPlanchetteId(args[++i]);
-                        break;
-                    case @"/f":
-                        SetOutputFilePath(args[++i]);
-                        break;
-                    case @"/imp":
-                        SetImpetrant();
-                        break;
-                    case @"/oce":
-                        Oce = true;
-                        break;
-                    case @"/z":
-                        Zone = (Zone) Enum.Parse(typeof(Zone), args[++i], true);
-                        break;
-                    case @"/d":
-                        Debug = true;
-                        break;
-                    case @"/st":
-                        StampId = args[++i];
-                        break;
-                    case @"/t":
-                        PlanTotal = int.Parse(args[++i]);
-                        break;
-                    case @"/n":
-                        PlanId = int.Parse(args[++i]);
-                        break;
-                    case @"/u":
-                        UserId = args[++i];
-                        break;
-                    case @"/i":
-                    case @"/l":
-                    case @"/s":
-                        ++i;
-                        break;
-                    case @"/isolate":
-                        break;
-                    default:
-                        throw new ArgumentException("Unknown argument " + args[i]);
-                }
-            }
-            Validate();
-        }
-
-        // PlotCardexEnerGISCommand => no stamp
-        // l_id_stamp
-        public string StampId { get; private set; }
-        // n_tot_plan
-        public int PlanTotal { get; private set; }
-        // n_ord_plan
-        public int PlanId { get; private set; }
-        // userid
-        public string UserId { get; private set; }
-        // l_id_planchette
-        public string PlanchetteId { get; private set; }
-        // l_path_result_pdf
-        public string OutputFilePath { get; private set; }
-        // n_scale
-        public int Resolution { get; private set; }
-        // c_type_map
-        public string Category { get; private set; }
-        // list_energy
-        public string[] Energies { get; private set; }
-
-        public bool Impetrant { get; private set; }
-
-        public bool Oce { get; private set; }
-
-        public string PlotterName { get; private set; }
-
-        public string PlanchetteLetter { get; private set; }
-
-        public Point2d MapCoordinate { get; private set; }
-
-        public Boolean Debug { get; private set; }
-
-        public Zone Zone { get; set; }
-
-        //public string StyleSheet
-        //{
-        //    get { return Path.GetFileNameWithoutExtension(PlotterName) + ".ctb"; }
-        //}
-
-        public Size ViewPortSize
-        {
-            get { return new Size(PlotConfiguration.Config.DrawingSize.Width * Scale 
-                + 2 * PlotConfiguration.Config.InternalBorderWidth, 
-                PlotConfiguration.Config.DrawingSize.Height * Scale 
-                + 2 * PlotConfiguration.Config.InternalBorderWidth); }
-        }
-
-        public Point3d ViewPortCenterPoint
-        {
-            get
-            {
-                var s = ViewPortSize;
-                return new Point3d(s.Width / 2 + PlotConfiguration.Config.ExternalBorderWidth,
-                    s.Height / 2 + PlotConfiguration.Config.ExternalBorderWidth, 0);
-            }
-        }
-
-        public double Scale
-        {
-            get { return 1000.0 / Resolution; }
-        }
-
-        public Extents2d DrawingExtend
-        {
-            get
-            {
-                return new Extents2d(MapCoordinate.X, MapCoordinate.Y,
-                    MapCoordinate.X + PlotConfiguration.Config.DrawingSize.Width,
-                    MapCoordinate.Y + PlotConfiguration.Config.DrawingSize.Height);
-            }
-        }
-
-        public Extents2d ExternalDrawingExtend
-        {
-            get
-            {
-                return DrawingExtend.Inflate(PlotConfiguration.Config.InternalBorderWidth);
-            }
-        }
-
-        
-
-        public Point2d DrawingCenter
-        {
-            get
-            {
-                var e = DrawingExtend;
-                return new Point2d((e.MinPoint.X + e.MaxPoint.X) / 2,
-                    (e.MinPoint.Y + e.MaxPoint.Y) / 2);
-            }
-        }
-
-        public Point3d PlotCartridgePosition 
-        {
-            get
-            {
-                var position = PlotConfiguration.Config.DrawingSize.Width * Scale
-                    + 2 * PlotConfiguration.Config.InternalBorderWidth
-                    + 2 * PlotConfiguration.Config.ExternalBorderWidth
-                    + PlotConfiguration.Config.CartridgeExternalBorderWidth;
-                return new Point3d(position, 0, 0);
-            }
-        }
-
-        public Point3d StampPosition 
-        {
-            get
-            {
-                var x = PageSize.Width - PlotConfiguration.Config.CartridgeExternalBorderWidth + 2;
-                return new Point3d(x, 0, 0);
-            }
-        }
-
-        public Size PageSize 
-        {
-            get
-            {
-                var height = PlotConfiguration.Config.DrawingSize.Height * Scale 
-                    + 2 * PlotConfiguration.Config.InternalBorderWidth
-                    + 2 * PlotConfiguration.Config.ExternalBorderWidth;
-                var width = PlotConfiguration.Config.DrawingSize.Width * Scale 
-                    + 2 * PlotConfiguration.Config.InternalBorderWidth
-                    + 2 * PlotConfiguration.Config.ExternalBorderWidth
-                    + PlotConfiguration.Config.PlotCartridgeWidth 
-                    + 2 * PlotConfiguration.Config.CartridgeExternalBorderWidth;
-                return new Size(width, height);
-            }
-        }
-
-        public string CartridgeTemplate
-        {
-            get { return Zone == Zone.E ? PlotConfiguration.Config.EstCartridgeTemplateFilePath : PlotConfiguration.Config.WestCartridgeTemplateFilePath; }
-        }
-
-        public string FileServerName
-        {
-            get { return Zone == Zone.E ? PlotConfiguration.Config.EstFileServerName : PlotConfiguration.Config.WestFileServerName; }
-        }
-
-        public string Stamp
-        {
-            get
-            {
-                return string.Format("ORES {0:dd.MM.yy}-{1}-{2}-{3}/{4}",
-                    DateTime.Now, PlotConfiguration.Config.ServerName, StampId, PlanId, PlanTotal);
-            }
-        }
-
-        public string PlotLayoutName
-        {
-            get
-            {
-                return !IsPlanchette ? "Model" : PlotConfiguration.Config.PlotLayoutName;
-            }
-        }
-
-        public PaperFormat PaperFormat { get; set; }
-        
-        public IEnumerable<string> EnergyDescription { get; set; }
-
-        public string Pc3Name 
-        {
-            get
-            {
-                var paperFormats = PlotConfiguration.Config.GetDefaultPaperFormats(PlotterName);
-                if (paperFormats.Any())
-                {
-                    return paperFormats.First().Pc3Name;
-                }
-                return PlotterName + ".pc3";
-            }
-        }
-
-        public bool IsPlanchette 
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(PlanchetteId);
-            }
-        }
-
-        public bool PlotToFile 
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(OutputFilePath);
-            }
-        }
-
-        private void Validate()
-        {
-            if (IsPlanchette && string.IsNullOrEmpty(Category))
-            {
-                throw new ArgumentException("Category (/c) missing");
-            }
-            if (string.IsNullOrEmpty(PlotterName) && string.IsNullOrEmpty(OutputFilePath))
-            {
-                throw new ArgumentException("Either the output file (/o) or the plotter pc3 (/p) required");
-            }
-            
-            //if (Impetrant && !string.IsNullOrEmpty(OutputFilePath) && Path.GetExtension(OutputFilePath) != ".pdf")
-            //{
-            //    throw new ArgumentException("Impetrant is for pdf file only");
-            //}
-            //if (Impetrant && !string.Equals(Pc3Name, "Impetrant.pc3"))
-            //{
-            //    throw new ArgumentException("Impetrant is for pdf file only");
-            //}
-        }
-
-        private void SetPlanchetteId(string planchetteId)
-        {
-            PlanchetteId = planchetteId;
-            string letter;
-            MapCoordinate = ParsePlanchetteId(planchetteId, out letter);
-            PlanchetteLetter = letter;
-        }
-
-        private void SetOutputFilePath(string outputFilePath)
-        {
-            OutputFilePath = outputFilePath;
-            if (string.IsNullOrEmpty(PlotterName))
-            {
-                SetDiviceAndStyleSheet();
-            }
-        }
-
-        private void SetImpetrant()
-        {
-            Impetrant = true;
-            if (string.IsNullOrEmpty(PlotterName) || PlotterName == "PDF")
-            {
-                SetDiviceAndStyleSheet();
-            }
-        }
-
-        private Point2d ParsePlanchetteId(string planchetteId, out string planchetteLetter)
-        {
-            var regex = new Regex(@"^(?<x>[0-9]{3})(?<y>[0-9]{3})(?<letter>[A-H])$", RegexOptions.IgnoreCase);
-            var match = regex.Match(planchetteId);
-            if (!match.Success)
-            {
-                throw new ArgumentException("Planchette Id not valid " + planchetteId);
-            }
-            var x = int.Parse(match.Groups["x"].Value) * 1000;
-            var y = int.Parse(match.Groups["y"].Value) * 1000;
-            planchetteLetter = match.Groups["letter"].Value;
-            var dx = 0;
-            var dy = 0;
-            if ("ABCD".Contains(planchetteLetter))
-            {
-                dx = 0;
-                dy = "ABCD".IndexOf(planchetteLetter);
-            }
-            else
-            {
-                dx = 1;
-                dy = "EFGH".IndexOf(planchetteLetter);
-            }
-            y = Convert.ToInt32(y + dy * PlotConfiguration.Config.DrawingSize.Height);
-            x = Convert.ToInt32(x + dx * PlotConfiguration.Config.DrawingSize.Width);
-            return new Point2d(x, y);
-        }
-
-        private void SetDiviceAndStyleSheet()
-        {
-            if (Impetrant)
-            {
-                PlotterName = "Impetrant";
-            }
-            else
-            {
-                switch (Path.GetExtension(OutputFilePath))
-                {
-                    case ".pdf":
-                        PlotterName = "PDF";
-                        break;
-                    case ".dwf":
-                    case ".dwg":
-                        PlotterName = "DWF6";
-                        break;
-                    default:
-                        throw new ArgumentException(string.Format("Output file format {0} not suported", OutputFilePath));
-                }
-            }
-        }
-    }
-
-    public enum Zone
-    {
-        E,
-        O
     }
 }
 
@@ -1518,15 +1019,15 @@ DROP SEQUENCE PJOB_SEQ;
 
 CREATE TABLE PJOB (
     PJOBID	    NUMBER(9) not null,
-"S_PLOT_TICKET"     NUMBER(12,0), 
-"S_PLTICKET_STATUS" NUMBER(12,0), 
-"O_DATE"            DATE, 
-"N_TOT_PLAN"        NUMBER(5,0), 
-"USERID"            VARCHAR2(6 BYTE), 
-"C_ERROR"           VARCHAR2(50 BYTE), 
-"DESC_ERROR"        VARCHAR2(500 BYTE), 
+S_PLOT_TICKET     NUMBER(12,0), 
+S_PLTICKET_STATUS NUMBER(12,0), 
+O_DATE            DATE, 
+N_TOT_PLAN        NUMBER(5,0), 
+USERID            VARCHAR2(6 BYTE), 
+C_ERROR           VARCHAR2(50 BYTE), 
+DESC_ERROR        VARCHAR2(500 BYTE), 
   CONSTRAINT IDX_PJOB_PK PRIMARY KEY (PJOBID)
-) TABLESPACE "ENERGIS";
+) TABLESPACE ENERGIS;
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON PJOB TO GENERGIS;
     
@@ -1545,21 +1046,21 @@ CREATE TABLE PTASK (
     PTASKID	    NUMBER(9) not null,
     PJOBID	    NUMBER(9) not null,
     LOCKTIME    DATE,
-"C_TYPE_PLAN"       CHAR(1 BYTE), 
-"L_ID_STAMP"        VARCHAR2(25 BYTE), 
-"L_ID_PLANCHETTE"   VARCHAR2(40 BYTE), 
-"N_ORD_PLAN"        NUMBER(5,0), 
-"C_TYPE_MAP"        CHAR(3 BYTE), 
-"L_PATH_PLAN"       CLOB, 
-"LIST_ENERGY"       VARCHAR2(50 BYTE), 
-"L_PATH_RESULT_PDF" CLOB, 
-"N_SCALE"           VARCHAR2(10 BYTE), 
-"N_ESSAY"           NUMBER(1,0), 
-"S_PLTICKET_STATUS" NUMBER(12,0), 
-"C_SIDE"            CHAR(1 BYTE),
+C_TYPE_PLAN       CHAR(1 BYTE), 
+L_ID_STAMP        VARCHAR2(25 BYTE), 
+L_ID_PLANCHETTE   VARCHAR2(40 BYTE), 
+N_ORD_PLAN        NUMBER(5,0), 
+C_TYPE_MAP        CHAR(3 BYTE), 
+L_PATH_PLAN       CLOB, 
+LIST_ENERGY       VARCHAR2(50 BYTE), 
+L_PATH_RESULT_PDF CLOB, 
+N_SCALE           VARCHAR2(10 BYTE), 
+N_ESSAY           NUMBER(1,0), 
+S_PLTICKET_STATUS NUMBER(12,0), 
+C_SIDE            CHAR(1 BYTE),
   CONSTRAINT IDX_PTASK_PK PRIMARY KEY (PTASKID),
   CONSTRAINT FK_PTASK_PJOB FOREIGN KEY (PJOBID) REFERENCES PJOB(PJOBID)
-) TABLESPACE "ENERGIS";
+) TABLESPACE ENERGIS;
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON PTASK TO GENERGIS;
     
@@ -1587,56 +1088,56 @@ CREATE SYNONYM GENERGIS.PTASK_SEQ		FOR CR_ENERGIS.PTASK_SEQ;
 
 
 INSERT INTO CR_ENERGIS.PJOB (PJOBID, 
-"S_PLOT_TICKET", 
-"S_PLTICKET_STATUS", 
-"O_DATE",
-"N_TOT_PLAN",        
-"USERID")        
+S_PLOT_TICKET, 
+S_PLTICKET_STATUS, 
+O_DATE,
+N_TOT_PLAN,        
+USERID)        
 SELECT PJOB_SEQ.NEXTVAL, 
-a."S_PLOT_TICKET", 
-a."S_PLTICKET_STATUS", 
-a."O_DATE",
-a."N_TOT_PLAN",        
-a."USERID"
+a.S_PLOT_TICKET, 
+a.S_PLTICKET_STATUS, 
+a.O_DATE,
+a.N_TOT_PLAN,        
+a.USERID
 FROM CR_ENERGIS.PLT_MNGR_PLOT_TICKET a 
 LEFT OUTER JOIN CR_ENERGIS.PJOB b   
-ON a."S_PLOT_TICKET" = b."S_PLOT_TICKET"  
+ON a.S_PLOT_TICKET = b.S_PLOT_TICKET  
 WHERE a.S_PLTICKET_STATUS = 0 
-AND b."S_PLOT_TICKET" IS NULL
+AND b.S_PLOT_TICKET IS NULL
 --FOR UPDATE SKIP LOCKED
 ;
 
 INSERT INTO CR_ENERGIS.PTASK (PTASKID,
 PJOBID,	        
-"C_TYPE_PLAN",       
-"L_ID_STAMP",        
-"L_ID_PLANCHETTE",   
-"N_ORD_PLAN",        
-"C_TYPE_MAP",        
-"L_PATH_PLAN",       
-"LIST_ENERGY",       
-"L_PATH_RESULT_PDF", 
-"N_SCALE",           
-"N_ESSAY",           
-"S_PLTICKET_STATUS", 
-"C_SIDE")            
+C_TYPE_PLAN,       
+L_ID_STAMP,        
+L_ID_PLANCHETTE,   
+N_ORD_PLAN,        
+C_TYPE_MAP,        
+L_PATH_PLAN,       
+LIST_ENERGY,       
+L_PATH_RESULT_PDF, 
+N_SCALE,           
+N_ESSAY,           
+S_PLTICKET_STATUS, 
+C_SIDE)            
 SELECT PTASK_SEQ.NEXTVAL, 
 b.PJOBID,	        
-a."C_TYPE_PLAN",       
-a."L_ID_STAMP",        
-a."L_ID_PLANCHETTE",   
-a."N_ORD_PLAN",        
-a."C_TYPE_MAP",        
-a."L_PATH_PLAN",       
-a."LIST_ENERGY",       
-a."L_PATH_RESULT_PDF", 
-a."N_SCALE",           
-a."N_ESSAY",           
-a."S_PLTICKET_STATUS", 
-a."C_SIDE"            
+a.C_TYPE_PLAN,       
+a.L_ID_STAMP,        
+a.L_ID_PLANCHETTE,   
+a.N_ORD_PLAN,        
+a.C_TYPE_MAP,        
+a.L_PATH_PLAN,       
+a.LIST_ENERGY,       
+a.L_PATH_RESULT_PDF, 
+a.N_SCALE,           
+a.N_ESSAY,           
+a.S_PLTICKET_STATUS, 
+a.C_SIDE            
 FROM CR_ENERGIS.PLT_MNGR_PLOT_TICKET a
 INNER JOIN CR_ENERGIS.PJOB b   
-ON a."S_PLOT_TICKET" = b."S_PLOT_TICKET"  
+ON a.S_PLOT_TICKET = b.S_PLOT_TICKET  
 LEFT OUTER JOIN CR_ENERGIS.PTASK c
 ON b.PJOBID = c.PJOBID
 WHERE a.S_PLTICKET_STATUS = 0
@@ -1658,4 +1159,37 @@ WHERE b.S_PLTICKET_STATUS = 1
 ) t
 SET t.S_PLTICKET_STATUS = 1;
 
- *  */
+  
+  
+  
+ 
+    SELECT PJOBID
+    FROM CR_ENERGIS.PTASK
+    GROUP BY PJOBID
+    HAVING COUNT(*) = COUNT(CASE WHEN S_PLTICKET_STATUS <> 1 THEN 1 ELSE NULL END)
+
+
+
+MERGE INTO PJOB a
+USING
+(
+    SELECT a.PJOBID, 
+           COUNT(*) AS T, 
+           COUNT(CASE WHEN b.S_PLTICKET_STATUS = 1 THEN 1 ELSE NULL END) AS C1,
+           COUNT(CASE WHEN b.S_PLTICKET_STATUS = 5 THEN 1 ELSE NULL END) AS C5
+    FROM PJOB a
+    INNER JOIN PTASK b
+    ON a.PJOBID = b.PJOBID
+    WHERE a.S_PLTICKET_STATUS = 1
+    GROUP BY a.PJOBID
+    HAVING COUNT(*) > 0 
+    AND COUNT(CASE WHEN b.S_PLTICKET_STATUS = 1 THEN 1 ELSE NULL END) = 0
+) b
+ON (a.PJOBID = b.PJOBID)
+WHEN MATCHED THEN 
+UPDATE SET S_PLTICKET_STATUS = CASE WHEN b.C5 = b.T THEN 5 ELSE 3 END;
+select * from pjob;
+
+
+
+ * *  */

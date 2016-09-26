@@ -6,3 +6,7 @@ C:\Test\plot\PlotService2\bin\Debug\Oracle.DataAccess.dll
 C:\Test\plot\PlotService2\bin\Debug\Oracle.Web.dll
 C:\Test\plot\PlotService2\obj\Debug\PlotService2.exe
 C:\Test\plot\PlotService2\obj\Debug\PlotService2.pdb
+C:\Test\plot\PlotService2\bin\Debug\Config\QueryTemplates.config
+C:\Test\plot\PlotService2\bin\Debug\Topshelf.dll
+C:\Test\plot\PlotService2\bin\Debug\Topshelf.Log4Net.dll
+C:\Test\plot\PlotService2\obj\Debug\PlotService2.csprojResolveAssemblyReference.cache

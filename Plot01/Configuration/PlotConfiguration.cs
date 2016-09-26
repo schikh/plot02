@@ -7,7 +7,7 @@ using Autodesk.AutoCAD.Geometry;
 
 namespace BatchPlot.Configuration
 {
-    internal class PlotConfiguration : ConfigurationSection
+    public class PlotConfiguration : ConfigurationSection
     {
         public static readonly PlotConfiguration Config = (PlotConfiguration)ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location).Sections["PlotConfiguration"];
 
@@ -124,7 +124,7 @@ namespace BatchPlot.Configuration
         }
     }
 
-    internal class PlotConfigurationCollection : ConfigurationElementCollection
+    public class PlotConfigurationCollection : ConfigurationElementCollection
     {
         public PaperFormat this[int index]
         {
@@ -143,7 +143,7 @@ namespace BatchPlot.Configuration
         }
     }
     
-    internal class PaperFormat : ConfigurationElement
+    public class PaperFormat : ConfigurationElement
     {
         [ConfigurationProperty("PlotterName", IsRequired = true)]
         public string PlotterName

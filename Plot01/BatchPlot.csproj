@@ -57,12 +57,14 @@
     <Compile Include="Configuration\PlotConfiguration.cs" />
     <Compile Include="Extensions\BlockReferenceExtension.cs" />
     <Compile Include="Extensions\ListExtension.cs" />
-    <Compile Include="Extensions\Style.cs" />
+    <Compile Include="Extensions\AutocadExtensions.cs" />
+    <Compile Include="PlotParameters.cs" />
     <Compile Include="Services\Helper.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\DataAccessService.cs" />
     <Compile Include="PlotCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Enumerations\Zone.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\log4net.dll" />
