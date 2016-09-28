@@ -147,8 +147,6 @@ namespace PlotService2
             var plotTask = plotTasks.Take();
             var result = false;
 
-            Logger.Info("Plot task: {0} {1}", plotTask.TaskId, plotTask.CommandLineParameters());
-
             if (!_plotTaskRepository.LockPlotTask(plotTask.TaskId))
             {
                 Logger.Info("Plot task: {0} already locked", plotTask.TaskId);
@@ -167,10 +165,9 @@ namespace PlotService2
                     {
                         var tempFolder = Helper.CreateTempFolder();
                         var f = new FileHelper();
-                        var file = f.ImportServerFile(plotTask.PathPlan, tempFolder);
-                        var list = f.GetAttachedFilePaths(plotTask.PathPlan);
-                        f.ImportServerFiles(list, tempFolder);
-                        plotTask.PathPlan = file;
+                        plotTask.LocalPathPlan = f.ImportServerFile(plotTask.PathPlan, tempFolder);
+                        //var list = f.GetAttachedFilePaths(plotTask.PathPlan);
+                        //f.ImportServerFiles(list, tempFolder);
                         result = ProcessPlotTickects(plotTask);
                         Helper.DeleteTempFolder(tempFolder);
                     }
@@ -194,13 +191,13 @@ namespace PlotService2
 
         private bool ProcessPlotTickects(PlotTask plotTask)
         {
-            //var fileName = @"C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe";
-            //var xxx =  @"/i W:\RWA004\Cardex\Est\Edpl\Vvs\Projet\EDPL-PP-115871.dwg /s C:\Test\Plot\Plot01\Scripts\PlotDwg.scr /f c:\test\EnerGis\xxx.pdf ";
+            Logger.Info("Plot task: {0} {1}", plotTask.TaskId, plotTask.CommandLineParameters());
 
             using (var process = new Process())
             {
                 process.StartInfo.FileName = Settings.AcConsolePath;
                 process.StartInfo.Arguments = plotTask.CommandLineParameters();
+                //process.StartInfo.Arguments = @"/i ""C:\Test\plot\Plot01\Scripts\edpl-1326-2.dwg"" /m ""W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg"" /s ""C:\Test\Plot\Plot01\Scripts\PlotDwg.scr"" /f ""C:\Test\Plot\Plot01\Scripts\dump2.pdf"" /isolate";
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.ErrorDialog = false;
                 process.StartInfo.UseShellExecute = false;
@@ -431,10 +428,12 @@ namespace PlotService2
         public int Essay { get; set; }
         public int PlotTicketStatus { get; set; }
         public string Side { get; set; }
+        public string LocalPathPlan { get; set; }
 
         public bool IsImpetrant {
             get { return string.Equals(TypePlan, "T", StringComparison.InvariantCultureIgnoreCase); }
         }
+
 
         public string CommandLineParameters()
         {
@@ -448,23 +447,22 @@ namespace PlotService2
                     .Add("z", Side)
                     .Add("c", TypMap)
                     .Add("e", ListEnergy.Replace(' ', ','))
-                    .Add("f", PathResultPdf)
-                    .Add("st", IdStamp)
-                    .Add("t", TotalPlan.ToString())
-                    .Add("n", OrdPlan.ToString())
-                    .Add("u", UserId)
-                    .Add("imp")
-                    .Add("d")
-                    .Add("isolate");
+                    .Add("imp");
             }
             else
             {
-                builder.Add("i", PathPlan)
+                builder.Add("i", LocalPathPlan)
                     .Add("s", Settings.PlotDwgScriptPath)
-                    .Add("f", PathResultPdf)
-                    .Add("d")
-                    .Add("isolate");
+                    .Add("m", Path.GetDirectoryName(PathPlan));
             }
+            builder
+                .Add("f", PathResultPdf)
+                .Add("st", IdStamp)
+                .Add("t", TotalPlan.ToString())
+                .Add("n", OrdPlan.ToString())
+                .Add("u", UserId)
+                .Add("d")
+                .Add("isolate");
             return builder.GetCommandLineParameters();
         }
 

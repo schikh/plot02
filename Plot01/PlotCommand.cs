@@ -21,13 +21,20 @@ using BatchPlot.Services;
 // http://forums.autodesk.com/t5/autocad-2013-2014-2015-2016-2017/how-to-permanently-turn-off-plot-log-for-every-file/td-p/5613122
 
 //    C:\Users\adn534>print /d:\\U90PHIMPT005\NA83  "C:\Test\plot\Plot01\Scripts\dump2.bin"
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z West /c "MAP" /e "BT,MT,EP,BP,MP" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534   /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534   /isolate
-//                                                                               /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z Est /c "MAP" /e "BT,MT,EP,BP,MP" /imp  /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z O /c "MAP" /e "BT,MT,EP,BP,MP" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z O /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534   /isolate
+
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z O /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534   /isolate
+
+//                                                                               /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 184128H /r 500 /z E /c "MAP" /e "BT,MT,EP,BP,MP" /imp  /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+
+//                                                                               /i "W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf"  /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+
+
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+
 //    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z West /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
+//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z O /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
 
  //"C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 
@@ -60,15 +67,29 @@ namespace BatchPlot
                 Logger.Info("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
-                //var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
-                var energies = DecodeEnergiesSelection(_plotParameters.Energies);
-                var xxx = energies.Select(x => x.Name);
-                var filePaths = GetServerFilePaths(_plotParameters.Category, xxx);
-                _plotParameters.EnergyDescription = energies.Where(x => x.Rank < 99).Select(x => x.Name);
+                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
+                _plotParameters.EnergyDescription = new string[0];
+                //var energies = DecodeEnergiesSelection(_plotParameters.Energies);
+                //var decodedEnergies = energies.Select(x => x.Name);
+                //var filePaths = GetServerFilePaths(_plotParameters.Category, decodedEnergies);
+                //_plotParameters.EnergyDescription = energies.Where(x => x.Rank < 99).Select(x => x.Name).OrderBy(x => x);
+                //Logger.Info("ENERGIES: {0} => {1} => {2}", string.Join(",", _plotParameters.Energies)
+                //    , string.Join(",", decodedEnergies)
+                //    , string.Join(",", _plotParameters.EnergyDescription)
+                //    );
 
                 ImportDwgFilesAndApplyStyle(filePaths);
                 CreatePaperSpaceAndSetThePlotSettings();
                 AddViewportCartridgeBordersAndStampToPaperspace();
+
+                AddStampToDrawing(); //???????????????????
+
+                Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
+                Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
+                Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
+                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+
                 SetPageView();
                 PlotCurrentLayout();
 
@@ -90,9 +111,24 @@ namespace BatchPlot
             {
                 _document.Database.Insunits = UnitsValue.Millimeters;
 
+                Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
+                Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
+                Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
+                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+
                 var args = Environment.GetCommandLineArgs();
                 Logger.Info("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
+
+                FixRasterImagePath();
+                AddStampToDrawing();
+
+                Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
+                Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
+                Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
+                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
+                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
 
                 GetOpenedModelOrPaperSpaceAndSetThePlotSettings();
                 PlotCurrentLayout();
@@ -106,6 +142,29 @@ namespace BatchPlot
             }
         }
 
+        private void AddStampToDrawing()
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var layout = GetPlotLayout(tr))
+            using (var lbtr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            {
+                AddStamp(tr, lbtr);
+                tr.Commit();
+            }
+        }
+
+        private void FixRasterImagePath()
+        {
+            if (!string.IsNullOrEmpty(_plotParameters.ImagesFolder))
+            {
+                using (var tr = _document.Database.TransactionManager.StartTransaction())
+                {
+                    _document.Database.FixRasterImagePath(tr, _plotParameters.ImagesFolder);
+                    tr.Commit();
+                }
+            }
+        }
+
         private void GetOpenedModelOrPaperSpaceAndSetThePlotSettings()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
@@ -113,6 +172,16 @@ namespace BatchPlot
             {
                 var pageSize = GetCurrentModelOrLayoutExtend();
                 SetPlotSettings(layout, pageSize);
+                tr.Commit();
+            }
+        }
+
+        private void CreatePaperSpaceAndSetThePlotSettings()
+        {
+            using (var tr = _document.Database.TransactionManager.StartTransaction())
+            using (var layout = CreatePlotLayout(tr))
+            {
+                SetPlotSettings(layout, _plotParameters.PageSize);
                 tr.Commit();
             }
         }
@@ -137,16 +206,6 @@ namespace BatchPlot
             }
         }
 
-        private void CreatePaperSpaceAndSetThePlotSettings()
-        {
-            using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = CreatePlotLayout(tr))
-            {
-                SetPlotSettings(layout, _plotParameters.PageSize);
-                tr.Commit();
-            }
-        }
-
         private void AddViewportCartridgeBordersAndStampToPaperspace()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
@@ -158,7 +217,7 @@ namespace BatchPlot
                     SetViewportSettings(viewport);
                 }
                 AddDrawingBorders(tr, layout, lbtr);
-                AddStamp(tr, layout, lbtr);
+                //AddStamp(tr, lbtr); // ???????????????????????????
                 AddPlotCartridge(tr, layout, lbtr, _plotParameters.CartridgeTemplate, 
                     _plotParameters.PlotCartridgePosition);
                 tr.Commit();
@@ -340,16 +399,17 @@ namespace BatchPlot
             }
         }
 
-        private void AddStamp(Transaction tr, Layout layout, BlockTableRecord btr)
+        private void AddStamp(Transaction tr, BlockTableRecord btr)
         {
-            //using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             using (var text = new DBText())
             {
                 text.SetDatabaseDefaults();
                 text.TextString = _plotParameters.Stamp;
                 text.HorizontalMode = TextHorizontalMode.TextLeft;
                 text.VerticalMode = TextVerticalMode.TextTop;
-                text.AlignmentPoint = _plotParameters.StampPosition;
+                //text.AlignmentPoint = _plotParameters.IsPlanchette ?
+                //    _plotParameters.StampPosition : GetStampPosition();
+                text.AlignmentPoint = GetStampPosition();
                 text.Rotation = Math.PI / 2;
                 text.Height = 4;
                 text.AdjustAlignment(_document.Database);
@@ -382,8 +442,6 @@ namespace BatchPlot
             }
         }
 
-
-
         private Dictionary<string, string> GetCartridgeInfo(Transaction tr)
         {
             var values = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
@@ -404,8 +462,8 @@ namespace BatchPlot
             values.Add("DAT", DateTime.Now.ToString("dd.MM.yy (HH:mm)"));
             values.Add("NUM", _plotParameters.PlanchetteId);
             values.Add("DES", _plotParameters.UserId);
-            values.Add("RES", (_plotParameters.Energies.Length == 1 ? "Réseau: " : "Réseaux: ")
-                + string.Join(", ", _plotParameters.Energies));
+            values.Add("RES", (_plotParameters.EnergyDescription.Count() > 1 ? "Réseaux: " : "Réseau: ")
+                + string.Join(", ", _plotParameters.EnergyDescription));
             values.Add("OBJ1", "Situation des installations");
             return values;
         }
@@ -445,7 +503,7 @@ namespace BatchPlot
                 .OrderBy(x => x)
                 .GroupListItems(2)
                 .ToList()
-                .ForEach(x => values[i == 0 ? "COM" : "COM" + ++i] = x);
+                .ForEach(x => values[++i == 1 ? "COM" : "COM" + i] = x);
             return values;
         }
 
@@ -653,23 +711,30 @@ namespace BatchPlot
 
         private Size GetCurrentModelOrLayoutExtend()
         {
-            Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
-            Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
-            Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
-            Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-            Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-            
             if (_document.Database.TileMode)
             {
                 return new Size(
-                    _document.Database.Extmax.X - _document.Database.Extmin.X,
-                    _document.Database.Extmax.Y - _document.Database.Extmin.Y);
+                    _document.Database.Extmax.X - _document.Database.Extmin.X + 2 * _plotParameters.PlotOrigin.X,
+                    _document.Database.Extmax.Y - _document.Database.Extmin.Y + 2 * _plotParameters.PlotOrigin.Y);
             }
             else
             {
                 return new Size(
-                    _document.Database.Pextmax.X - _document.Database.Pextmin.X,
-                    _document.Database.Pextmax.Y - _document.Database.Pextmin.Y);
+                    _document.Database.Pextmax.X - _document.Database.Pextmin.X + 2 * _plotParameters.PlotOrigin.X,
+                    _document.Database.Pextmax.Y - _document.Database.Pextmin.Y + 2 * _plotParameters.PlotOrigin.Y);
+            }
+        }
+
+
+        private Point3d GetStampPosition()
+        {
+            if (_document.Database.TileMode)
+            {
+                return new Point3d(_document.Database.Extmax.X + 2, _document.Database.Extmin.Y, 0);
+            }
+            else
+            {
+                return new Point3d(_document.Database.Pextmax.X + 2, _document.Database.Pextmin.Y, 0);
             }
         }
 
@@ -684,12 +749,44 @@ namespace BatchPlot
                     && x.PlotPaperSize.Height >= pageSize.Height);
             if (paperFormat == null && paperFormats.Any())
             {
-                var lastPaperFormatHeight = paperFormats.Last().PlotPaperSize.Height;
-                pageSize = new Size(lastPaperFormatHeight, pageSize.Width / pageSize.Height * lastPaperFormatHeight);
-                paperFormat = paperFormats
-                    .FirstOrDefault(x => x.PlotPaperSize.Width >= pageSize.Width
-                        && x.PlotPaperSize.Height >= pageSize.Height);
-                paperFormat.ShrinkDrawing = true;
+                //var lastPaperFormatHeight = paperFormats.Last().PlotPaperSize.Height;
+                //var pageWidth = pageSize.Width / pageSize.Height * lastPaperFormatHeight;
+                //pageSize = new Size(lastPaperFormatHeight, pageWidth);
+                //paperFormat = paperFormats
+                //    .FirstOrDefault(x => x.PlotPaperSize.Width >= pageSize.Width
+                //        && x.PlotPaperSize.Height >= pageSize.Height);
+                //paperFormat.ShrinkDrawing = true;
+                //paperFormat.PlotOrigin = new Point2d(paperFormat.PlotPaperSize.Width - pageWidth,
+                //    paperFormat.PlotPaperSize.Width - _plotParameters.PlotOrigin.Y);
+
+                var xxx = paperFormats.Select(x => new
+                {
+                   p = x,
+                   f = Math.Max(pageSize.Height / x.PlotPaperSize.Height, pageSize.Width / x.PlotPaperSize.Width)
+                }).OrderBy(x => x.f).First();
+                Logger.Info(">>> pageSize: {0}", pageSize);
+                Logger.Info(">>> xxx.p.PlotPaperSize: {0}", xxx.p.PlotPaperSize);
+                Logger.Info(">>> xxx.p.PlotPaperSize ///: {0}", pageSize.Width / xxx.p.PlotPaperSize.Width);
+                Logger.Info(">>> xxx.p.PlotPaperSize ///: {0}", pageSize.Height / xxx.p.PlotPaperSize.Height);
+                Logger.Info(">>> xxx.p.PlotPaperSize: {0}", xxx.p.PlotPaperSize);
+                Logger.Info(">>> xxx.f: {0}", xxx.f);
+                pageSize = new Size(pageSize.Width / xxx.f, pageSize.Height / xxx.f);
+                paperFormat = xxx.p;
+                paperFormat.PlotOrigin = new Point2d(
+                    paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X / xxx.f,
+                    _plotParameters.PlotOrigin.Y / xxx.f);
+                paperFormat.PlotOrigin = new Point2d(
+                    _plotParameters.PlotOrigin.Y / xxx.f,
+                    paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X / xxx.f);
+            }
+            else
+            {
+                paperFormat.PlotOrigin = new Point2d(paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X,
+                    _plotParameters.PlotOrigin.Y);
+                paperFormat.PlotOrigin = new Point2d(_plotParameters.PlotOrigin.Y, paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X);
+                Logger.Info("Selected paper format: {0}   {1}   {2}   {3}", paperFormat.PlotPaperSize.Width, 
+                    pageSize.Width, _plotParameters.PlotOrigin.Y, paperFormat.PlotOrigin);
+                //paperFormat.PlotOrigin = new Point2d(_plotParameters.PlotOrigin.Y, paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X);
             }
             if (paperFormat == null)
             {
@@ -742,10 +839,12 @@ namespace BatchPlot
         private IEnumerable<PaperFormat> GetPc3PaperFormats(PlotSettingsValidator psv, PlotSettings ps, string plotterName)
         {
             var list = psv.GetCanonicalMediaNameList(ps);
+           
             for (var i = 0; i < list.Count; i++)
             {
                 psv.SetCanonicalMediaName(ps, list[i]);
                 psv.RefreshLists(ps);
+                
                 var sizex = ps.PlotPaperSize.X
                     - ps.PlotPaperMargins.MinPoint.X
                     - ps.PlotPaperMargins.MaxPoint.X;
@@ -760,7 +859,7 @@ namespace BatchPlot
                 };
                 if (_plotParameters.Debug)
                 {
-                    Logger.Info("Page size: {0,-40} {1} {2} {3}", ps.CanonicalMediaName, ps.PlotPaperSize, ps.PlotPaperMargins.MinPoint, ps.PlotPaperMargins.MaxPoint);
+                    Logger.Info("Page size: {0,-40} {1} {2} {3} {4}", ps.CanonicalMediaName, ps.PlotPaperSize, ps.PlotPaperMargins.MinPoint, ps.PlotPaperMargins.MaxPoint, ps.PlotRotation);
                 }
             }
         }
@@ -1019,6 +1118,7 @@ DROP SEQUENCE PJOB_SEQ;
 
 CREATE TABLE PJOB (
     PJOBID	    NUMBER(9) not null,
+    SOURCE      CHAR(1 BYTE), 
 S_PLOT_TICKET     NUMBER(12,0), 
 S_PLTICKET_STATUS NUMBER(12,0), 
 O_DATE            DATE, 
@@ -1029,6 +1129,8 @@ DESC_ERROR        VARCHAR2(500 BYTE),
   CONSTRAINT IDX_PJOB_PK PRIMARY KEY (PJOBID)
 ) TABLESPACE ENERGIS;
 
+CREATE UNIQUE INDEX IDX_PJOB_SOURCE_TICKET ON PJOB (SOURCE, S_PLOT_TICKET);
+ 
 GRANT SELECT,INSERT,UPDATE,DELETE ON PJOB TO GENERGIS;
     
 CREATE SEQUENCE PJOB_SEQ
@@ -1045,6 +1147,7 @@ GRANT SELECT ON PJOB_SEQ							TO GENERGIS;
 CREATE TABLE PTASK (
     PTASKID	    NUMBER(9) not null,
     PJOBID	    NUMBER(9) not null,
+    SEQ         NUMBER(5,0), 
     LOCKTIME    DATE,
 C_TYPE_PLAN       CHAR(1 BYTE), 
 L_ID_STAMP        VARCHAR2(25 BYTE), 
@@ -1061,6 +1164,8 @@ C_SIDE            CHAR(1 BYTE),
   CONSTRAINT IDX_PTASK_PK PRIMARY KEY (PTASKID),
   CONSTRAINT FK_PTASK_PJOB FOREIGN KEY (PJOBID) REFERENCES PJOB(PJOBID)
 ) TABLESPACE ENERGIS;
+
+CREATE UNIQUE INDEX IDX_PTASK_JOB_INDEX ON PTASK (PJOBID, INDEX);
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON PTASK TO GENERGIS;
     
@@ -1089,12 +1194,14 @@ CREATE SYNONYM GENERGIS.PTASK_SEQ		FOR CR_ENERGIS.PTASK_SEQ;
 
 INSERT INTO CR_ENERGIS.PJOB (PJOBID, 
 S_PLOT_TICKET, 
+SOURCE,
 S_PLTICKET_STATUS, 
 O_DATE,
 N_TOT_PLAN,        
 USERID)        
 SELECT PJOB_SEQ.NEXTVAL, 
-a.S_PLOT_TICKET, 
+a.S_PLOT_TICKET,
+'M',
 a.S_PLTICKET_STATUS, 
 a.O_DATE,
 a.N_TOT_PLAN,        
@@ -1108,7 +1215,8 @@ AND b.S_PLOT_TICKET IS NULL
 ;
 
 INSERT INTO CR_ENERGIS.PTASK (PTASKID,
-PJOBID,	        
+PJOBID,
+SEQ,
 C_TYPE_PLAN,       
 L_ID_STAMP,        
 L_ID_PLANCHETTE,   
@@ -1122,7 +1230,8 @@ N_ESSAY,
 S_PLTICKET_STATUS, 
 C_SIDE)            
 SELECT PTASK_SEQ.NEXTVAL, 
-b.PJOBID,	        
+b.PJOBID,
+0,
 a.C_TYPE_PLAN,       
 a.L_ID_STAMP,        
 a.L_ID_PLANCHETTE,   

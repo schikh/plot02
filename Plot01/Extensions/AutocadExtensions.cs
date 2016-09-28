@@ -8,6 +8,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.PlottingServices;
 using BatchPlot.Configuration;
+using BatchPlot.Services;
 
 namespace BatchPlot.Extensions
 {
@@ -111,6 +112,30 @@ namespace BatchPlot.Extensions
             }
         }
 
+        public static void FixRasterImagePath(this Database db, Transaction trans, string imageFolder)
+        {
+            var imageDictId = RasterImageDef.GetImageDictionary(db);
+            if (!imageDictId.IsNull)
+            {
+                using (var imageDict = (DBDictionary)trans.GetObject(imageDictId, OpenMode.ForRead))
+                {
+                    foreach (var currentObject in imageDict)
+                    {
+                        using (var imageDef = (RasterImageDef)trans.GetObject(currentObject.Value, OpenMode.ForWrite))
+                        {
+                            if (!File.Exists(imageDef.SourceFileName))
+                            {
+                                var fileName = Path.Combine(imageFolder, Path.GetFileName(imageDef.SourceFileName));
+                                Logger.Info("IMAGE: {0} => {1}", imageDef.SourceFileName, fileName);
+                                imageDef.SourceFileName = fileName;
+                                imageDef.Load();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public static Polyline InflateRectangle(this Polyline rectangle, int size)
         {
             var line = new Polyline();
@@ -186,7 +211,8 @@ namespace BatchPlot.Extensions
                 psv.SetDefaultPlotConfig(ps);
                 psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
                 psv.SetUseStandardScale(ps, true);
-                psv.SetPlotOrigin(ps, plotParameters.PlotOrigin);
+                psv.SetPlotOrigin(ps, plotParameters.PaperFormat.PlotOrigin);
+                //psv.SetPlotRotation(ps, PlotRotation.Degrees090);
                 if (plotParameters.PaperFormat.ShrinkDrawing)
                 {
                     psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
@@ -228,7 +254,5 @@ namespace BatchPlot.Extensions
                 tr.Commit();
             }
         }
-
-
     }
 }

@@ -62,6 +62,9 @@ namespace BatchPlot
                     case @"/u":
                         UserId = args[++i];
                         break;
+                    case @"/m":
+                        ImagesFolder = args[++i];
+                        break;
                     case @"/i":
                     case @"/l":
                     case @"/s":
@@ -109,6 +112,8 @@ namespace BatchPlot
         public Boolean Debug { get; private set; }
 
         public Zone Zone { get; set; }
+
+        public string ImagesFolder { get; private set; }
 
         //public string StyleSheet
         //{
@@ -180,14 +185,14 @@ namespace BatchPlot
             }
         }
 
-        public Point3d StampPosition 
-        {
-            get
-            {
-                var x = PageSize.Width - PlotConfiguration.Config.CartridgeExternalBorderWidth + 2;
-                return new Point3d(x, 0, 0);
-            }
-        }
+        //public Point3d StampPosition 
+        //{
+        //    get
+        //    {
+        //        var x = PageSize.Width - PlotConfiguration.Config.CartridgeExternalBorderWidth + 2;
+        //        return new Point3d(x, 0, 0);
+        //    }
+        //}
 
         public Size PageSize 
         {
@@ -195,12 +200,14 @@ namespace BatchPlot
             {
                 var height = PlotConfiguration.Config.DrawingSize.Height * Scale 
                              + 2 * PlotConfiguration.Config.InternalBorderWidth
-                             + 2 * PlotConfiguration.Config.ExternalBorderWidth;
+                             + 2 * PlotConfiguration.Config.ExternalBorderWidth
+                             + 2 * PlotConfiguration.Config.PlotOrigin.X;
                 var width = PlotConfiguration.Config.DrawingSize.Width * Scale 
                             + 2 * PlotConfiguration.Config.InternalBorderWidth
                             + 2 * PlotConfiguration.Config.ExternalBorderWidth
-                            + PlotConfiguration.Config.PlotCartridgeWidth 
-                            + 2 * PlotConfiguration.Config.CartridgeExternalBorderWidth;
+                            + PlotConfiguration.Config.PlotCartridgeWidth
+                            + 2 * PlotConfiguration.Config.CartridgeExternalBorderWidth
+                            + 2 * PlotConfiguration.Config.PlotOrigin.Y;
                 return new Size(width, height);
             }
         }

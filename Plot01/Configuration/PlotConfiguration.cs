@@ -94,6 +94,18 @@ namespace BatchPlot.Configuration
             get { return (string)this["EstFileServerName"]; }
         }
 
+        [ConfigurationProperty("WestFileServerUncName", IsRequired = true)]
+        public string WestFileServerUncName
+        {
+            get { return (string)this["WestFileServerUncName"]; }
+        }
+
+        [ConfigurationProperty("EstFileServerUncName", IsRequired = true)]
+        public string EstFileServerUncName
+        {
+            get { return (string)this["EstFileServerUncName"]; }
+        }
+
         [ConfigurationProperty("ServerName", IsRequired = true)]
         public string ServerName
         {
@@ -202,13 +214,8 @@ namespace BatchPlot.Configuration
             set { base["PlotPaperSize"] = value; }
         }
 
-        [ConfigurationProperty("AlternateStyleName", DefaultValue = "PLOTDEFAULT")]
-        public string AlternateStyleName
-        {
-            get { return (string)base["AlternateStyleName"]; }
-            set { base["AlternateStyleName"] = value; }
-        }
-
         public bool ShrinkDrawing { get; set; }
+
+        public Point2d PlotOrigin { get; set; }
     }
 }

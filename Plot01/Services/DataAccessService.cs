@@ -94,10 +94,10 @@ namespace BatchPlot.Services
         //        }
         //}
 
-        public void ClearDatabaseCaches()
-        {
-            ExecuteCommand("alter system flush buffer_cache;");
-            ExecuteCommand("alter system flush shared_pool;");
-        }
+        //public void ClearDatabaseCaches()
+        //{
+        //    ExecuteCommand("alter system flush buffer_cache;");
+        //    ExecuteCommand("alter system flush shared_pool;");
+        //}
     }
 }
