@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -15,15 +16,9 @@ using Topshelf;
 
 namespace PlotService2
 {
-    // my.exe install -instance:1 -username:bob -password:pwd
+    // "C:\Test\plot\PlotService2\bin\Debug\PlotService2.exe"  install -instance:1 -username:ores\adn534 -password:C0mplexPwd02
     public class Program
     {
-        public static void Main2(string[] args)
-        {
-            var plotTaskManager = new PlotTaskManager();
-            plotTaskManager.Start();
-        }
-
         static void Main(string[] args)
         {
             HostFactory.Run(x => 
@@ -34,20 +29,22 @@ namespace PlotService2
                     s.WhenStarted(tc => tc.Start());
                     s.WhenStopped(tc => tc.Stop());
                 });
-                x.RunAsLocalSystem();
+                //x.RunAsLocalSystem();
+                //x.StartAutomatically();
+                x.StartAutomaticallyDelayed();
 
                 x.SetDescription("Energis plot service");
                 x.SetDisplayName("Energis plot service");
                 x.SetServiceName("EnergisPlotService");
             });
-            HostFactory.New(x =>
-            {
-                x.EnableServiceRecovery(
-                    rc =>
-                    {
-                        rc.RestartService(1);
-                    });
-            });
+            //HostFactory.New(x =>
+            //{
+            //    x.EnableServiceRecovery(
+            //        rc =>
+            //        {
+            //            rc.RestartService(1);
+            //        });
+            //});
         }
     }
 
@@ -59,18 +56,6 @@ namespace PlotService2
 
         public void Start()
         {
-            //var plotTask = new PlotTask();
-            //plotTask.PathPlan = @"W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg";
-            //plotTask.PathResultPdf = @"C:\Test\plot\Plot01\Scripts\dump2.pdf";
-            //var tempFolder = Helper.CreateTempFolder();
-            //var f = new FileHelper();
-            //var file = f.ImportServerFile(plotTask.PathPlan, tempFolder);
-            //var list = f.GetAttachedFilePaths(plotTask.PathPlan).ToArray();
-            //f.ImportServerFiles(list, tempFolder);
-            //plotTask.PathPlan = file;
-            //var result = ProcessPlotTickects(plotTask);
-            //return;
-
             var tasks = new List<Task>();
             var plotTasks = new BlockingCollection<PlotTask>();
             var stopwatch = Stopwatch.StartNew();
@@ -173,7 +158,7 @@ namespace PlotService2
                     }
                     else
                     {
-                        Logger.Error("Plot task: {0} Input file not found", plotTask.TaskId);
+                        Logger.Error("Plot task: {0} Input file '{1}' not found", plotTask.TaskId, plotTask.PathPlan);
                     }
                 }
 
@@ -251,38 +236,85 @@ namespace PlotService2
 
                 return standardOutput.Contains("PLOT SUCCESSFUL");
             }
+
+
         }
     }
 
     public class FileHelper
     {
-        public IEnumerable<string> GetAttachedFilePaths(string dwgFile)
+        //public IEnumerable<string> GetAttachedFilePaths(string dwgFile)
+        //{
+        //    var directory = Path.GetDirectoryName(dwgFile);
+        //    var xmlFile = Path.Combine(directory, Path.GetFileNameWithoutExtension(dwgFile) + ".xml");
+        //    if (File.Exists(xmlFile))
+        //    {
+        //        //var text = File.ReadAllText(xmlFile);
+        //        //var pattern = @"<file .* filename=""(?<fileName>[^""]*)"" .*>";
+        //        //var expr = new Regex(pattern, RegexOptions.Multiline);
+        //        //foreach (var file in expr
+        //        //    .Matches(text).Cast<Match>()
+        //        //    .Select(x => x.Groups["fileName"].Value)
+        //        //    .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase )))
+        //        //{
+        //        //    yield return Path.Combine(directory, file);
+        //        //}
+        //        var doc = XDocument.Load(xmlFile);
+        //        var files = doc.Descendants("file")
+        //            .Attributes("fileName")
+        //            .Concat(doc.Descendants("file")
+        //            .Attributes("filename"))
+        //            .Select(x => x.Value)
+        //            .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase));
+        //        foreach (var file in files)
+        //        {
+        //            yield return Path.Combine(directory, file);
+        //        }
+        //    }
+        //}
+
+        public IEnumerable<string> GetAttachedFilePaths(string fileName)
         {
-            var directory = Path.GetDirectoryName(dwgFile);
-            var xmlFile = Path.Combine(directory, Path.GetFileNameWithoutExtension(dwgFile) + ".xml");
-            if (File.Exists(xmlFile))
+            //CardexEnerGISParameters
+            //CardexEnerGISParameters
+            //commandParameters.IdPlanchette = (string)parameters[0].Value;
+            //commandParameters.MapType = ReadStringList(parameters, 1, out nextParamIndex);
+            //commandParameters.EnergyList = ReadStringList(parameters, nextParamIndex, out nextParamIndex);
+            //commandParameters.Scale = Convert.ToInt32(parameters[nextParamIndex].Value);
+            //commandParameters.ResultFileName = (string)parameters[nextParamIndex].Value;
+            //commandParameters.UserId = (string)parameters[nextParamIndex].Value;
+
+            //CardexPlotSepParameters
+            //commandParameters.Division = (string)parameters[0].Value;
+            //commandParameters.AskNumber = (string)parameters[1].Value;
+            //commandParameters.AskNumber = "";
+            //commandParameters.UserName = identity;
+            //commandParameters.TotPlan = Convert.ToInt32(parameters[3].Value);
+            //commandParameters.PlotterName = (string)parameters[4].Value;
+
+            //PlotCardexEnerGISCommand
+            //commandParameters.SourceFileName = (string)parameters[0].Value;
+            //commandParameters.IsEgis = Convert.ToBoolean(parameters[1].Value);
+            //commandParameters.Point1 = (Point3d)parameters[2].Value;
+            //commandParameters.Point2 = (Point3d)parameters[3].Value;
+            //commandParameters.PlotterName = (string)parameters[4].Value;
+            //commandParameters.Scale = Convert.ToInt32(parameters[6].Value);
+            //commandParameters.NbrCopy = Convert.ToInt32(parameters[6].Value);
+            //commandParameters.UserId = (string)parameters[9].Value;
+
+            //PlotCardexPlotSjtCommand
+            //no param
+
+
+            var text = File.ReadAllText(fileName);
+            var pattern = @"<file .* filename=""(?<fileName>[^""]*)"" .*>";
+            var expr = new Regex(pattern, RegexOptions.Multiline);
+            foreach (var file in expr
+                .Matches(text).Cast<Match>()
+                .Select(x => x.Groups["fileName"].Value)
+                .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase)))
             {
-                //var text = File.ReadAllText(xmlFile);
-                //var pattern = @"<file .* filename=""(?<fileName>[^""]*)"" .*>";
-                //var expr = new Regex(pattern, RegexOptions.Multiline);
-                //foreach (var file in expr
-                //    .Matches(text).Cast<Match>()
-                //    .Select(x => x.Groups["fileName"].Value)
-                //    .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase )))
-                //{
-                //    yield return Path.Combine(directory, file);
-                //}
-                var doc = XDocument.Load(xmlFile);
-                var files = doc.Descendants("file")
-                    .Attributes("fileName")
-                    .Concat(doc.Descendants("file")
-                    .Attributes("filename"))
-                    .Select(x => x.Value)
-                    .Where(x => !string.Equals(Path.GetExtension(x), ".dwf", StringComparison.InvariantCultureIgnoreCase));
-                foreach (var file in files)
-                {
-                    yield return Path.Combine(directory, file);
-                }
+                yield return Path.Combine(directory, file);
             }
         }
 
@@ -345,6 +377,10 @@ namespace PlotService2
             p.Essay = Convert.ToInt32(reader.GetValue(16));
             p.PlotTicketStatus = Convert.ToInt32(reader.GetValue(17));
             p.Side = reader.GetSafe<string>(18);
+            if (!string.IsNullOrEmpty(p.PathPlan))
+            {
+                p.PathPlan = GetFileUncPath(p.PathPlan);
+            }
             return p;
         }
 
@@ -382,6 +418,20 @@ namespace PlotService2
             var da = new DataAccessService(_connectionString);
             var query = QueryTemplates.Templates.GetTemplate("Update_PJOB_status_from_PTASK_statuses").Template;
             var result = da.ExecuteCommand(query);
+        }
+
+        private string GetFileUncPath(string folder)
+        {
+            folder = folder.ToLower().Replace("/", @"\");
+            if (folder.StartsWith(Settings.EstFileServerName.ToLower()))
+            {
+                return folder.Replace(Settings.EstFileServerName.ToLower(), Settings.EstFileServerUncName);
+            }
+            if (folder.StartsWith(Settings.WestFileServerName.ToLower()))
+            {
+                return folder.Replace(Settings.WestFileServerName.ToLower(), Settings.WestFileServerUncName);
+            }
+            throw new NotSupportedException(string.Format("Folder not supported: {0}", folder));
         }
     }
 
@@ -433,7 +483,6 @@ namespace PlotService2
         public bool IsImpetrant {
             get { return string.Equals(TypePlan, "T", StringComparison.InvariantCultureIgnoreCase); }
         }
-
 
         public string CommandLineParameters()
         {

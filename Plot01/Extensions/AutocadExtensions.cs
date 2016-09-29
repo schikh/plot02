@@ -229,64 +229,60 @@ namespace BatchPlot.Extensions
 
         public static void PlotLayout(this Document document, Transaction tr, Layout layout, PlotParameters plotParameters)
         {
-            //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            //using (var layout = GetPlotLayout(tr))
+            var ps = new PlotSettings(layout.ModelType);
+            ps.CopyFrom(layout);
+            ps.PlotPlotStyles = true;
+
+            var psv = PlotSettingsValidator.Current;
+            psv.SetDefaultPlotConfig(ps);
+            psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
+            psv.SetUseStandardScale(ps, true);
+            psv.SetPlotOrigin(ps, plotParameters.PaperFormat.PlotOrigin);
+         //   psv.SetPlotRotation(ps, PlotRotation.Degrees090);
+            if (plotParameters.PaperFormat.ShrinkDrawing)
             {
-                var ps = new PlotSettings(layout.ModelType);
-                ps.CopyFrom(layout);
-                ps.PlotPlotStyles = true;
+                psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
+                //psv.SetUseStandardScale(ps, false);
+                //psv.SetStdScale(ps, 2);
 
-                var psv = PlotSettingsValidator.Current;
-                psv.SetDefaultPlotConfig(ps);
-                psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
-                psv.SetUseStandardScale(ps, true);
-                psv.SetPlotOrigin(ps, plotParameters.PaperFormat.PlotOrigin);
-                psv.SetPlotRotation(ps, PlotRotation.Degrees090);
-                if (plotParameters.PaperFormat.ShrinkDrawing)
-                {
-                    psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
-                    //psv.SetUseStandardScale(ps, false);
-                    //psv.SetStdScale(ps, 2);
-
-                    //var Scale = new CustomScale(1, 0.5);
-                    //psv.SetCustomPrintScale(ps, Scale);
- }
-                else
-                {
-                    psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
-                }
-                psv.SetPlotConfigurationName(ps, plotParameters.Pc3Name, plotParameters.PaperFormat.CanonicalMediaName);
-                psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
-
-                var pi = new PlotInfo();
-                pi.Layout = layout.ObjectId;
-                pi.OverrideSettings = ps;
-
-                var piv = new PlotInfoValidator();
-                piv.MediaMatchingPolicy = MatchingPolicy.MatchEnabled;
-                piv.Validate(pi);
-
-                var d = Path.GetDirectoryName(plotParameters.OutputFilePath);
-                if (!Directory.Exists(d))
-                {
-                    Directory.CreateDirectory(d);
-                }
-
-                using (var pe = PlotFactory.CreatePublishEngine())
-                using (var ppi = new PlotPageInfo())
-                {
-                    pe.BeginPlot(null, null);
-                    pe.BeginDocument(pi, document.Name, null, 1, plotParameters.PlotToFile, plotParameters.OutputFilePath);
-                    pe.BeginPage(ppi, pi, true, null);
-                    pe.BeginGenerateGraphics(null);
-                    pe.EndGenerateGraphics(null);
-                    pe.EndPage(null);
-                    pe.EndDocument(null);
-                    pe.EndPlot(null);
-                }
-
-                tr.Commit();
+                //var Scale = new CustomScale(1, 0.5);
+                //psv.SetCustomPrintScale(ps, Scale);
             }
+            else
+            {
+                psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);
+            }
+            psv.SetPlotConfigurationName(ps, plotParameters.Pc3Name, plotParameters.PaperFormat.CanonicalMediaName);
+            psv.SetPlotPaperUnits(ps, PlotPaperUnit.Millimeters);
+
+            var pi = new PlotInfo();
+            pi.Layout = layout.ObjectId;
+            pi.OverrideSettings = ps;
+
+            var piv = new PlotInfoValidator();
+            piv.MediaMatchingPolicy = MatchingPolicy.MatchEnabled;
+            piv.Validate(pi);
+
+            var d = Path.GetDirectoryName(plotParameters.OutputFilePath);
+            if (!Directory.Exists(d))
+            {
+                Directory.CreateDirectory(d);
+            }
+
+            using (var pe = PlotFactory.CreatePublishEngine())
+            using (var ppi = new PlotPageInfo())
+            {
+                pe.BeginPlot(null, null);
+                pe.BeginDocument(pi, document.Name, null, 1, plotParameters.PlotToFile, plotParameters.OutputFilePath);
+                pe.BeginPage(ppi, pi, true, null);
+                pe.BeginGenerateGraphics(null);
+                pe.EndGenerateGraphics(null);
+                pe.EndPage(null);
+                pe.EndDocument(null);
+                pe.EndPlot(null);
+            }
+
+            tr.Commit();
         }
     }
 }

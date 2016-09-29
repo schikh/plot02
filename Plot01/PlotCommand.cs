@@ -7,11 +7,11 @@ using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
 using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using BatchPlot;
 using BatchPlot.Configuration;
+using BatchPlot.Enumerations;
 using BatchPlot.Extensions;
 using BatchPlot.Services;
 
@@ -32,15 +32,13 @@ using BatchPlot.Services;
 //                                                                               /i "W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf"  /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
 
 
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+// "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+// "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /isolate
+// "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z O /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
 
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Files\F185128.DWG" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /isolate
-//    "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\Plot\Plot01\Scripts\Empty.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotPlanchette.scr" /id 079145E /r 500 /z O /c "MAP" /e "BT" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /p "Canon C5235 - MERCK NAM IT - BSM Reseaux" /d /imp /st "1629628-29519681" /t 7 /n 1 /u ADN534 /isolate
-
- //"C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
-
-// 106931.dwg
-// 312420-m.dwg
+// "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+// "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Scripts\106931.dwg"      /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
+// "C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "C:\Test\plot\Plot01\Scripts\312420-m.dwg"    /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 
 [assembly: CommandClass(typeof(PlotCommand))]
 namespace BatchPlot
@@ -70,16 +68,16 @@ namespace BatchPlot
                 Logger.Info("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
-                var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
-                _plotParameters.EnergyDescription = new string[0];
-                //var energies = DecodeEnergiesSelection(_plotParameters.Energies);
-                //var decodedEnergies = energies.Select(x => x.Name);
-                //var filePaths = GetServerFilePaths(_plotParameters.Category, decodedEnergies);
-                //_plotParameters.EnergyDescription = energies.Where(x => x.Rank < 99).Select(x => x.Name).OrderBy(x => x);
-                //Logger.Info("ENERGIES: {0} => {1} => {2}", string.Join(",", _plotParameters.Energies)
-                //    , string.Join(",", decodedEnergies)
-                //    , string.Join(",", _plotParameters.EnergyDescription)
-                //    );
+                //var filePaths = Directory.GetFiles(@"C:\Test\Plot\Plot01\Files2").Take(200);
+                //_plotParameters.EnergyDescription = new string[0];
+                var energies = DecodeEnergiesSelection(_plotParameters.Energies);
+                var decodedEnergies = energies.Select(x => x.Name);
+                var filePaths = GetServerFilePaths(_plotParameters.Category, decodedEnergies);
+                _plotParameters.EnergyDescription = energies.Where(x => x.Rank < 99).Select(x => x.Name).OrderBy(x => x);
+                Logger.Info("ENERGIES: {0} => {1} => {2}", string.Join(",", _plotParameters.Energies)
+                    , string.Join(",", decodedEnergies)
+                    , string.Join(",", _plotParameters.EnergyDescription)
+                    );
 
                 ImportDwgFilesAndApplyStyle(filePaths);
                 CreatePaperSpaceAndSetThePlotSettings();
@@ -234,10 +232,24 @@ namespace BatchPlot
                 e.MaxPoint.Y,
                 category,
                 string.Join("','", energies));
-            var list = da.IterateOverReader(query, x => Path.Combine(x.GetString(0), x.GetString(1))).ToList();
+            var list = da.IterateOverReader(query, x => Path.Combine(GetFileUncPath(x.GetString(0)), x.GetString(1))).ToList();
             Logger.Info("Query table DESSIN: " + query);
             Logger.Info("Number OF file found: " + list.Count);
             return list;
+        }
+
+        private string GetFileUncPath(string folder)
+        {
+            folder = folder.ToLower().Replace("/", @"\");
+            switch (_plotParameters.Zone)
+            {
+                case Zone.E:
+                    return folder.ToLower().Replace(PlotConfiguration.Config.EstFileServerName.ToLower(), PlotConfiguration.Config.EstFileServerUncName);
+                case Zone.O:
+                    return folder.ToLower().Replace(PlotConfiguration.Config.WestFileServerName.ToLower(), PlotConfiguration.Config.WestFileServerUncName);
+                default:
+                    throw new NotSupportedException(string.Format("Zone {0} not supported", _plotParameters.Zone));
+            }
         }
 
         private IEnumerable<EnergyTitle> DecodeEnergiesSelection(IEnumerable<string> energies)
@@ -707,6 +719,20 @@ namespace BatchPlot
             var paperFormats = GetDefaultOrPc3PaperFormats(psv, ps, plotterName);
             paperFormats = paperFormats
                 .OrderBy(x => x.PlotPaperSize.Height).ThenBy(x => x.PlotPaperSize.Width);
+
+            paperFormats.Select(
+                x => new {
+                    a = x.PlotPaperSize.Width,
+                    b = 2 * _plotParameters.PlotOrigin.X,
+                    c = pageSize.Width,
+                    d = x.PlotPaperSize.Width - 2 * _plotParameters.PlotOrigin.X >= pageSize.Width,
+                    e = x.PlotPaperSize.Height,
+                    f = 2 * _plotParameters.PlotOrigin.Y,
+                    g = pageSize.Height,
+                    h = x.PlotPaperSize.Height - 2 * _plotParameters.PlotOrigin.Y >= pageSize.Height
+                }).ToList()
+                .ForEach(x => Logger.Info(">>>>>>>>>>>>>> {0} -2* {1} >= {2} = {3}         {4} -2* {5} >= {6} = {7}", x.a, x.b, x.c, x.d, x.e, x.f, x.g, x.h));
+
             var paperFormat = paperFormats
                 .FirstOrDefault(x => x.PlotPaperSize.Width - 2 * _plotParameters.PlotOrigin.X >= pageSize.Width
                     && x.PlotPaperSize.Height - 2 * _plotParameters.PlotOrigin.Y >= pageSize.Height);
@@ -731,15 +757,23 @@ namespace BatchPlot
 
             if (_plotParameters.IsPlanchette)
             {
-                paperFormat.PlotOrigin = new Point2d(Math.Max(Math.Min(paperFormat.PlotPaperSize.Height - pageSize.Height - _plotParameters.PlotOrigin.Y, 10), 0),
-                    Math.Max(Math.Min(paperFormat.PlotPaperSize.Width - pageSize.Width - _plotParameters.PlotOrigin.X, 10), 0));
-                Logger.Info(">>> IsPlanchette PlotPaperSize: {0}   pageSize: {1}   PlotOrigin: {2} =>  {3}", paperFormat.PlotPaperSize, pageSize, _plotParameters.PlotOrigin, paperFormat.PlotOrigin);
+                paperFormat.PlotOrigin = new Point2d(Math.Max(Math.Min(paperFormat.PlotPaperSize.Height - pageSize.Height, _plotParameters.PlotOrigin.Y), 0),
+                    Math.Max(Math.Min(paperFormat.PlotPaperSize.Width - pageSize.Width, _plotParameters.PlotOrigin.X), 0));
+                Logger.Info(">>> IsPlanchette:  True");
+                Logger.Info(">>> PlotPaperSize: {0}", paperFormat.PlotPaperSize);
+                Logger.Info(">>> pageSize:      {0}", pageSize);
+                Logger.Info(">>> PlotOrigin:    {0}", _plotParameters.PlotOrigin);
+                Logger.Info(">>> =>             {0}", paperFormat.PlotOrigin);
             }
             else
             {
                 paperFormat.PlotOrigin = new Point2d(Math.Max(Math.Min(paperFormat.PlotPaperSize.Height - pageSize.Height - _plotParameters.PlotOrigin.Y, 10), 0),
                     Math.Max(paperFormat.PlotPaperSize.Width - pageSize.Width - _plotParameters.PlotOrigin.X, 0));
-                Logger.Info(">>>              PlotPaperSize: {0}   pageSize: {1}   PlotOrigin: {2} =>  {3}", paperFormat.PlotPaperSize, pageSize, _plotParameters.PlotOrigin, paperFormat.PlotOrigin);
+                Logger.Info(">>> IsPlanchette:  True");
+                Logger.Info(">>> PlotPaperSize: {0}", paperFormat.PlotPaperSize);
+                Logger.Info(">>> pageSize:      {0}", pageSize);
+                Logger.Info(">>> PlotOrigin:    {0}", _plotParameters.PlotOrigin);
+                Logger.Info(">>> =>             {0}", paperFormat.PlotOrigin);
             }
 
             return paperFormat;
@@ -756,6 +790,12 @@ namespace BatchPlot
             {
                 paperFormats = GetPc3PaperFormats(psv, ps, plotterName).ToArray();
             }
+
+            if (_plotParameters.Debug)
+            {
+                paperFormats.ToList().ForEach(x => Logger.Info("Page size: {0,-40} {1}", x.CanonicalMediaName, x.PlotPaperSize));
+            }
+
             return paperFormats;
         }
 

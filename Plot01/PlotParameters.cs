@@ -217,7 +217,10 @@ namespace BatchPlot
 
         public string FileServerName
         {
-            get { return Zone == Zone.E ? PlotConfiguration.Config.EstFileServerName : PlotConfiguration.Config.WestFileServerName; }
+            get
+            {
+                return (Zone == Zone.E ? PlotConfiguration.Config.EstFileServerName : PlotConfiguration.Config.WestFileServerName).Substring(3);
+            }
         }
 
         public string Stamp

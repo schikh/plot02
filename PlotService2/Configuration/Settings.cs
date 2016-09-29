@@ -14,6 +14,11 @@ namespace PlotService2.Configuration
         public static readonly int QueueMinimumThreshold = int.Parse(ConfigurationSettings.AppSettings["QueueMinimumThreshold"]);
         public static readonly int NumberOfConsoles = int.Parse(ConfigurationSettings.AppSettings["NumberOfConsoles"]);
         public static readonly int BatchLoadInterval = int.Parse(ConfigurationSettings.AppSettings["BatchLoadInterval"]);
-        public static readonly int MaximumConsoleExecutionTime = int.Parse(ConfigurationSettings.AppSettings["MaximumConsoleExecutionTime"]);        
+        public static readonly int MaximumConsoleExecutionTime = int.Parse(ConfigurationSettings.AppSettings["MaximumConsoleExecutionTime"]);    
+    
+        public static readonly string EstFileServerName = ConfigurationSettings.AppSettings["EstFileServerName"];
+        public static readonly string WestFileServerName = ConfigurationSettings.AppSettings["WestFileServerName"];
+        public static readonly string EstFileServerUncName = ConfigurationSettings.AppSettings["EstFileServerUncName"];
+        public static readonly string WestFileServerUncName = ConfigurationSettings.AppSettings["WestFileServerUncName"];
     }
 }
