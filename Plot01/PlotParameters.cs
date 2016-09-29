@@ -200,14 +200,12 @@ namespace BatchPlot
             {
                 var height = PlotConfiguration.Config.DrawingSize.Height * Scale 
                              + 2 * PlotConfiguration.Config.InternalBorderWidth
-                             + 2 * PlotConfiguration.Config.ExternalBorderWidth
-                             + 2 * PlotConfiguration.Config.PlotOrigin.X;
+                             + 2 * PlotConfiguration.Config.ExternalBorderWidth;
                 var width = PlotConfiguration.Config.DrawingSize.Width * Scale 
                             + 2 * PlotConfiguration.Config.InternalBorderWidth
                             + 2 * PlotConfiguration.Config.ExternalBorderWidth
                             + PlotConfiguration.Config.PlotCartridgeWidth
-                            + 2 * PlotConfiguration.Config.CartridgeExternalBorderWidth
-                            + 2 * PlotConfiguration.Config.PlotOrigin.Y;
+                            + 2 * PlotConfiguration.Config.CartridgeExternalBorderWidth;
                 return new Size(width, height);
             }
         }

@@ -12,6 +12,28 @@ using BatchPlot.Services;
 
 namespace BatchPlot.Extensions
 {
+    public static class RasterImageDefExtension
+    {
+        //Return if image has Xref defined, meaning the image is used in the drawing
+        public static bool IsRasterImageUsed(this Transaction tr, RasterImageDef rasterImageDef)
+        {
+            foreach (ObjectId objectId in rasterImageDef.GetPersistentReactorIds())
+            {
+                if (objectId.ObjectClass.DxfName == "IMAGEDEF_REACTOR")
+                {
+                    using (var reactor = tr.GetObject(objectId, OpenMode.ForRead))
+                    {
+                        if (reactor.OwnerId != ObjectId.Null)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
     public static class AutocadExtensions
     {
         public static void ApplyOceGrayStyle(this Database db, Transaction tr, Extents2d extents)
@@ -112,23 +134,30 @@ namespace BatchPlot.Extensions
             }
         }
 
-        public static void FixRasterImagePath(this Database db, Transaction trans, string imageFolder)
+        public static void FixRasterImagePath(this Database db, Transaction tr, string imageFolder)
         {
             var imageDictId = RasterImageDef.GetImageDictionary(db);
             if (!imageDictId.IsNull)
             {
-                using (var imageDict = (DBDictionary)trans.GetObject(imageDictId, OpenMode.ForRead))
+                using (var imageDict = (DBDictionary)tr.GetObject(imageDictId, OpenMode.ForRead))
                 {
                     foreach (var currentObject in imageDict)
                     {
-                        using (var imageDef = (RasterImageDef)trans.GetObject(currentObject.Value, OpenMode.ForWrite))
+                        using (var imageDef = (RasterImageDef)tr.GetObject(currentObject.Value, OpenMode.ForWrite))
                         {
-                            if (!File.Exists(imageDef.SourceFileName))
+                            if (string.IsNullOrEmpty(imageDef.ActiveFileName) || !File.Exists(imageDef.ActiveFileName))
                             {
                                 var fileName = Path.Combine(imageFolder, Path.GetFileName(imageDef.SourceFileName));
                                 Logger.Info("IMAGE: {0} => {1}", imageDef.SourceFileName, fileName);
-                                imageDef.SourceFileName = fileName;
-                                imageDef.Load();
+                                if (File.Exists(fileName))
+                                {
+                                    imageDef.SourceFileName = fileName;
+                                    imageDef.Load();
+                                }
+                                else if (tr.IsRasterImageUsed(imageDef))
+                                {
+                                    throw new ApplicationException("Raster image file '" + fileName + "' not found");
+                                }
                             }
                         }
                     }
@@ -212,11 +241,16 @@ namespace BatchPlot.Extensions
                 psv.SetPlotType(ps, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents);
                 psv.SetUseStandardScale(ps, true);
                 psv.SetPlotOrigin(ps, plotParameters.PaperFormat.PlotOrigin);
-                //psv.SetPlotRotation(ps, PlotRotation.Degrees090);
+                psv.SetPlotRotation(ps, PlotRotation.Degrees090);
                 if (plotParameters.PaperFormat.ShrinkDrawing)
                 {
                     psv.SetStdScaleType(ps, StdScaleType.ScaleToFit);
-                }
+                    //psv.SetUseStandardScale(ps, false);
+                    //psv.SetStdScale(ps, 2);
+
+                    //var Scale = new CustomScale(1, 0.5);
+                    //psv.SetCustomPrintScale(ps, Scale);
+ }
                 else
                 {
                     psv.SetStdScaleType(ps, StdScaleType.StdScale1To1);

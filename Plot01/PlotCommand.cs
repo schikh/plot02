@@ -7,6 +7,7 @@ using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using BatchPlot;
@@ -38,6 +39,8 @@ using BatchPlot.Services;
 
  //"C:\Program Files\Autodesk\Autodesk AutoCAD Map 3D 2014\accoreconsole.exe" /i "W:\RWA004\Cardex\Est\Edpl\Vvs\Reperage\El\edpl-1326-2.dwg" /s "C:\Test\Plot\Plot01\Scripts\PlotDwg.scr" /f "C:\Test\Plot\Plot01\Scripts\dump2.pdf" /isolate
 
+// 106931.dwg
+// 312420-m.dwg
 
 [assembly: CommandClass(typeof(PlotCommand))]
 namespace BatchPlot
@@ -80,16 +83,8 @@ namespace BatchPlot
 
                 ImportDwgFilesAndApplyStyle(filePaths);
                 CreatePaperSpaceAndSetThePlotSettings();
-                AddViewportCartridgeBordersAndStampToPaperspace();
-
-                AddStampToDrawing(); //???????????????????
-
-                Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
-                Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
-                Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
-                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-
+                AddViewportCartridgeAndBordersToPaperspace();
+                AddStampToDrawing(); 
                 SetPageView();
                 PlotCurrentLayout();
 
@@ -99,7 +94,7 @@ namespace BatchPlot
             }
             catch (System.Exception ex)
             {
-                Logger.Error("PLOT ERROR");
+                Logger.Info("PLOT ERROR {0} ###", ex.Message);
                 Logger.Error(ex);
             }
         }
@@ -111,25 +106,12 @@ namespace BatchPlot
             {
                 _document.Database.Insunits = UnitsValue.Millimeters;
 
-                Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
-                Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
-                Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
-                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-
                 var args = Environment.GetCommandLineArgs();
                 Logger.Info("ARGUMENTS: " + string.Join(" ", args.Skip(1)));
                 _plotParameters = new PlotParameters(args);
 
                 FixRasterImagePath();
                 AddStampToDrawing();
-
-                Logger.Info("_document.Database.TileMode: {0}", _document.Database.TileMode);
-                Logger.Info("_document.Database.Extmin: {0}", _document.Database.Extmin);
-                Logger.Info("_document.Database.Extmax: {0}", _document.Database.Extmax);
-                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-                Logger.Info("_document.Database.Pextmin: {0}", _document.Database.Pextmin);
-
                 GetOpenedModelOrPaperSpaceAndSetThePlotSettings();
                 PlotCurrentLayout();
 
@@ -137,7 +119,7 @@ namespace BatchPlot
             }
             catch (System.Exception ex)
             {
-                Logger.Info("PLOT ERROR");
+                Logger.Info("PLOT ERROR {0} ###", ex.Message);
                 Logger.Error(ex);
             }
         }
@@ -145,7 +127,7 @@ namespace BatchPlot
         private void AddStampToDrawing()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = GetPlotLayout(tr))
+            using (var layout = GetCurrentLayout(tr))
             using (var lbtr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             {
                 AddStamp(tr, lbtr);
@@ -168,7 +150,7 @@ namespace BatchPlot
         private void GetOpenedModelOrPaperSpaceAndSetThePlotSettings()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = GetPlotLayout(tr))
+            using (var layout = GetCurrentLayout(tr))
             {
                 var pageSize = GetCurrentModelOrLayoutExtend();
                 SetPlotSettings(layout, pageSize);
@@ -206,10 +188,10 @@ namespace BatchPlot
             }
         }
 
-        private void AddViewportCartridgeBordersAndStampToPaperspace()
+        private void AddViewportCartridgeAndBordersToPaperspace()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = GetPlotLayout(tr))
+            using (var layout = GetCurrentLayout(tr))
             using (var lbtr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
             {
                 using (var viewport = CreateViewport(tr, lbtr))
@@ -227,7 +209,7 @@ namespace BatchPlot
         private void PlotCurrentLayout()
         {
             using (var tr = _document.Database.TransactionManager.StartTransaction())
-            using (var layout = GetPlotLayout(tr))
+            using (var layout = GetCurrentLayout(tr))
             {
                 _document.PlotLayout(tr, layout, _plotParameters);
             }
@@ -335,29 +317,23 @@ namespace BatchPlot
 
         private void ImportDwgFiles(Transaction tr, BlockTable bt, BlockTableRecord btr, IEnumerable<string> filePaths)
         {
-            //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            //using (var bt = (BlockTable)_document.Database.BlockTableId.GetObject(OpenMode.ForRead))
-            //using (var btr = (BlockTableRecord)bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite))
-            //{
-                var c = filePaths.Count();
-                var i = 0;
-                foreach (var filePath in filePaths)
+            var c = filePaths.Count();
+            var i = 0;
+            foreach (var filePath in filePaths)
+            {
+                i++;
+                if (File.Exists(filePath))
                 {
-                    i++;
-                    if (File.Exists(filePath))
-                    {
-                        Logger.Info("IMPORT FILE {1}/{2}   {0}", filePath, i, c);
-                        var br = ImportDwgFile(filePath, i);
-                        btr.AppendEntity(br);
-                        tr.AddNewlyCreatedDBObject(br, true);
-                    }
-                    else
-                    {
-                        Logger.Info("FILE NOT FOUND {1}/{2}   {0}", filePath, i, c);
-                    }
+                    Logger.Info("IMPORT FILE {1}/{2}   {0}", filePath, i, c);
+                    var br = ImportDwgFile(filePath, i);
+                    btr.AppendEntity(br);
+                    tr.AddNewlyCreatedDBObject(br, true);
                 }
-                //tr.Commit();
-            //}
+                else
+                {
+                    Logger.Info("FILE NOT FOUND {1}/{2}   {0}", filePath, i, c);
+                }
+            }
         }
 
         private BlockReference ImportDwgFile(string filePath, int fileId)
@@ -374,28 +350,22 @@ namespace BatchPlot
 
         private void AddPlotCartridge(Transaction tr, Layout layout, BlockTableRecord btr, string templateFilePath, Point3d position)
         {
-            //using (var tr = _document.Database.TransactionManager.StartTransaction())
-            //using (var layout = GetPlotLayout(tr))
-            //using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
+            ObjectId blockId;
+            using (var db = new Database(false, true))
             {
-                ObjectId blockId;
-                using (var db = new Database(false, true))
-                {
-                    db.ReadDwgFile(templateFilePath, FileShare.Read, true, "");
-                    var blockName = Path.GetFileNameWithoutExtension(templateFilePath);
-                    blockId = _document.Database.Insert(blockName, db, true);
-                }
+                db.ReadDwgFile(templateFilePath, FileShare.Read, true, "");
+                var blockName = Path.GetFileNameWithoutExtension(templateFilePath);
+                blockId = _document.Database.Insert(blockName, db, true);
+            }
 
-                var values = GetCartridgeInfo(tr);
+            var values = GetCartridgeInfo(tr);
 
-                using (var blockDefinition = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForRead))
-                using (var br = new BlockReference(position, blockId))
-                {
-                    btr.AppendEntity(br);
-                    tr.AddNewlyCreatedDBObject(br, true);
-                    blockDefinition.CopyAttributeDefinition(br, values);
-                }
-                //tr.Commit();
+            using (var blockDefinition = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForRead))
+            using (var br = new BlockReference(position, blockId))
+            {
+                btr.AppendEntity(br);
+                tr.AddNewlyCreatedDBObject(br, true);
+                blockDefinition.CopyAttributeDefinition(br, values);
             }
         }
 
@@ -420,26 +390,23 @@ namespace BatchPlot
 
         private void AddDrawingBorders(Transaction tr, Layout layout, BlockTableRecord btr)
         {
-            //using (var btr = (BlockTableRecord)tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
-            {
-                var x = PlotConfiguration.Config.ExternalBorderWidth + PlotConfiguration.Config.InternalBorderWidth;
-                var y = PlotConfiguration.Config.ExternalBorderWidth + PlotConfiguration.Config.InternalBorderWidth;
-                var width = PlotConfiguration.Config.DrawingSize.Width * _plotParameters.Scale;
-                var height = PlotConfiguration.Config.DrawingSize.Height * _plotParameters.Scale;
+            var x = PlotConfiguration.Config.ExternalBorderWidth + PlotConfiguration.Config.InternalBorderWidth;
+            var y = PlotConfiguration.Config.ExternalBorderWidth + PlotConfiguration.Config.InternalBorderWidth;
+            var width = PlotConfiguration.Config.DrawingSize.Width * _plotParameters.Scale;
+            var height = PlotConfiguration.Config.DrawingSize.Height * _plotParameters.Scale;
                 
-                var rectangle = AutocadExtensions.CreateRectangle(x, y, height, width);
-                rectangle.ColorIndex = 9;
-                btr.AppendEntity(rectangle);
-                tr.AddNewlyCreatedDBObject(rectangle, true);
+            var rectangle = AutocadExtensions.CreateRectangle(x, y, height, width);
+            rectangle.ColorIndex = 9;
+            btr.AppendEntity(rectangle);
+            tr.AddNewlyCreatedDBObject(rectangle, true);
 
-                rectangle = rectangle.InflateRectangle(PlotConfiguration.Config.InternalBorderWidth);
-                btr.AppendEntity(rectangle);
-                tr.AddNewlyCreatedDBObject(rectangle, true);
+            rectangle = rectangle.InflateRectangle(PlotConfiguration.Config.InternalBorderWidth);
+            btr.AppendEntity(rectangle);
+            tr.AddNewlyCreatedDBObject(rectangle, true);
 
-                rectangle = rectangle.InflateRectangle(PlotConfiguration.Config.ExternalBorderWidth);
-                btr.AppendEntity(rectangle);
-                tr.AddNewlyCreatedDBObject(rectangle, true);
-            }
+            rectangle = rectangle.InflateRectangle(PlotConfiguration.Config.ExternalBorderWidth);
+            btr.AppendEntity(rectangle);
+            tr.AddNewlyCreatedDBObject(rectangle, true);
         }
 
         private Dictionary<string, string> GetCartridgeInfo(Transaction tr)
@@ -606,10 +573,9 @@ namespace BatchPlot
             viewport.On = true;
         }
 
-        private Layout GetPlotLayout(Transaction tr)
+        private Layout GetCurrentLayout(Transaction tr)
         {
             var id = LayoutManager.Current.GetLayoutId(LayoutManager.Current.CurrentLayout);
-            //var id = LayoutManager.Current.GetLayoutId(_plotParameters.PlotLayoutName);
             var layout = (Layout) tr.GetObject(id, OpenMode.ForWrite);
             return layout;
         }
@@ -659,15 +625,12 @@ namespace BatchPlot
 
         private Viewport CreateViewport(Transaction tr, BlockTableRecord lbtr)
         {
-            //using (var btr = (BlockTableRecord) tr.GetObject(layout.BlockTableRecordId, OpenMode.ForWrite))
-            {
-                var vp = new Viewport();
-                lbtr.AppendEntity(vp);
-                tr.AddNewlyCreatedDBObject(vp, true);
-                vp.On = true;
-                vp.GridOn = true;
-                return vp;
-            }
+            var vp = new Viewport();
+            lbtr.AppendEntity(vp);
+            tr.AddNewlyCreatedDBObject(vp, true);
+            vp.On = true;
+            vp.GridOn = true;
+            return vp;
         }
 
         private void SetPlotSettings(Layout layout, Size pageSize)
@@ -714,14 +677,14 @@ namespace BatchPlot
             if (_document.Database.TileMode)
             {
                 return new Size(
-                    _document.Database.Extmax.X - _document.Database.Extmin.X + 2 * _plotParameters.PlotOrigin.X,
-                    _document.Database.Extmax.Y - _document.Database.Extmin.Y + 2 * _plotParameters.PlotOrigin.Y);
+                    _document.Database.Extmax.X - _document.Database.Extmin.X,
+                    _document.Database.Extmax.Y - _document.Database.Extmin.Y);
             }
             else
             {
                 return new Size(
-                    _document.Database.Pextmax.X - _document.Database.Pextmin.X + 2 * _plotParameters.PlotOrigin.X,
-                    _document.Database.Pextmax.Y - _document.Database.Pextmin.Y + 2 * _plotParameters.PlotOrigin.Y);
+                    _document.Database.Pextmax.X - _document.Database.Pextmin.X,
+                    _document.Database.Pextmax.Y - _document.Database.Pextmin.Y);
             }
         }
 
@@ -740,59 +703,45 @@ namespace BatchPlot
 
         private PaperFormat GetPaperFormat(PlotSettingsValidator psv, PlotSettings ps, string plotterName, Size pageSize)
         {
-            Logger.Info("Drawing size: {0}", pageSize);
+            Logger.Info("Original drawing size: {0}", pageSize);
             var paperFormats = GetDefaultOrPc3PaperFormats(psv, ps, plotterName);
             paperFormats = paperFormats
                 .OrderBy(x => x.PlotPaperSize.Height).ThenBy(x => x.PlotPaperSize.Width);
             var paperFormat = paperFormats
-                .FirstOrDefault(x => x.PlotPaperSize.Width >= pageSize.Width 
-                    && x.PlotPaperSize.Height >= pageSize.Height);
+                .FirstOrDefault(x => x.PlotPaperSize.Width - 2 * _plotParameters.PlotOrigin.X >= pageSize.Width
+                    && x.PlotPaperSize.Height - 2 * _plotParameters.PlotOrigin.Y >= pageSize.Height);
+
             if (paperFormat == null && paperFormats.Any())
             {
-                //var lastPaperFormatHeight = paperFormats.Last().PlotPaperSize.Height;
-                //var pageWidth = pageSize.Width / pageSize.Height * lastPaperFormatHeight;
-                //pageSize = new Size(lastPaperFormatHeight, pageWidth);
-                //paperFormat = paperFormats
-                //    .FirstOrDefault(x => x.PlotPaperSize.Width >= pageSize.Width
-                //        && x.PlotPaperSize.Height >= pageSize.Height);
-                //paperFormat.ShrinkDrawing = true;
-                //paperFormat.PlotOrigin = new Point2d(paperFormat.PlotPaperSize.Width - pageWidth,
-                //    paperFormat.PlotPaperSize.Width - _plotParameters.PlotOrigin.Y);
+                var closestPaperFormat = paperFormats.Select(x => new
+                    {
+                       paperFormat = x,
+                       scale = Math.Max(pageSize.Height / x.PlotPaperSize.Height, pageSize.Width / x.PlotPaperSize.Width)
+                    }).OrderBy(x => x.scale).First();
+                pageSize = new Size(pageSize.Width / closestPaperFormat.scale, pageSize.Height / closestPaperFormat.scale);
+                paperFormat = closestPaperFormat.paperFormat;
+            }
 
-                var xxx = paperFormats.Select(x => new
-                {
-                   p = x,
-                   f = Math.Max(pageSize.Height / x.PlotPaperSize.Height, pageSize.Width / x.PlotPaperSize.Width)
-                }).OrderBy(x => x.f).First();
-                Logger.Info(">>> pageSize: {0}", pageSize);
-                Logger.Info(">>> xxx.p.PlotPaperSize: {0}", xxx.p.PlotPaperSize);
-                Logger.Info(">>> xxx.p.PlotPaperSize ///: {0}", pageSize.Width / xxx.p.PlotPaperSize.Width);
-                Logger.Info(">>> xxx.p.PlotPaperSize ///: {0}", pageSize.Height / xxx.p.PlotPaperSize.Height);
-                Logger.Info(">>> xxx.p.PlotPaperSize: {0}", xxx.p.PlotPaperSize);
-                Logger.Info(">>> xxx.f: {0}", xxx.f);
-                pageSize = new Size(pageSize.Width / xxx.f, pageSize.Height / xxx.f);
-                paperFormat = xxx.p;
-                paperFormat.PlotOrigin = new Point2d(
-                    paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X / xxx.f,
-                    _plotParameters.PlotOrigin.Y / xxx.f);
-                paperFormat.PlotOrigin = new Point2d(
-                    _plotParameters.PlotOrigin.Y / xxx.f,
-                    paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X / xxx.f);
-            }
-            else
-            {
-                paperFormat.PlotOrigin = new Point2d(paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X,
-                    _plotParameters.PlotOrigin.Y);
-                paperFormat.PlotOrigin = new Point2d(_plotParameters.PlotOrigin.Y, paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X);
-                Logger.Info("Selected paper format: {0}   {1}   {2}   {3}", paperFormat.PlotPaperSize.Width, 
-                    pageSize.Width, _plotParameters.PlotOrigin.Y, paperFormat.PlotOrigin);
-                //paperFormat.PlotOrigin = new Point2d(_plotParameters.PlotOrigin.Y, paperFormat.PlotPaperSize.Width - pageSize.Width + _plotParameters.PlotOrigin.X);
-            }
             if (paperFormat == null)
             {
                 throw new ArgumentException("No paper format found for " + plotterName);
             }
+
             Logger.Info("Selected paper format: {0}", paperFormat.CanonicalMediaName);
+
+            if (_plotParameters.IsPlanchette)
+            {
+                paperFormat.PlotOrigin = new Point2d(Math.Max(Math.Min(paperFormat.PlotPaperSize.Height - pageSize.Height - _plotParameters.PlotOrigin.Y, 10), 0),
+                    Math.Max(Math.Min(paperFormat.PlotPaperSize.Width - pageSize.Width - _plotParameters.PlotOrigin.X, 10), 0));
+                Logger.Info(">>> IsPlanchette PlotPaperSize: {0}   pageSize: {1}   PlotOrigin: {2} =>  {3}", paperFormat.PlotPaperSize, pageSize, _plotParameters.PlotOrigin, paperFormat.PlotOrigin);
+            }
+            else
+            {
+                paperFormat.PlotOrigin = new Point2d(Math.Max(Math.Min(paperFormat.PlotPaperSize.Height - pageSize.Height - _plotParameters.PlotOrigin.Y, 10), 0),
+                    Math.Max(paperFormat.PlotPaperSize.Width - pageSize.Width - _plotParameters.PlotOrigin.X, 0));
+                Logger.Info(">>>              PlotPaperSize: {0}   pageSize: {1}   PlotOrigin: {2} =>  {3}", paperFormat.PlotPaperSize, pageSize, _plotParameters.PlotOrigin, paperFormat.PlotOrigin);
+            }
+
             return paperFormat;
         }
 
